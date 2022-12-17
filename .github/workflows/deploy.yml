@@ -11,5 +11,6 @@ jobs:
       - name: Install, lint, build 🔧
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY}}
+        if: [$SECRET_KEY == 'test4']
         run: |
-          echo: $SECRET_KEY
+          echo: 'test4 - got secret'
