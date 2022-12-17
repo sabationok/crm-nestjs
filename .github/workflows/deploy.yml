@@ -12,4 +12,4 @@ jobs:
         run: |
           echo: $SECRET_KEY
         env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY}}
+          SECRET_KEY: ${{ test.SECRET_KEY}}
