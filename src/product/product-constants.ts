@@ -1,0 +1,1 @@
+export const PRODUCT_NOT_FOUND = 'Таккий продукт не знайдений'
