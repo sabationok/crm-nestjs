@@ -15,9 +15,8 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UserRequest } from 'src/decorators/request.decorator';
-import { UserEmail } from 'src/decorators/user-email.decorator';
+import { GetUser } from 'src/decorators/getUser.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt.guards';
-
 import { ProductModel } from './product.model';
 import { ProductService } from './product.service';
 
@@ -25,19 +24,20 @@ import { ProductService } from './product.service';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  // @UseGuards(JwtAuthGuard)
-  // @Get('getAll')
-  // async getAll(@UserEmail() email: string) {
-  //   console.log(email)
-  //   return this.productService.findAll();
-  // }
-
+  @UseGuards(JwtAuthGuard)
   @Get('getAll')
-  async getAll(@UserRequest() req: any) {
+  async getAll(@GetUser() user: string) {
+    console.log(user);
     return this.productService.findAll();
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @Get('getAllforAll')
+  async getAllforAll(@UserRequest() req: any) {
+    console.log(req);
+    return this.productService.findAll();
+  }
+
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   @Post('create')
   async create(@Body() dto: ProductModel, @UserRequest() req: any) {
@@ -45,13 +45,13 @@ export class ProductController {
     return this.productService.create(dto);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getBiId(@Param('id') id: string) {
     return this.productService.findByProductId(id);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async delete(@Param('id') id: string) {
     const deletedDoc = await this.productService.delete(id);

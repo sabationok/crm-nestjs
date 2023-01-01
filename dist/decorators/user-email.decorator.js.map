@@ -1,0 +1,1 @@
+{"version":3,"file":"user-email.decorator.js","sourceRoot":"","sources":["../../src/decorators/user-email.decorator.ts"],"names":[],"mappings":";;;AAAA,2CAAwE;AAE3D,QAAA,SAAS,GAAG,IAAA,6BAAoB,EAC3C,CAAC,IAAa,EAAE,GAAqB,EAAE,EAAE;IACvC,MAAM,GAAG,GAAG,GAAG,CAAC,YAAY,EAAE,CAAC,UAAU,EAAE,CAAC;IAC5C,OAAO,GAAG,CAAC,IAAI,CAAA;AACjB,CAAC,CACF,CAAA"}

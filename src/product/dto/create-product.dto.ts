@@ -1,5 +1,35 @@
-import { IsArray, IsString, IsBoolean, IsNumber } from 'class-validator';
+import { IsArray, IsString, IsBoolean, IsObject } from 'class-validator';
+import { ObjectId } from 'mongoose';
 
+export interface IProductPriceInfo {
+  price?: number;
+  cost?: number;
+  currency?: string;
+  sale?: number;
+  isCommission?: boolean;
+}
+export interface Section {
+  id: ObjectId;
+  name: string;
+}
+export interface Category {
+  ownerId?: ObjectId;
+  owner?: string;
+  id: ObjectId;
+  name: string;
+}
+export interface IProductCategoryInfo {
+  section: Section;
+
+  category: Category;
+}
+export interface IProductAvailabilityInfo {
+  availability: 'available' | 'notAvailable' | 'awaiting';
+  standartOrder?: boolean;
+  standartOrderTime?: number;
+  specialOrder?: boolean;
+  specialOrderTime?: number;
+}
 export class CreateProductDto {
   @IsBoolean()
   isApproved?: boolean;
@@ -8,22 +38,7 @@ export class CreateProductDto {
   isVisible?: boolean;
 
   @IsString()
-  createdByAuthorName?: string;
-
-  @IsString()
-  createdByAuthorId?: string;
-
-  @IsString()
-  createdByAuthorType?: string;
-
-  @IsString()
-  updatedByAuthorName?: string;
-
-  @IsString()
-  updatedByAuthorId?: string;
-
-  @IsString()
-  updatedByAuthorType?: string;
+  sku?: string;
 
   @IsString()
   name?: string;
@@ -31,38 +46,14 @@ export class CreateProductDto {
   @IsString()
   brand?: string;
 
-  @IsNumber()
-  price?: number;
+  @IsObject()
+  priceInfo?: IProductPriceInfo;
 
-  @IsNumber()
-  cost?: number;
+  @IsObject()
+  categoryInfo?: IProductCategoryInfo;
 
-  @IsString()
-  currency?: string;
-
-  @IsNumber()
-  sale?: number;
-
-  @IsString()
-  sectionId?: string;
-
-  @IsString()
-  section?: string;
-
-  @IsString()
-  parentCategoryId?: string;
-
-  @IsString()
-  parentCategory?: string;
-
-  @IsString()
-  categoryId?: string;
-
-  @IsString()
-  category?: string;
-
-  @IsString()
-  availability?: string;
+  @IsObject()
+  availabilityInfo?: IProductAvailabilityInfo;
 
   @IsString()
   description?: string;
@@ -73,3 +64,11 @@ export class CreateProductDto {
   @IsArray()
   images?: string[];
 }
+
+// @MinLength(32, {
+//   message: 'EIC code must be at least 32 characters',
+//   context: {
+//     errorCode: 1003,
+//     developerNote: 'The validated string must contain 32 or more characters.',
+//   },
+// })
