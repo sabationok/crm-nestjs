@@ -1,3 +1,4 @@
+/// <reference types="mongoose" />
 import { HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';

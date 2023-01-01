@@ -11,6 +11,6 @@ export declare class UserModel extends TimeStamps {
     phone: string;
     role: TUserRoles;
     status: TUserStatus;
-    manager: ObjectId;
-    vendors: string[];
+    manager?: ObjectId;
+    vendors?: string[];
 }

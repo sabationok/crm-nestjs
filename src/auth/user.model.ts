@@ -34,8 +34,8 @@ export class UserModel extends TimeStamps {
   status: TUserStatus;
 
   @prop()
-  manager: ObjectId;
+  manager?: ObjectId;
 
   @prop({ type: () => [String] })
-  vendors: string[];
+  vendors?: string[];
 }

@@ -1,5 +1,11 @@
 import { prop } from '@typegoose/typegoose';
-import { IsArray, IsNumber, IsObject, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNumber,
+  IsObject,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { ObjectId } from 'mongoose';
 
 export class CreateDeliveryDto {
@@ -22,5 +28,7 @@ export class CreateDeliveryDto {
   contentTotalPrice: number;
 
   @IsArray()
+  @ValidateNested()
+  @IsObject({ each: true })
   content: ObjectId[];
 }

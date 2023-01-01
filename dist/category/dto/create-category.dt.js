@@ -18,14 +18,17 @@ __decorate([
     __metadata("design:type", String)
 ], CreateCategoryDto.prototype, "name", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsObject)(),
     __metadata("design:type", Object)
 ], CreateCategoryDto.prototype, "owner", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateCategoryDto.prototype, "ownerName", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
 ], CreateCategoryDto.prototype, "isSection", void 0);

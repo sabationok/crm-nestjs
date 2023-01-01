@@ -40,6 +40,8 @@ __decorate([
 ], CreateDeliveryDto.prototype, "contentTotalPrice", void 0);
 __decorate([
     (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_validator_1.IsObject)({ each: true }),
     __metadata("design:type", Array)
 ], CreateDeliveryDto.prototype, "content", void 0);
 exports.CreateDeliveryDto = CreateDeliveryDto;
