@@ -1,9 +1,10 @@
 import { ConfigService } from '@nestjs/config';
+import { TypegooseModuleOptions } from 'nestjs-typegoose';
 import { MongooseModuleOptions } from '@nestjs/mongoose/dist';
 
 export const getMongoConfig = async (
   configService: ConfigService,
-): Promise<MongooseModuleOptions> => {
+): Promise<TypegooseModuleOptions> => {
   return {
     uri: getMongoString(configService),
     ...getMongoOptions(),

@@ -6,27 +6,28 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppModule = void 0;
+exports.RefundsModule = void 0;
 const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
+const refunds_controller_1 = require("./refunds.controller");
+const refunds_service_1 = require("./refunds.service");
 const mongoose_1 = require("@nestjs/mongoose");
-const mongo_config_1 = require("./configs/mongo.config");
-const refunds_module_1 = require("./refunds/refunds.module");
-let AppModule = class AppModule {
+const refund_model_1 = require("./refund.model");
+let RefundsModule = class RefundsModule {
 };
-AppModule = __decorate([
+RefundsModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            config_1.ConfigModule.forRoot(),
-            mongoose_1.MongooseModule.forRootAsync({
-                imports: [config_1.ConfigModule],
-                inject: [config_1.ConfigService],
-                useFactory: mongo_config_1.getMongoConfig,
-            }),
-            refunds_module_1.RefundsModule,
+            mongoose_1.MongooseModule.forFeature([
+                {
+                    name: refund_model_1.Refund.name,
+                    schema: refund_model_1.RefundModel,
+                    collection: 'Refunds',
+                },
+            ]),
         ],
-        providers: [],
+        controllers: [refunds_controller_1.RefundsController],
+        providers: [refunds_service_1.RefundsService],
     })
-], AppModule);
-exports.AppModule = AppModule;
-//# sourceMappingURL=app.module.js.map
+], RefundsModule);
+exports.RefundsModule = RefundsModule;
+//# sourceMappingURL=refunds.module.js.map
