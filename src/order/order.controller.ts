@@ -15,7 +15,6 @@ export class OrderController {
 
   @Post('create')
   async create(@Body() dto: OrderModel, @UserRequest() req: any) {
-    console.log(dto);
     return this.orderService.create(dto);
   }
 }

@@ -26,14 +26,12 @@ let DeliveryController = class DeliveryController {
     }
     async getByOderId(id) {
         const result = await this.deliveryServise.findByOrderId(id);
-        console.log(id);
         if (result.length === 0) {
             throw new common_1.HttpException(`Not found any deliveries to order, orderId:${id}`, common_1.HttpStatus.NOT_FOUND);
         }
         return result;
     }
     async create(dto, req) {
-        console.log(dto);
         return this.deliveryServise.create(dto);
     }
 };

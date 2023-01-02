@@ -25,7 +25,6 @@ let OrderController = class OrderController {
         return this.orderService.findAll();
     }
     async create(dto, req) {
-        console.log(dto);
         return this.orderService.create(dto);
     }
 };

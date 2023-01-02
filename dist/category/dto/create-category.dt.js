@@ -29,8 +29,23 @@ __decorate([
 ], CreateCategoryDto.prototype, "ownerName", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], CreateCategoryDto.prototype, "section", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCategoryDto.prototype, "sectionName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
 ], CreateCategoryDto.prototype, "isSection", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], CreateCategoryDto.prototype, "isArchived", void 0);
 exports.CreateCategoryDto = CreateCategoryDto;
 //# sourceMappingURL=create-category.dt.js.map

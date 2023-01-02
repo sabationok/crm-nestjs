@@ -24,15 +24,12 @@ let ProductController = class ProductController {
         this.productService = productService;
     }
     async getAll(user) {
-        console.log(user);
         return this.productService.findAll();
     }
     async getAllforAll(req) {
-        console.log(req);
         return this.productService.findAll();
     }
     async create(dto, req) {
-        console.log(req);
         return this.productService.create(dto);
     }
     async getBiId(id) {
@@ -46,7 +43,6 @@ let ProductController = class ProductController {
     }
     async patch(id, dto) {
         const updatedDoc = await this.productService.updateById(id, dto);
-        console.log(updatedDoc);
         if (!updatedDoc) {
             throw new common_1.HttpException('', common_1.HttpStatus.NOT_FOUND);
         }

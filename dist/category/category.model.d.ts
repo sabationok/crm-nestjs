@@ -6,5 +6,8 @@ export declare class CategoryModel extends TimeStamps {
     name: string;
     owner: ObjectId;
     ownerName: string;
-    isSection: boolean;
+    section?: ObjectId;
+    sectionName?: string;
+    isSection?: boolean;
+    isArchived?: boolean;
 }

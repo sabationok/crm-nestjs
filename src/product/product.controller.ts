@@ -27,13 +27,11 @@ export class ProductController {
   @UseGuards(JwtAuthGuard)
   @Get('getAll')
   async getAll(@GetUser() user: string) {
-    console.log(user);
     return this.productService.findAll();
   }
 
   @Get('getAllforAll')
   async getAllforAll(@UserRequest() req: any) {
-    console.log(req);
     return this.productService.findAll();
   }
 
@@ -41,7 +39,6 @@ export class ProductController {
   @UsePipes(new ValidationPipe())
   @Post('create')
   async create(@Body() dto: ProductModel, @UserRequest() req: any) {
-    console.log(req);
     return this.productService.create(dto);
   }
 
@@ -66,7 +63,7 @@ export class ProductController {
   @Patch(':id')
   async patch(@Param('id') id: string, @Body() dto: ProductModel) {
     const updatedDoc = await this.productService.updateById(id, dto);
-    console.log(updatedDoc);
+
     if (!updatedDoc) {
       throw new HttpException('', HttpStatus.NOT_FOUND);
     }

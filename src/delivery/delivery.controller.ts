@@ -23,7 +23,7 @@ export class DeliveryController {
   @Get('getByOrderId/:id')
   async getByOderId(@Param('id') id: string) {
     const result = await this.deliveryServise.findByOrderId(id);
-    console.log(id);
+
     if (result.length === 0) {
       throw new HttpException(
         `Not found any deliveries to order, orderId:${id}`,
@@ -35,7 +35,6 @@ export class DeliveryController {
 
   @Post('create')
   async create(@Body() dto: DeliveryModel, @UserRequest() req: any) {
-    console.log(dto);
     return this.deliveryServise.create(dto);
   }
 }

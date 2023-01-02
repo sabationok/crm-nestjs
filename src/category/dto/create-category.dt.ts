@@ -14,6 +14,18 @@ export class CreateCategoryDto {
   ownerName?: string;
 
   @IsOptional()
+  @IsObject()
+  section?: ObjectId;
+
+  @IsOptional()
+  @IsString()
+  sectionName?: string;
+
+  @IsOptional()
   @IsBoolean()
   isSection?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isArchived?: boolean;
 }

@@ -4,15 +4,24 @@ import { ObjectId } from 'mongoose';
 
 export interface CategoryModel extends Base {}
 export class CategoryModel extends TimeStamps {
-  @prop({ default: 'categoryName' })
+  @prop({ default: 'section' })
   name: string;
 
-  @prop({ default: 'parentId' })
+  @prop({ default: 'Id' })
   owner: ObjectId;
 
-  @prop({ default: 'parentName' })
+  @prop({ default: 'section' })
   ownerName: string;
 
+  @prop()
+  section?: ObjectId;
+
+  @prop()
+  sectionName?: string;
+
+  @prop()
+  isSection?: boolean;
+
   @prop({ default: false })
-  isSection: boolean;
+  isArchived?: boolean;
 }

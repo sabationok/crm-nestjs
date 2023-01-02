@@ -107,8 +107,6 @@ export class AuthController {
   ) {
     const result = await this.authService.setUserRoleById(id, roleDto);
 
-    console.log(result);
-
     if (!result) {
       throw new HttpException(
         'Not found user for update ',

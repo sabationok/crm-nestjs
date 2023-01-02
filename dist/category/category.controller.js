@@ -32,7 +32,6 @@ let CategoryController = class CategoryController {
     }
     async getByParentId(id) {
         const result = await this.categoryServise.findByOwnerId(id);
-        console.log(result);
         if (result.length === 0) {
             throw new common_1.HttpException(`Not found any children categories of this category, parentId:${id}`, common_1.HttpStatus.NOT_FOUND);
         }
@@ -43,7 +42,6 @@ let CategoryController = class CategoryController {
         };
     }
     async getById(id, user) {
-        console.log(user);
         const result = await this.categoryServise.findById(id);
         if (!result) {
             throw new common_1.HttpException(`Not found any category with id:${id}`, common_1.HttpStatus.NOT_FOUND);
@@ -63,21 +61,35 @@ let CategoryController = class CategoryController {
             messsage: 'Created category',
         };
     }
-    async update(dto, req) {
-        const result = await this.categoryServise.create(dto);
+    async update(id, dto, req) {
+        const result = await this.categoryServise.updateById(id, dto);
         return {
             status: common_1.HttpStatus.OK,
             data: result,
-            messsage: 'Created category',
+            messsage: 'Updated category',
         };
     }
     async deleteById(id, req) {
-        console.log(id);
         const result = await this.categoryServise.delete(id);
         if (!result) {
             throw new common_1.HttpException('Not found category for deleting', common_1.HttpStatus.NOT_FOUND);
         }
-        return { status: common_1.HttpStatus.OK, data: result, messsage: 'Created catgory' };
+        return {
+            status: common_1.HttpStatus.OK,
+            data: result,
+            messsage: 'Deleted category',
+        };
+    }
+    async clearById(id, req) {
+        const result = await this.categoryServise.deleteManyByParentId(id);
+        if (!result) {
+            throw new common_1.HttpException('Not found category for deleting', common_1.HttpStatus.NOT_FOUND);
+        }
+        return {
+            status: common_1.HttpStatus.OK,
+            data: result,
+            messsage: 'Deleted categories',
+        };
     }
 };
 __decorate([
@@ -111,11 +123,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CategoryController.prototype, "create", null);
 __decorate([
-    (0, common_1.Patch)('create'),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, request_decorator_1.UserRequest)()),
+    (0, common_1.Patch)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, request_decorator_1.UserRequest)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [category_model_1.CategoryModel, Object]),
+    __metadata("design:paramtypes", [String, category_model_1.CategoryModel, Object]),
     __metadata("design:returntype", Promise)
 ], CategoryController.prototype, "update", null);
 __decorate([
@@ -126,6 +139,14 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], CategoryController.prototype, "deleteById", null);
+__decorate([
+    (0, common_1.Delete)('clearById/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, request_decorator_1.UserRequest)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], CategoryController.prototype, "clearById", null);
 CategoryController = __decorate([
     (0, common_1.Controller)('category'),
     __metadata("design:paramtypes", [category_service_1.CategoryService])

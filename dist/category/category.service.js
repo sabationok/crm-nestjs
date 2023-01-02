@@ -26,20 +26,23 @@ let CategoryService = class CategoryService {
     async findAll() {
         return this.categoryModel.find().exec();
     }
+    async findById(id) {
+        return this.categoryModel.findById(id).exec();
+    }
+    async findByOwnerId(id) {
+        return this.categoryModel.find({ owner: id }).exec();
+    }
     async create(dto) {
         return this.categoryModel.create(dto);
     }
     async delete(id) {
         return this.categoryModel.findByIdAndDelete(id).exec();
     }
+    async deleteManyByParentId(id) {
+        return this.categoryModel.deleteMany({ owner: id });
+    }
     async updateById(id, dto) {
-        return this.categoryModel.findByIdAndUpdate(id, dto).exec();
-    }
-    async findById(id) {
-        return this.categoryModel.find({ _id: id }).exec();
-    }
-    async findByOwnerId(id) {
-        return this.categoryModel.find({ owner: id }).exec();
+        return this.categoryModel.findByIdAndUpdate(id, dto, { new: true }).exec();
     }
 };
 CategoryService = __decorate([

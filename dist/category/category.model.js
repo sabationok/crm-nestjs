@@ -15,20 +15,32 @@ const defaultClasses_1 = require("@typegoose/typegoose/lib/defaultClasses");
 class CategoryModel extends defaultClasses_1.TimeStamps {
 }
 __decorate([
-    (0, typegoose_1.prop)({ default: 'categoryName' }),
+    (0, typegoose_1.prop)({ default: 'section' }),
     __metadata("design:type", String)
 ], CategoryModel.prototype, "name", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 'parentId' }),
+    (0, typegoose_1.prop)({ default: 'Id' }),
     __metadata("design:type", Object)
 ], CategoryModel.prototype, "owner", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 'parentName' }),
+    (0, typegoose_1.prop)({ default: 'section' }),
     __metadata("design:type", String)
 ], CategoryModel.prototype, "ownerName", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: false }),
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", Object)
+], CategoryModel.prototype, "section", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", String)
+], CategoryModel.prototype, "sectionName", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
     __metadata("design:type", Boolean)
 ], CategoryModel.prototype, "isSection", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ default: false }),
+    __metadata("design:type", Boolean)
+], CategoryModel.prototype, "isArchived", void 0);
 exports.CategoryModel = CategoryModel;
 //# sourceMappingURL=category.model.js.map

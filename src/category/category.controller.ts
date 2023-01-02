@@ -13,6 +13,7 @@ import { UserRequest } from 'src/decorators/request.decorator';
 import { CategoryModel } from './category.model';
 import { CategoryService } from './category.service';
 import { GetUser } from 'src/decorators/getUser.decorator';
+
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryServise: CategoryService) {}
@@ -33,7 +34,6 @@ export class CategoryController {
   @Get('getByParentId/:id')
   async getByParentId(@Param('id') id: string) {
     const result = await this.categoryServise.findByOwnerId(id);
-    console.log(result);
 
     if (result.length === 0) {
       throw new HttpException(
@@ -50,8 +50,6 @@ export class CategoryController {
 
   @Get(':id')
   async getById(@Param('id') id: string, @GetUser() user: any) {
-    console.log(user);
-
     const result = await this.categoryServise.findById(id);
 
     if (!result) {
@@ -80,21 +78,23 @@ export class CategoryController {
     };
   }
 
-  @Patch('create')
-  async update(@Body() dto: CategoryModel, @UserRequest() req: any) {
-    const result = await this.categoryServise.create(dto);
+  @Patch(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() dto: CategoryModel,
+    @UserRequest() req: any,
+  ) {
+    const result = await this.categoryServise.updateById(id, dto);
 
     return {
       status: HttpStatus.OK,
       data: result,
-      messsage: 'Created category',
+      messsage: 'Updated category',
     };
   }
 
   @Delete(':id')
   async deleteById(@Param('id') id: string, @UserRequest() req: any) {
-    console.log(id);
-
     const result = await this.categoryServise.delete(id);
 
     if (!result) {
@@ -104,6 +104,29 @@ export class CategoryController {
       );
     }
 
-    return { status: HttpStatus.OK, data: result, messsage: 'Created catgory' };
+    return {
+      status: HttpStatus.OK,
+      data: result,
+      messsage: 'Deleted category',
+    };
   }
+
+  @Delete('clearById/:id')
+  async clearById(@Param('id') id: string, @UserRequest() req: any) {
+    const result = await this.categoryServise.deleteManyByParentId(id);
+
+    if (!result) {
+      throw new HttpException(
+        'Not found category for deleting',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return {
+      status: HttpStatus.OK,
+      data: result,
+      messsage: 'Deleted categories',
+    };
+  }
+  // deleteManyByParentId
 }

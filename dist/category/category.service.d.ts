@@ -6,9 +6,10 @@ export declare class CategoryService {
     constructor(categoryModel: ModelType<CategoryModel>);
     getHello(): Promise<string>;
     findAll(): Promise<DocumentType<any>>;
+    findById(id: string): Promise<DocumentType<CategoryModel> | null>;
+    findByOwnerId(id: string): Promise<DocumentType<CategoryModel>[]>;
     create(dto: CreateCategoryDto): Promise<DocumentType<CategoryModel>>;
     delete(id: string): Promise<DocumentType<CategoryModel> | null>;
+    deleteManyByParentId(id: string): Promise<DocumentType<any>>;
     updateById(id: string, dto: CreateCategoryDto): Promise<DocumentType<CategoryModel> | null>;
-    findById(id: string): Promise<DocumentType<CategoryModel>[]>;
-    findByOwnerId(id: string): Promise<DocumentType<CategoryModel>[]>;
 }

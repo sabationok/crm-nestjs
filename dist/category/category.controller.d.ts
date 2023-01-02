@@ -17,7 +17,7 @@ export declare class CategoryController {
     getById(id: string, user: any): Promise<{
         user: any;
         status: HttpStatus;
-        data: import("@typegoose/typegoose").DocumentType<CategoryModel, import("@typegoose/typegoose/lib/types").BeAnObject>[];
+        data: import("@typegoose/typegoose").DocumentType<CategoryModel, import("@typegoose/typegoose/lib/types").BeAnObject>;
         messsage: string;
     }>;
     create(dto: CategoryModel, req: any): Promise<{
@@ -25,14 +25,19 @@ export declare class CategoryController {
         data: import("@typegoose/typegoose").DocumentType<CategoryModel, import("@typegoose/typegoose/lib/types").BeAnObject>;
         messsage: string;
     }>;
-    update(dto: CategoryModel, req: any): Promise<{
+    update(id: string, dto: CategoryModel, req: any): Promise<{
         status: HttpStatus;
-        data: import("@typegoose/typegoose").DocumentType<CategoryModel, import("@typegoose/typegoose/lib/types").BeAnObject>;
+        data: import("@typegoose/typegoose").DocumentType<CategoryModel, import("@typegoose/typegoose/lib/types").BeAnObject> | null;
         messsage: string;
     }>;
     deleteById(id: string, req: any): Promise<{
         status: HttpStatus;
         data: import("@typegoose/typegoose").DocumentType<CategoryModel, import("@typegoose/typegoose/lib/types").BeAnObject>;
+        messsage: string;
+    }>;
+    clearById(id: string, req: any): Promise<{
+        status: HttpStatus;
+        data: any;
         messsage: string;
     }>;
 }

@@ -70,7 +70,6 @@ let AuthController = class AuthController {
     }
     async setUserRoleById(id, roleDto) {
         const result = await this.authService.setUserRoleById(id, roleDto);
-        console.log(result);
         if (!result) {
             throw new common_1.HttpException('Not found user for update ', common_1.HttpStatus.NOT_FOUND);
         }

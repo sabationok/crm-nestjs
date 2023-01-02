@@ -19,6 +19,14 @@ export class CategoryService {
     return this.categoryModel.find().exec();
   }
 
+  async findById(id: string): Promise<DocumentType<CategoryModel> | null> {
+    return this.categoryModel.findById(id).exec();
+  }
+
+  async findByOwnerId(id: string): Promise<DocumentType<CategoryModel>[]> {
+    return this.categoryModel.find({ owner: id }).exec();
+  }
+
   async create(dto: CreateCategoryDto): Promise<DocumentType<CategoryModel>> {
     return this.categoryModel.create(dto);
   }
@@ -27,18 +35,14 @@ export class CategoryService {
     return this.categoryModel.findByIdAndDelete(id).exec();
   }
 
+  async deleteManyByParentId(id: string): Promise<DocumentType<any>> {
+    return this.categoryModel.deleteMany({ owner: id });
+  }
+
   async updateById(
     id: string,
     dto: CreateCategoryDto,
   ): Promise<DocumentType<CategoryModel> | null> {
-    return this.categoryModel.findByIdAndUpdate(id, dto).exec();
-  }
-
-  async findById(id: string): Promise<DocumentType<CategoryModel>[]> {
-    return this.categoryModel.find({ _id: id }).exec();
-  }
-
-  async findByOwnerId(id: string): Promise<DocumentType<CategoryModel>[]> {
-    return this.categoryModel.find({ owner: id }).exec();
+    return this.categoryModel.findByIdAndUpdate(id, dto, { new: true }).exec();
   }
 }
