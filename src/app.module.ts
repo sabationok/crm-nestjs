@@ -13,6 +13,7 @@ import { OrderModule } from './order/order.module';
 // import { SitemapModule } from './sitemap/sitemap.module';
 import { DeliveryModule } from './delivery/delivery.module';
 import { CategoryModule } from './category/category.module';
+import { RefundsModule } from './refunds/refunds.module';
 
 @Module({
   imports: [
@@ -31,6 +32,8 @@ import { CategoryModule } from './category/category.module';
     DeliveryModule,
 
     CategoryModule,
+
+    RefundsModule,
   ],
   providers: [],
 })
