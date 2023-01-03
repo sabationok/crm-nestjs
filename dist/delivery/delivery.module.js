@@ -10,21 +10,20 @@ exports.DeliveryModule = void 0;
 const common_1 = require("@nestjs/common");
 const delivery_service_1 = require("./delivery.service");
 const delivery_controller_1 = require("./delivery.controller");
-const nestjs_typegoose_1 = require("nestjs-typegoose");
 const delivery_model_1 = require("./delivery.model");
 const config_1 = require("@nestjs/config");
+const mongoose_1 = require("@nestjs/mongoose");
 let DeliveryModule = class DeliveryModule {
 };
 DeliveryModule = __decorate([
     (0, common_1.Module)({
         controllers: [delivery_controller_1.DeliveryController],
         imports: [
-            nestjs_typegoose_1.TypegooseModule.forFeature([
+            mongoose_1.MongooseModule.forFeature([
                 {
-                    typegooseClass: delivery_model_1.DeliveryModel,
-                    schemaOptions: {
-                        collection: 'Deliveries',
-                    },
+                    name: 'DeliveryModel',
+                    schema: delivery_model_1.DeliveryModel,
+                    collection: 'Deliveries',
                 },
             ]),
             config_1.ConfigModule,

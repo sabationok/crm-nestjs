@@ -2,18 +2,17 @@ import { Module } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { OrderModel } from './order.model';
-import { TypegooseModule } from 'nestjs-typegoose';
 import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   controllers: [OrderController],
   imports: [
-    TypegooseModule.forFeature([
+    MongooseModule.forFeature([
       {
-        typegooseClass: OrderModel,
-        schemaOptions: {
-          collection: 'Orders',
-        },
+        name: 'OrderModel',
+        schema: OrderModel,
+        collection: 'Orders',
       },
     ]),
     ConfigModule,

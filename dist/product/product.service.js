@@ -13,15 +13,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductService = void 0;
+const mongoose_1 = require("mongoose");
 const common_1 = require("@nestjs/common");
-const nestjs_typegoose_1 = require("nestjs-typegoose");
-const product_model_1 = require("./product.model");
+const mongoose_2 = require("@nestjs/mongoose");
 let ProductService = class ProductService {
     constructor(productModel) {
         this.productModel = productModel;
-    }
-    async getHello() {
-        return 'Hello!';
     }
     async findAll() {
         return this.productModel.find().exec();
@@ -41,8 +38,8 @@ let ProductService = class ProductService {
 };
 ProductService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, nestjs_typegoose_1.InjectModel)(product_model_1.ProductModel)),
-    __metadata("design:paramtypes", [Object])
+    __param(0, (0, mongoose_2.InjectModel)('ProductModel')),
+    __metadata("design:paramtypes", [mongoose_1.Model])
 ], ProductService);
 exports.ProductService = ProductService;
 //# sourceMappingURL=product.service.js.map

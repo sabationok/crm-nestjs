@@ -7,7 +7,7 @@ import { Refund, RefundDocument } from './refund.model';
 @Injectable()
 export class RefundsService {
   constructor(
-    @InjectModel(Refund.name) private refundModel: Model<RefundDocument>,
+    @InjectModel('RefundModel') private refundModel: Model<RefundDocument>,
   ) {}
 
   async create(createRefundDto: CreateRefundDto): Promise<Refund> {

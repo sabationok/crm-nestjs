@@ -15,8 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeliveryController = void 0;
 const common_1 = require("@nestjs/common");
 const request_decorator_1 = require("../decorators/request.decorator");
-const delivery_model_1 = require("./delivery.model");
 const delivery_service_1 = require("./delivery.service");
+const create_delivery_dto_1 = require("./dto/create-delivery.dto");
 let DeliveryController = class DeliveryController {
     constructor(deliveryServise) {
         this.deliveryServise = deliveryServise;
@@ -54,7 +54,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __param(1, (0, request_decorator_1.UserRequest)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [delivery_model_1.DeliveryModel, Object]),
+    __metadata("design:paramtypes", [create_delivery_dto_1.CreateDeliveryDto, Object]),
     __metadata("design:returntype", Promise)
 ], DeliveryController.prototype, "create", null);
 DeliveryController = __decorate([

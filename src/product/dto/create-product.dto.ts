@@ -13,7 +13,7 @@ export interface Section {
   name: string;
 }
 export interface Category {
-  ownerId?: ObjectId;
+  ownerName?: ObjectId;
   owner?: string;
   id: ObjectId;
   name: string;

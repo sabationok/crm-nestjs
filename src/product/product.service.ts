@@ -1,40 +1,33 @@
+import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { DocumentType, ModelType } from '@typegoose/typegoose/lib/types';
-import { InjectModel } from 'nestjs-typegoose';
-import { ProductModel } from './product.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Product, ProductDocument } from './product.model';
 import { CreateProductDto } from './dto/create-product.dto';
 
 @Injectable()
 export class ProductService {
   constructor(
-    @InjectModel(ProductModel)
-    private readonly productModel: ModelType<ProductModel>,
+    @InjectModel('ProductModel')
+    private readonly productModel: Model<ProductDocument>,
   ) {}
 
-  async getHello(): Promise<string> {
-    return 'Hello!';
-  }
-
-  async findAll(): Promise<DocumentType<any>> {
+  async findAll(): Promise<Product[]> {
     return this.productModel.find().exec();
   }
 
-  async create(dto: CreateProductDto): Promise<DocumentType<ProductModel>> {
+  async create(dto: CreateProductDto): Promise<Product> {
     return this.productModel.create(dto);
   }
 
-  async delete(id: string): Promise<DocumentType<ProductModel> | null> {
+  async delete(id: string): Promise<Product | null> {
     return this.productModel.findByIdAndDelete(id).exec();
   }
 
-  async updateById(
-    id: string,
-    dto: CreateProductDto,
-  ): Promise<DocumentType<ProductModel> | null> {
+  async updateById(id: string, dto: CreateProductDto): Promise<Product | null> {
     return this.productModel.findByIdAndUpdate(id, dto).exec();
   }
 
-  async findByProductId(id: string): Promise<DocumentType<ProductModel>[]> {
+  async findByProductId(id: string): Promise<Product[]> {
     return this.productModel.find({ _id: id }).exec();
   }
 }

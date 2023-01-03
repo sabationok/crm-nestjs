@@ -1,41 +1,49 @@
-import { prop } from '@typegoose/typegoose';
-import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { ObjectId } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
+import { HydratedDocument, ObjectId } from 'mongoose';
+
+export type OrderDocument = HydratedDocument<Order>;
+
+@Schema({ versionKey: false })
 export class IPaymentinfo {
-  @prop({ default: null })
+  @Prop({ default: null })
   type: 'iban' | 'card' | 'iban_bonuses' | 'card_bonuses';
 
-  @prop({ default: null })
+  @Prop({ default: null })
   status: 'pending' | 'success' | 'rejected';
 
-  @prop({ default: 0 })
+  @Prop({ default: 0 })
   blockedFunds: number;
 
-  @prop({ default: 0 })
+  @Prop({ default: 0 })
   total: number;
 }
 
-export interface OrderModel extends Base {}
-export class OrderModel extends TimeStamps {
-  @prop({ unique: true })
+@Schema({ versionKey: false })
+export class Product {}
+
+@Schema({ _id: true, timestamps: true, versionKey: false })
+export class Order {
+  @Prop({ unique: true })
   number: string;
 
-  @prop({ default: 'standart' })
+  @Prop({ default: 'standart' })
   type: 'standart' | 'complex';
 
-  @prop({ default: 'new' })
+  @Prop({ default: 'new' })
   status: 'new' | 'inWork' | 'success' | 'rejected' | 'canceled' | 'archived';
 
-  @prop()
+  @Prop({ type: () => Object })
   managerId: ObjectId;
 
-  @prop({ default: { IPaymentinfo }, _id: false })
+  @Prop({ default: { IPaymentinfo }, _id: false })
   payment: IPaymentinfo;
 
-  @prop({ default: null })
+  @Prop({ default: null })
   content: ObjectId[];
 
-  @prop({ default: null })
+  @Prop({ default: null })
   deliveries: ObjectId[];
 }
+
+export const OrderModel = SchemaFactory.createForClass(Order);

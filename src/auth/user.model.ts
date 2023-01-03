@@ -1,6 +1,8 @@
-import { prop } from '@typegoose/typegoose';
-import { TimeStamps, Base } from '@typegoose/typegoose/lib/defaultClasses';
-import { ObjectId } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+
+import { HydratedDocument, ObjectId } from 'mongoose';
+
+export type UserDocument = HydratedDocument<User>;
 
 export type TUserRoles =
   | 'SUPER_ADMIN'
@@ -8,34 +10,37 @@ export type TUserRoles =
   | 'MANAGER'
   | 'TOP_MANAGER'
   | 'VENDOR'
-  | 'VENDOR_MANAGER'
-  | 'USER'
+  | 'SUPLYER_MANAGER'
+  | 'CUSTOMER'
   | 'GUEST';
+
 export type TUserStatus = 'ACTIVE' | 'NOT_ACTIVE' | 'BAN';
 
-export interface UserModel extends Base {}
-export class UserModel extends TimeStamps {
-  @prop({ unique: true })
+@Schema({ _id: true, timestamps: true, versionKey: false })
+export class User {
+  @Prop({ unique: true })
   email: string;
 
-  @prop()
+  @Prop()
   passwordHash: string;
 
-  @prop({ default: null })
+  @Prop({ default: null })
   name: string;
 
-  @prop({ default: null, unique: true })
+  @Prop({ default: null, unique: true })
   phone: string;
 
-  @prop({ default: 'GUEST' })
+  @Prop({ default: 'GUEST' })
   role: TUserRoles;
 
-  @prop({ default: 'NOT_ACTIVE' })
+  @Prop({ default: 'NOT_ACTIVE' })
   status: TUserStatus;
 
-  @prop()
+  @Prop({ type: () => Object })
   manager?: ObjectId;
 
-  @prop({ type: () => [String] })
+  @Prop({ type: () => [String] })
   vendors?: string[];
 }
+
+export const UserModel = SchemaFactory.createForClass(User);

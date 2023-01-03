@@ -10,21 +10,20 @@ exports.CategoryModule = void 0;
 const common_1 = require("@nestjs/common");
 const category_service_1 = require("./category.service");
 const category_controller_1 = require("./category.controller");
-const category_model_1 = require("./category.model");
 const config_1 = require("@nestjs/config");
-const nestjs_typegoose_1 = require("nestjs-typegoose");
+const mongoose_1 = require("@nestjs/mongoose");
+const category_model_1 = require("./category.model");
 let CategoryModule = class CategoryModule {
 };
 CategoryModule = __decorate([
     (0, common_1.Module)({
         controllers: [category_controller_1.CategoryController],
         imports: [
-            nestjs_typegoose_1.TypegooseModule.forFeature([
+            mongoose_1.MongooseModule.forFeature([
                 {
-                    typegooseClass: category_model_1.CategoryModel,
-                    schemaOptions: {
-                        collection: 'Categories',
-                    },
+                    name: 'CategoryModel',
+                    schema: category_model_1.CategoryModel,
+                    collection: 'Categories',
                 },
             ]),
             config_1.ConfigModule,

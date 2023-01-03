@@ -16,7 +16,6 @@ exports.RefundsService = void 0;
 const mongoose_1 = require("mongoose");
 const common_1 = require("@nestjs/common");
 const mongoose_2 = require("@nestjs/mongoose");
-const refund_model_1 = require("./refund.model");
 let RefundsService = class RefundsService {
     constructor(refundModel) {
         this.refundModel = refundModel;
@@ -30,7 +29,7 @@ let RefundsService = class RefundsService {
 };
 RefundsService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_2.InjectModel)(refund_model_1.Refund.name)),
+    __param(0, (0, mongoose_2.InjectModel)('RefundModel')),
     __metadata("design:paramtypes", [mongoose_1.Model])
 ], RefundsService);
 exports.RefundsService = RefundsService;

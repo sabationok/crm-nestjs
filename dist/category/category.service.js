@@ -14,14 +14,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryService = void 0;
 const common_1 = require("@nestjs/common");
-const nestjs_typegoose_1 = require("nestjs-typegoose");
-const category_model_1 = require("./category.model");
+const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
 let CategoryService = class CategoryService {
     constructor(categoryModel) {
         this.categoryModel = categoryModel;
-    }
-    async getHello() {
-        return 'Hello!';
     }
     async findAll() {
         return this.categoryModel.find().exec();
@@ -47,8 +44,8 @@ let CategoryService = class CategoryService {
 };
 CategoryService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, nestjs_typegoose_1.InjectModel)(category_model_1.CategoryModel)),
-    __metadata("design:paramtypes", [Object])
+    __param(0, (0, mongoose_1.InjectModel)('CategoryModel')),
+    __metadata("design:paramtypes", [mongoose_2.Model])
 ], CategoryService);
 exports.CategoryService = CategoryService;
 //# sourceMappingURL=category.service.js.map

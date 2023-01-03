@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TypegooseModule } from 'nestjs-typegoose';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AuthController } from './auth.controller';
 import { UserModel } from './user.model';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -12,22 +12,25 @@ import { JwtStrategy } from 'src/strategies/jwt.strategy';
 @Module({
   controllers: [AuthController],
   imports: [
-    TypegooseModule.forFeature([
+    MongooseModule.forFeature([
       {
-        typegooseClass: UserModel,
-        schemaOptions: {
-          collection: 'User',
-        },
+        name: 'UserModel',
+        schema: UserModel,
+        collection: 'User',
       },
     ]),
+
     ConfigModule,
+
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: getJwtConfig,
     }),
+
     PassportModule,
   ],
+
   providers: [AuthService, JwtStrategy],
 })
 export class AuthModule {}

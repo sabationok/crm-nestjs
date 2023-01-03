@@ -9,38 +9,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeliveryModel = void 0;
-const typegoose_1 = require("@typegoose/typegoose");
-const defaultClasses_1 = require("@typegoose/typegoose/lib/defaultClasses");
-class DeliveryModel extends defaultClasses_1.TimeStamps {
-}
+exports.DeliveryModel = exports.Delivery = void 0;
+const mongoose_1 = require("@nestjs/mongoose");
+let Delivery = class Delivery {
+};
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", String)
-], DeliveryModel.prototype, "number", void 0);
+], Delivery.prototype, "number", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null, type: () => Object }),
     __metadata("design:type", Object)
-], DeliveryModel.prototype, "owner", void 0);
+], Delivery.prototype, "owner", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", String)
-], DeliveryModel.prototype, "transporter", void 0);
+], Delivery.prototype, "transporter", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 0 }),
+    (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
-], DeliveryModel.prototype, "deliveryPrice", void 0);
+], Delivery.prototype, "deliveryPrice", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 'new' }),
+    (0, mongoose_1.Prop)({ default: 'new' }),
     __metadata("design:type", String)
-], DeliveryModel.prototype, "status", void 0);
+], Delivery.prototype, "status", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 0 }),
+    (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
-], DeliveryModel.prototype, "contentTotalPrice", void 0);
+], Delivery.prototype, "contentTotalPrice", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: [] }),
+    (0, mongoose_1.Prop)({ default: [], type: () => [Object] }),
     __metadata("design:type", Array)
-], DeliveryModel.prototype, "content", void 0);
-exports.DeliveryModel = DeliveryModel;
+], Delivery.prototype, "content", void 0);
+Delivery = __decorate([
+    (0, mongoose_1.Schema)({ _id: true, timestamps: true, versionKey: false })
+], Delivery);
+exports.Delivery = Delivery;
+exports.DeliveryModel = mongoose_1.SchemaFactory.createForClass(Delivery);
 //# sourceMappingURL=delivery.model.js.map

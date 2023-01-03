@@ -9,38 +9,42 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CategoryModel = void 0;
+exports.CategoryModel = exports.Category = void 0;
+const mongoose_1 = require("@nestjs/mongoose");
 const typegoose_1 = require("@typegoose/typegoose");
-const defaultClasses_1 = require("@typegoose/typegoose/lib/defaultClasses");
-class CategoryModel extends defaultClasses_1.TimeStamps {
-}
+let Category = class Category {
+};
 __decorate([
     (0, typegoose_1.prop)({ default: 'section' }),
     __metadata("design:type", String)
-], CategoryModel.prototype, "name", void 0);
+], Category.prototype, "name", void 0);
 __decorate([
     (0, typegoose_1.prop)({ default: 'Id' }),
     __metadata("design:type", Object)
-], CategoryModel.prototype, "owner", void 0);
+], Category.prototype, "owner", void 0);
 __decorate([
     (0, typegoose_1.prop)({ default: 'section' }),
     __metadata("design:type", String)
-], CategoryModel.prototype, "ownerName", void 0);
+], Category.prototype, "ownerName", void 0);
 __decorate([
     (0, typegoose_1.prop)(),
     __metadata("design:type", Object)
-], CategoryModel.prototype, "section", void 0);
+], Category.prototype, "section", void 0);
 __decorate([
     (0, typegoose_1.prop)(),
     __metadata("design:type", String)
-], CategoryModel.prototype, "sectionName", void 0);
+], Category.prototype, "sectionName", void 0);
 __decorate([
     (0, typegoose_1.prop)(),
     __metadata("design:type", Boolean)
-], CategoryModel.prototype, "isSection", void 0);
+], Category.prototype, "isSection", void 0);
 __decorate([
     (0, typegoose_1.prop)({ default: false }),
     __metadata("design:type", Boolean)
-], CategoryModel.prototype, "isArchived", void 0);
-exports.CategoryModel = CategoryModel;
+], Category.prototype, "isArchived", void 0);
+Category = __decorate([
+    (0, mongoose_1.Schema)({ _id: true, timestamps: true, versionKey: false })
+], Category);
+exports.Category = Category;
+exports.CategoryModel = mongoose_1.SchemaFactory.createForClass(Category);
 //# sourceMappingURL=category.model.js.map

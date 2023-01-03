@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
-const nestjs_typegoose_1 = require("nestjs-typegoose");
+const mongoose_1 = require("@nestjs/mongoose");
 const product_controller_1 = require("./product.controller");
 const product_model_1 = require("./product.model");
 const product_service_1 = require("./product.service");
@@ -19,12 +19,11 @@ ProductModule = __decorate([
     (0, common_1.Module)({
         controllers: [product_controller_1.ProductController],
         imports: [
-            nestjs_typegoose_1.TypegooseModule.forFeature([
+            mongoose_1.MongooseModule.forFeature([
                 {
-                    typegooseClass: product_model_1.ProductModel,
-                    schemaOptions: {
-                        collection: 'Products',
-                    },
+                    name: 'ProductModel',
+                    schema: product_model_1.ProductModel,
+                    collection: 'Products',
                 },
             ]),
             config_1.ConfigModule,

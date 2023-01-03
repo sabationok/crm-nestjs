@@ -1,9 +1,12 @@
+import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { prop } from '@typegoose/typegoose';
 import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { ObjectId } from 'mongoose';
+import { HydratedDocument, ObjectId } from 'mongoose';
 
-export interface CategoryModel extends Base {}
-export class CategoryModel extends TimeStamps {
+export type CategoryDocument = HydratedDocument<Category>;
+
+@Schema({ _id: true, timestamps: true, versionKey: false })
+export class Category {
   @prop({ default: 'section' })
   name: string;
 
@@ -25,3 +28,5 @@ export class CategoryModel extends TimeStamps {
   @prop({ default: false })
   isArchived?: boolean;
 }
+
+export const CategoryModel = SchemaFactory.createForClass(Category);

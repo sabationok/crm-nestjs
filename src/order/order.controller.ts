@@ -1,8 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { UserRequest } from 'src/decorators/request.decorator';
-
-import { OrderModel } from './order.model';
+import { CreateOrderDto } from './dto/order-create.dto';
 
 @Controller('order')
 export class OrderController {
@@ -14,7 +13,7 @@ export class OrderController {
   }
 
   @Post('create')
-  async create(@Body() dto: OrderModel, @UserRequest() req: any) {
+  async create(@Body() dto: CreateOrderDto, @UserRequest() req: any) {
     return this.orderService.create(dto);
   }
 }

@@ -8,8 +8,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { UserRequest } from 'src/decorators/request.decorator';
-import { DeliveryModel } from './delivery.model';
 import { DeliveryService } from './delivery.service';
+import { CreateDeliveryDto } from './dto/create-delivery.dto';
 
 @Controller('delivery')
 export class DeliveryController {
@@ -34,7 +34,7 @@ export class DeliveryController {
   }
 
   @Post('create')
-  async create(@Body() dto: DeliveryModel, @UserRequest() req: any) {
+  async create(@Body() dto: CreateDeliveryDto, @UserRequest() req: any) {
     return this.deliveryServise.create(dto);
   }
 }

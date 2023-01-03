@@ -1,5 +1,5 @@
-import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { ObjectId } from 'mongoose';
+import { HydratedDocument, ObjectId } from 'mongoose';
+export declare type ProductDocument = HydratedDocument<Product>;
 export declare class ProductPriceInfo {
     price?: number;
     cost?: number;
@@ -28,9 +28,7 @@ export declare class ProductAvailabilityInfo {
     specialOrder?: boolean;
     specialOrderTime?: number;
 }
-export interface ProductModel extends Base {
-}
-export declare class ProductModel extends TimeStamps {
+export declare class Product {
     isApproved: boolean;
     isVisible: boolean;
     sku: string;
@@ -43,3 +41,4 @@ export declare class ProductModel extends TimeStamps {
     innerComment: string;
     images: string[];
 }
+export declare const ProductModel: import("mongoose").Schema<Product, import("mongoose").Model<Product, any, any, any>, any, any>;

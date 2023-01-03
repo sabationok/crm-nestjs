@@ -1,42 +1,38 @@
-import {
-  HttpException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { ModelType } from '@typegoose/typegoose/lib/types';
-import { InjectModel } from 'nestjs-typegoose';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthDto } from './dto/auth.dto';
-import { UserModel } from './user.model';
 import { genSaltSync, hash, compare } from 'bcryptjs';
 import { USER_NOT_FOUND_ERROR, WRONG_PASSWORD_ERROR } from './auth.constants';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SetUserRoleDto } from './dto/setUserRole.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User, UserDocument } from './user.model';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(UserModel) private readonly userModel: ModelType<UserModel>,
+    @InjectModel('UserModel') private readonly userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
   ) {}
 
-  async getAllUsers() {
+  async getAllUsers(): Promise<User[]> {
     return this.userModel.find().exec();
   }
 
-  async getUserById(id: string) {
+  async getUserById(id: string): Promise<User | null> {
     return this.userModel.findById(id).exec();
   }
 
-  async findUserByEmail(email: string) {
+  async findUserByEmail(email: string): Promise<User | null> {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async getCurrentUserInfo(email: string) {
+  async getCurrentUserInfo(email: string): Promise<User | null> {
     return this.findUserByEmail(email);
   }
 
-  async createUser(dto: AuthDto) {
+  async createUser(dto: AuthDto): Promise<User | null> {
     const salt = genSaltSync(10);
 
     const newUser = new this.userModel({
@@ -47,7 +43,10 @@ export class AuthService {
     return newUser.save();
   }
 
-  async updateUserById(id: string, updateDto: UpdateUserDto) {
+  async updateUserById(
+    id: string,
+    updateDto: UpdateUserDto,
+  ): Promise<User | null> {
     const updateData = {
       name: updateDto?.name,
       phone: updateDto?.phone,
@@ -60,7 +59,10 @@ export class AuthService {
     return updatedUser;
   }
 
-  async setUserRoleById(id: string, roleDto: SetUserRoleDto) {
+  async setUserRoleById(
+    id: string,
+    roleDto: SetUserRoleDto,
+  ): Promise<User | null> {
     const updatedUser = this.userModel.findByIdAndUpdate(id, roleDto, {
       new: true,
     });

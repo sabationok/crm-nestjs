@@ -13,6 +13,7 @@ import { UserRequest } from 'src/decorators/request.decorator';
 import { CategoryModel } from './category.model';
 import { CategoryService } from './category.service';
 import { GetUser } from 'src/decorators/getUser.decorator';
+import { CreateCategoryDto } from './dto/create-category.dt';
 
 @Controller('category')
 export class CategoryController {
@@ -68,7 +69,7 @@ export class CategoryController {
   }
 
   @Post('create')
-  async create(@Body() dto: CategoryModel, @UserRequest() req: any) {
+  async create(@Body() dto: CreateCategoryDto, @UserRequest() req: any) {
     const result = await this.categoryServise.create(dto);
 
     return {
@@ -81,7 +82,7 @@ export class CategoryController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() dto: CategoryModel,
+    @Body() dto: CreateCategoryDto,
     @UserRequest() req: any,
   ) {
     const result = await this.categoryServise.updateById(id, dto);
@@ -128,5 +129,4 @@ export class CategoryController {
       messsage: 'Deleted categories',
     };
   }
-  // deleteManyByParentId
 }

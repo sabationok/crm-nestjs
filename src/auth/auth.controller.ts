@@ -15,7 +15,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { GetUser } from 'src/decorators/getUser.decorator';
-import { UserRequest } from 'src/decorators/request.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt.guards';
 
 import { ALREADY_REGISTERED_ERROR } from './auth.constants';
@@ -79,9 +78,6 @@ export class AuthController {
     }
 
     const userInfo = {
-      _id: result?._id,
-      createdAt: result?.createdAt,
-      updatedAt: result?.updatedAt,
       status: result?.status,
       role: result?.role,
       email: result?.email,

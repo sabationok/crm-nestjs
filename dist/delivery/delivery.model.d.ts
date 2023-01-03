@@ -1,8 +1,6 @@
-import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { ObjectId } from 'mongoose';
-export interface DeliveryModel extends Base {
-}
-export declare class DeliveryModel extends TimeStamps {
+import { HydratedDocument, ObjectId } from 'mongoose';
+export declare type DeliveryDocument = HydratedDocument<Delivery>;
+export declare class Delivery {
     number: string;
     owner: ObjectId;
     transporter: string;
@@ -11,3 +9,4 @@ export declare class DeliveryModel extends TimeStamps {
     contentTotalPrice: number;
     content: ObjectId[];
 }
+export declare const DeliveryModel: import("mongoose").Schema<Delivery, import("mongoose").Model<Delivery, any, any, any>, any, any>;

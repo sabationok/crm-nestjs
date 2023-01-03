@@ -1,8 +1,6 @@
-import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { ObjectId } from 'mongoose';
-export interface CategoryModel extends Base {
-}
-export declare class CategoryModel extends TimeStamps {
+import { HydratedDocument, ObjectId } from 'mongoose';
+export declare type CategoryDocument = HydratedDocument<Category>;
+export declare class Category {
     name: string;
     owner: ObjectId;
     ownerName: string;
@@ -11,3 +9,4 @@ export declare class CategoryModel extends TimeStamps {
     isSection?: boolean;
     isArchived?: boolean;
 }
+export declare const CategoryModel: import("mongoose").Schema<Category, import("mongoose").Model<Category, any, any, any>, any, any>;

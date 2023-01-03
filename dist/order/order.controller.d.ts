@@ -1,8 +1,8 @@
 import { OrderService } from './order.service';
-import { OrderModel } from './order.model';
+import { CreateOrderDto } from './dto/order-create.dto';
 export declare class OrderController {
     private readonly orderService;
     constructor(orderService: OrderService);
-    getAll(req: any): Promise<any>;
-    create(dto: OrderModel, req: any): Promise<import("@typegoose/typegoose").DocumentType<OrderModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+    getAll(req: any): Promise<import("./order.model").Order[]>;
+    create(dto: CreateOrderDto, req: any): Promise<import("./order.model").Order>;
 }

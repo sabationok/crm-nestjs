@@ -11,6 +11,11 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongo_config_1 = require("./configs/mongo.config");
+const auth_module_1 = require("./auth/auth.module");
+const product_module_1 = require("./product/product.module");
+const delivery_module_1 = require("./delivery/delivery.module");
+const category_module_1 = require("./category/category.module");
+const order_module_1 = require("./order/order.module");
 const refunds_module_1 = require("./refunds/refunds.module");
 let AppModule = class AppModule {
 };
@@ -23,6 +28,11 @@ AppModule = __decorate([
                 inject: [config_1.ConfigService],
                 useFactory: mongo_config_1.getMongoConfig,
             }),
+            auth_module_1.AuthModule,
+            product_module_1.ProductModule,
+            order_module_1.OrderModule,
+            delivery_module_1.DeliveryModule,
+            category_module_1.CategoryModule,
             refunds_module_1.RefundsModule,
         ],
         providers: [],

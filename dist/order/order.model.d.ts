@@ -1,14 +1,14 @@
-import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { ObjectId } from 'mongoose';
+import { HydratedDocument, ObjectId } from 'mongoose';
+export declare type OrderDocument = HydratedDocument<Order>;
 export declare class IPaymentinfo {
     type: 'iban' | 'card' | 'iban_bonuses' | 'card_bonuses';
     status: 'pending' | 'success' | 'rejected';
     blockedFunds: number;
     total: number;
 }
-export interface OrderModel extends Base {
+export declare class Product {
 }
-export declare class OrderModel extends TimeStamps {
+export declare class Order {
     number: string;
     type: 'standart' | 'complex';
     status: 'new' | 'inWork' | 'success' | 'rejected' | 'canceled' | 'archived';
@@ -17,3 +17,4 @@ export declare class OrderModel extends TimeStamps {
     content: ObjectId[];
     deliveries: ObjectId[];
 }
+export declare const OrderModel: import("mongoose").Schema<Order, import("mongoose").Model<Order, any, any, any>, any, any>;

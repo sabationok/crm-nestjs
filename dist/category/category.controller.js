@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryController = void 0;
 const common_1 = require("@nestjs/common");
 const request_decorator_1 = require("../decorators/request.decorator");
-const category_model_1 = require("./category.model");
 const category_service_1 = require("./category.service");
 const getUser_decorator_1 = require("../decorators/getUser.decorator");
+const create_category_dt_1 = require("./dto/create-category.dt");
 let CategoryController = class CategoryController {
     constructor(categoryServise) {
         this.categoryServise = categoryServise;
@@ -119,7 +119,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __param(1, (0, request_decorator_1.UserRequest)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [category_model_1.CategoryModel, Object]),
+    __metadata("design:paramtypes", [create_category_dt_1.CreateCategoryDto, Object]),
     __metadata("design:returntype", Promise)
 ], CategoryController.prototype, "create", null);
 __decorate([
@@ -128,7 +128,7 @@ __decorate([
     __param(1, (0, common_1.Body)()),
     __param(2, (0, request_decorator_1.UserRequest)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, category_model_1.CategoryModel, Object]),
+    __metadata("design:paramtypes", [String, create_category_dt_1.CreateCategoryDto, Object]),
     __metadata("design:returntype", Promise)
 ], CategoryController.prototype, "update", null);
 __decorate([

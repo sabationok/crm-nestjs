@@ -17,8 +17,8 @@ const common_1 = require("@nestjs/common");
 const request_decorator_1 = require("../decorators/request.decorator");
 const getUser_decorator_1 = require("../decorators/getUser.decorator");
 const jwt_guards_1 = require("../guards/jwt.guards");
-const product_model_1 = require("./product.model");
 const product_service_1 = require("./product.service");
+const create_product_dto_1 = require("./dto/create-product.dto");
 let ProductController = class ProductController {
     constructor(productService) {
         this.productService = productService;
@@ -66,13 +66,11 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "getAllforAll", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
-    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.Post)('create'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, request_decorator_1.UserRequest)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [product_model_1.ProductModel, Object]),
+    __metadata("design:paramtypes", [create_product_dto_1.CreateProductDto, Object]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "create", null);
 __decorate([
@@ -97,7 +95,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, product_model_1.ProductModel]),
+    __metadata("design:paramtypes", [String, create_product_dto_1.CreateProductDto]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "patch", null);
 __decorate([
@@ -105,7 +103,7 @@ __decorate([
     (0, common_1.Post)('find'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [product_model_1.ProductModel]),
+    __metadata("design:paramtypes", [create_product_dto_1.CreateProductDto]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "find", null);
 ProductController = __decorate([

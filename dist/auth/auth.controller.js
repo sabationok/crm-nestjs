@@ -52,9 +52,6 @@ let AuthController = class AuthController {
             throw new common_1.HttpException('', common_1.HttpStatus.NOT_FOUND);
         }
         const userInfo = {
-            _id: result === null || result === void 0 ? void 0 : result._id,
-            createdAt: result === null || result === void 0 ? void 0 : result.createdAt,
-            updatedAt: result === null || result === void 0 ? void 0 : result.updatedAt,
             status: result === null || result === void 0 ? void 0 : result.status,
             role: result === null || result === void 0 ? void 0 : result.role,
             email: result === null || result === void 0 ? void 0 : result.email,

@@ -1,27 +1,30 @@
-import { prop } from '@typegoose/typegoose';
-import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { ObjectId } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, ObjectId } from 'mongoose';
 
-export interface DeliveryModel extends Base {}
-export class DeliveryModel extends TimeStamps {
-  @prop({ default: null })
+export type DeliveryDocument = HydratedDocument<Delivery>;
+
+@Schema({ _id: true, timestamps: true, versionKey: false })
+export class Delivery {
+  @Prop({ default: null })
   number: string;
 
-  @prop({ default: null })
+  @Prop({ default: null, type: () => Object })
   owner: ObjectId;
 
-  @prop({ default: null })
+  @Prop({ default: null })
   transporter: string;
 
-  @prop({ default: 0 })
+  @Prop({ default: 0 })
   deliveryPrice: number;
 
-  @prop({ default: 'new' })
+  @Prop({ default: 'new' })
   status: 'new' | 'inRoad' | 'received' | 'shipped';
 
-  @prop({ default: 0 })
+  @Prop({ default: 0 })
   contentTotalPrice: number;
 
-  @prop({ default: [] })
+  @Prop({ default: [], type: () => [Object] })
   content: ObjectId[];
 }
+
+export const DeliveryModel = SchemaFactory.createForClass(Delivery);

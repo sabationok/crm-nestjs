@@ -11,20 +11,19 @@ const common_1 = require("@nestjs/common");
 const order_service_1 = require("./order.service");
 const order_controller_1 = require("./order.controller");
 const order_model_1 = require("./order.model");
-const nestjs_typegoose_1 = require("nestjs-typegoose");
 const config_1 = require("@nestjs/config");
+const mongoose_1 = require("@nestjs/mongoose");
 let OrderModule = class OrderModule {
 };
 OrderModule = __decorate([
     (0, common_1.Module)({
         controllers: [order_controller_1.OrderController],
         imports: [
-            nestjs_typegoose_1.TypegooseModule.forFeature([
+            mongoose_1.MongooseModule.forFeature([
                 {
-                    typegooseClass: order_model_1.OrderModel,
-                    schemaOptions: {
-                        collection: 'Orders',
-                    },
+                    name: 'OrderModel',
+                    schema: order_model_1.OrderModel,
+                    collection: 'Orders',
                 },
             ]),
             config_1.ConfigModule,

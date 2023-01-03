@@ -17,8 +17,8 @@ import {
 import { UserRequest } from 'src/decorators/request.decorator';
 import { GetUser } from 'src/decorators/getUser.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt.guards';
-import { ProductModel } from './product.model';
 import { ProductService } from './product.service';
+import { CreateProductDto } from './dto/create-product.dto';
 
 @Controller('product')
 export class ProductController {
@@ -35,10 +35,10 @@ export class ProductController {
     return this.productService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
-  @UsePipes(new ValidationPipe())
+  // @UseGuards(JwtAuthGuard)
+  // @UsePipes(new ValidationPipe())
   @Post('create')
-  async create(@Body() dto: ProductModel, @UserRequest() req: any) {
+  async create(@Body() dto: CreateProductDto, @UserRequest() req: any) {
     return this.productService.create(dto);
   }
 
@@ -61,7 +61,7 @@ export class ProductController {
   // @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   @Patch(':id')
-  async patch(@Param('id') id: string, @Body() dto: ProductModel) {
+  async patch(@Param('id') id: string, @Body() dto: CreateProductDto) {
     const updatedDoc = await this.productService.updateById(id, dto);
 
     if (!updatedDoc) {
@@ -72,5 +72,5 @@ export class ProductController {
 
   @HttpCode(200)
   @Post('find')
-  async find(@Body() dto: ProductModel) {}
+  async find(@Body() dto: CreateProductDto) {}
 }

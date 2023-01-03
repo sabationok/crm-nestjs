@@ -6,21 +6,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
-    getAll(): Promise<(import("mongoose").Document<import("mongoose").Types.ObjectId, import("@typegoose/typegoose/lib/types").BeAnObject, any> & import("./user.model").UserModel & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction & {
-        _id: import("mongoose").Types.ObjectId;
-    })[]>;
+    getAll(): Promise<import("./user.model").User[]>;
     getUserById(userId: string): Promise<{
         status: HttpStatus;
-        data: (import("mongoose").Document<import("mongoose").Types.ObjectId, import("@typegoose/typegoose/lib/types").BeAnObject, any> & import("./user.model").UserModel & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction & {
-            _id: import("mongoose").Types.ObjectId;
-        }) | null;
+        data: import("./user.model").User | null;
         message: string;
     }>;
     updateUserById(id: string, updateDto: UpdateUserDto): Promise<{
         status: HttpStatus;
-        data: import("mongoose").Document<import("mongoose").Types.ObjectId, import("@typegoose/typegoose/lib/types").BeAnObject, any> & import("./user.model").UserModel & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction & {
-            _id: import("mongoose").Types.ObjectId;
-        };
+        data: import("./user.model").User;
         message: string;
     }>;
     getCurrentUser(user: any): Promise<{
@@ -31,9 +25,6 @@ export declare class AuthController {
     getCurrentUserInfo(user: any): Promise<{
         status: HttpStatus;
         data: {
-            _id: import("mongoose").Types.ObjectId;
-            createdAt: Date | undefined;
-            updatedAt: Date | undefined;
             status: import("./user.model").TUserStatus;
             role: import("./user.model").TUserRoles;
             email: string;
@@ -44,14 +35,10 @@ export declare class AuthController {
     }>;
     setUserRoleById(id: string, roleDto: SetUserRoleDto): Promise<{
         status: HttpStatus;
-        data: import("mongoose").Document<import("mongoose").Types.ObjectId, import("@typegoose/typegoose/lib/types").BeAnObject, any> & import("./user.model").UserModel & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction & {
-            _id: import("mongoose").Types.ObjectId;
-        };
+        data: import("./user.model").User;
         message: string;
     }>;
-    register(dto: AuthDto): Promise<import("mongoose").Document<import("mongoose").Types.ObjectId, import("@typegoose/typegoose/lib/types").BeAnObject, any> & import("./user.model").UserModel & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction & {
-        _id: import("mongoose").Types.ObjectId;
-    }>;
+    register(dto: AuthDto): Promise<import("./user.model").User | null>;
     login({ email, password }: AuthDto): Promise<{
         access_token: string;
     }>;

@@ -9,141 +9,159 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductModel = exports.ProductAvailabilityInfo = exports.ProductCategoryInfo = exports.CategoryInfo = exports.SectionInfo = exports.ProductPriceInfo = void 0;
-const typegoose_1 = require("@typegoose/typegoose");
-const defaultClasses_1 = require("@typegoose/typegoose/lib/defaultClasses");
-class ProductPriceInfo {
-}
+exports.ProductModel = exports.Product = exports.ProductAvailabilityInfo = exports.ProductCategoryInfo = exports.CategoryInfo = exports.SectionInfo = exports.ProductPriceInfo = void 0;
+const mongoose_1 = require("@nestjs/mongoose");
+let ProductPriceInfo = class ProductPriceInfo {
+};
 __decorate([
-    (0, typegoose_1.prop)({ default: 0 }),
+    (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], ProductPriceInfo.prototype, "price", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 0 }),
+    (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], ProductPriceInfo.prototype, "cost", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 'UAH' }),
+    (0, mongoose_1.Prop)({ default: 'UAH' }),
     __metadata("design:type", String)
 ], ProductPriceInfo.prototype, "currency", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 0 }),
+    (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], ProductPriceInfo.prototype, "sale", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: false }),
+    (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], ProductPriceInfo.prototype, "isCommission", void 0);
+ProductPriceInfo = __decorate([
+    (0, mongoose_1.Schema)({ versionKey: false })
+], ProductPriceInfo);
 exports.ProductPriceInfo = ProductPriceInfo;
-class SectionInfo {
-}
+let SectionInfo = class SectionInfo {
+};
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null, type: () => Object }),
     __metadata("design:type", Object)
 ], SectionInfo.prototype, "id", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: '000' }),
+    (0, mongoose_1.Prop)({ default: '000' }),
     __metadata("design:type", String)
 ], SectionInfo.prototype, "name", void 0);
+SectionInfo = __decorate([
+    (0, mongoose_1.Schema)({ versionKey: false })
+], SectionInfo);
 exports.SectionInfo = SectionInfo;
-class CategoryInfo {
-}
+let CategoryInfo = class CategoryInfo {
+};
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null, type: () => Object }),
     __metadata("design:type", Object)
 ], CategoryInfo.prototype, "ownerId", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: '000' }),
+    (0, mongoose_1.Prop)({ default: '000' }),
     __metadata("design:type", String)
 ], CategoryInfo.prototype, "owner", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null, type: () => Object }),
     __metadata("design:type", Object)
 ], CategoryInfo.prototype, "id", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: '000' }),
+    (0, mongoose_1.Prop)({ default: '000' }),
     __metadata("design:type", String)
 ], CategoryInfo.prototype, "name", void 0);
+CategoryInfo = __decorate([
+    (0, mongoose_1.Schema)({ versionKey: false })
+], CategoryInfo);
 exports.CategoryInfo = CategoryInfo;
-class ProductCategoryInfo {
-}
+let ProductCategoryInfo = class ProductCategoryInfo {
+};
 __decorate([
-    (0, typegoose_1.prop)({ default: { SectionInfo }, _id: false }),
+    (0, mongoose_1.Prop)({ default: { SectionInfo }, _id: false }),
     __metadata("design:type", SectionInfo)
 ], ProductCategoryInfo.prototype, "section", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: { CategoryInfo }, _id: false }),
+    (0, mongoose_1.Prop)({ default: { CategoryInfo }, _id: false }),
     __metadata("design:type", CategoryInfo)
 ], ProductCategoryInfo.prototype, "category", void 0);
+ProductCategoryInfo = __decorate([
+    (0, mongoose_1.Schema)({ versionKey: false })
+], ProductCategoryInfo);
 exports.ProductCategoryInfo = ProductCategoryInfo;
-class ProductAvailabilityInfo {
-}
+let ProductAvailabilityInfo = class ProductAvailabilityInfo {
+};
 __decorate([
-    (0, typegoose_1.prop)({ default: 'notAvailable' }),
+    (0, mongoose_1.Prop)({ default: 'notAvailable' }),
     __metadata("design:type", String)
 ], ProductAvailabilityInfo.prototype, "availability", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: false }),
+    (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], ProductAvailabilityInfo.prototype, "standartOrder", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 0 }),
+    (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], ProductAvailabilityInfo.prototype, "standartOrderTime", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: false }),
+    (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], ProductAvailabilityInfo.prototype, "specialOrder", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 0 }),
+    (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], ProductAvailabilityInfo.prototype, "specialOrderTime", void 0);
+ProductAvailabilityInfo = __decorate([
+    (0, mongoose_1.Schema)({ versionKey: false })
+], ProductAvailabilityInfo);
 exports.ProductAvailabilityInfo = ProductAvailabilityInfo;
-class ProductModel extends defaultClasses_1.TimeStamps {
-}
+let Product = class Product {
+};
 __decorate([
-    (0, typegoose_1.prop)({ default: false }),
+    (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
-], ProductModel.prototype, "isApproved", void 0);
+], Product.prototype, "isApproved", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: false }),
+    (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
-], ProductModel.prototype, "isVisible", void 0);
+], Product.prototype, "isVisible", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", String)
-], ProductModel.prototype, "sku", void 0);
+], Product.prototype, "sku", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 'Назва товару' }),
+    (0, mongoose_1.Prop)({ default: 'Назва товару' }),
     __metadata("design:type", String)
-], ProductModel.prototype, "name", void 0);
+], Product.prototype, "name", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 'Назва бренду' }),
+    (0, mongoose_1.Prop)({ default: 'Назва бренду' }),
     __metadata("design:type", String)
-], ProductModel.prototype, "brand", void 0);
+], Product.prototype, "brand", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: { ProductPriceInfo }, _id: false }),
+    (0, mongoose_1.Prop)({ default: { ProductPriceInfo }, _id: false }),
     __metadata("design:type", ProductPriceInfo)
-], ProductModel.prototype, "priceInfo", void 0);
+], Product.prototype, "priceInfo", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: { ProductCategoryInfo }, _id: false }),
+    (0, mongoose_1.Prop)({ default: { ProductCategoryInfo }, _id: false }),
     __metadata("design:type", ProductCategoryInfo)
-], ProductModel.prototype, "categoryInfo", void 0);
+], Product.prototype, "categoryInfo", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: { ProductAvailabilityInfo }, _id: false }),
+    (0, mongoose_1.Prop)({ default: { ProductAvailabilityInfo }, _id: false }),
     __metadata("design:type", ProductAvailabilityInfo)
-], ProductModel.prototype, "availabilityInfo", void 0);
+], Product.prototype, "availabilityInfo", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", String)
-], ProductModel.prototype, "description", void 0);
+], Product.prototype, "description", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", String)
-], ProductModel.prototype, "innerComment", void 0);
+], Product.prototype, "innerComment", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ type: () => [String] }),
+    (0, mongoose_1.Prop)({ default: [], type: () => [String] }),
     __metadata("design:type", Array)
-], ProductModel.prototype, "images", void 0);
-exports.ProductModel = ProductModel;
+], Product.prototype, "images", void 0);
+Product = __decorate([
+    (0, mongoose_1.Schema)({ _id: true, timestamps: true, versionKey: false })
+], Product);
+exports.Product = Product;
+exports.ProductModel = mongoose_1.SchemaFactory.createForClass(Product);
 //# sourceMappingURL=product.model.js.map

@@ -1,22 +1,22 @@
 import { Module } from '@nestjs/common';
 import { DeliveryService } from './delivery.service';
 import { DeliveryController } from './delivery.controller';
-import { TypegooseModule } from 'nestjs-typegoose';
 import { DeliveryModel } from './delivery.model';
 import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   controllers: [DeliveryController],
 
   imports: [
-    TypegooseModule.forFeature([
+    MongooseModule.forFeature([
       {
-        typegooseClass: DeliveryModel,
-        schemaOptions: {
-          collection: 'Deliveries',
-        },
+        name: 'DeliveryModel',
+        schema: DeliveryModel,
+        collection: 'Deliveries',
       },
     ]),
+
     ConfigModule,
   ],
 

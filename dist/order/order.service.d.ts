@@ -1,15 +1,14 @@
-import { DocumentType, ModelType } from '@typegoose/typegoose/lib/types';
-import { OrderModel } from './order.model';
+import { OrderDocument, Order } from './order.model';
 import { CreateOrderDto } from './dto/order-create.dto';
+import { Model } from 'mongoose';
 export declare class OrderService {
     private readonly orderModel;
-    constructor(orderModel: ModelType<OrderModel>);
-    getHello(): Promise<string>;
-    findAll(): Promise<DocumentType<any>>;
-    create(dto: CreateOrderDto): Promise<DocumentType<OrderModel>>;
-    delete(id: string): Promise<DocumentType<OrderModel> | null>;
-    updateById(id: string, dto: CreateOrderDto): Promise<DocumentType<OrderModel> | null>;
-    findById(id: string): Promise<DocumentType<OrderModel>[]>;
-    findByCreatorId(id: string): Promise<DocumentType<OrderModel>[]>;
-    findByManagerId(id: string): Promise<DocumentType<OrderModel>[]>;
+    constructor(orderModel: Model<OrderDocument>);
+    findAll(): Promise<Order[]>;
+    create(dto: CreateOrderDto): Promise<Order>;
+    delete(id: string): Promise<Order | null>;
+    updateById(id: string, dto: CreateOrderDto): Promise<Order | null>;
+    findById(id: string): Promise<Order[]>;
+    findByCreatorId(id: string): Promise<Order[]>;
+    findByManagerId(id: string): Promise<Order[]>;
 }

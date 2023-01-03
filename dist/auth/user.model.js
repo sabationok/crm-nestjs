@@ -9,42 +9,45 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserModel = void 0;
-const typegoose_1 = require("@typegoose/typegoose");
-const defaultClasses_1 = require("@typegoose/typegoose/lib/defaultClasses");
-class UserModel extends defaultClasses_1.TimeStamps {
-}
+exports.UserModel = exports.User = void 0;
+const mongoose_1 = require("@nestjs/mongoose");
+let User = class User {
+};
 __decorate([
-    (0, typegoose_1.prop)({ unique: true }),
+    (0, mongoose_1.Prop)({ unique: true }),
     __metadata("design:type", String)
-], UserModel.prototype, "email", void 0);
+], User.prototype, "email", void 0);
 __decorate([
-    (0, typegoose_1.prop)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], UserModel.prototype, "passwordHash", void 0);
+], User.prototype, "passwordHash", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", String)
-], UserModel.prototype, "name", void 0);
+], User.prototype, "name", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: null, unique: true }),
+    (0, mongoose_1.Prop)({ default: null, unique: true }),
     __metadata("design:type", String)
-], UserModel.prototype, "phone", void 0);
+], User.prototype, "phone", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 'GUEST' }),
+    (0, mongoose_1.Prop)({ default: 'GUEST' }),
     __metadata("design:type", String)
-], UserModel.prototype, "role", void 0);
+], User.prototype, "role", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 'NOT_ACTIVE' }),
+    (0, mongoose_1.Prop)({ default: 'NOT_ACTIVE' }),
     __metadata("design:type", String)
-], UserModel.prototype, "status", void 0);
+], User.prototype, "status", void 0);
 __decorate([
-    (0, typegoose_1.prop)(),
+    (0, mongoose_1.Prop)({ type: () => Object }),
     __metadata("design:type", Object)
-], UserModel.prototype, "manager", void 0);
+], User.prototype, "manager", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ type: () => [String] }),
+    (0, mongoose_1.Prop)({ type: () => [String] }),
     __metadata("design:type", Array)
-], UserModel.prototype, "vendors", void 0);
-exports.UserModel = UserModel;
+], User.prototype, "vendors", void 0);
+User = __decorate([
+    (0, mongoose_1.Schema)({ _id: true, timestamps: true, versionKey: false })
+], User);
+exports.User = User;
+exports.UserModel = mongoose_1.SchemaFactory.createForClass(User);
 //# sourceMappingURL=user.model.js.map

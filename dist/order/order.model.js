@@ -9,57 +9,69 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrderModel = exports.IPaymentinfo = void 0;
-const typegoose_1 = require("@typegoose/typegoose");
-const defaultClasses_1 = require("@typegoose/typegoose/lib/defaultClasses");
-class IPaymentinfo {
-}
+exports.OrderModel = exports.Order = exports.Product = exports.IPaymentinfo = void 0;
+const mongoose_1 = require("@nestjs/mongoose");
+let IPaymentinfo = class IPaymentinfo {
+};
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", String)
 ], IPaymentinfo.prototype, "type", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", String)
 ], IPaymentinfo.prototype, "status", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 0 }),
+    (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], IPaymentinfo.prototype, "blockedFunds", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 0 }),
+    (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], IPaymentinfo.prototype, "total", void 0);
+IPaymentinfo = __decorate([
+    (0, mongoose_1.Schema)({ versionKey: false })
+], IPaymentinfo);
 exports.IPaymentinfo = IPaymentinfo;
-class OrderModel extends defaultClasses_1.TimeStamps {
-}
+let Product = class Product {
+};
+Product = __decorate([
+    (0, mongoose_1.Schema)({ versionKey: false })
+], Product);
+exports.Product = Product;
+let Order = class Order {
+};
 __decorate([
-    (0, typegoose_1.prop)({ unique: true }),
+    (0, mongoose_1.Prop)({ unique: true }),
     __metadata("design:type", String)
-], OrderModel.prototype, "number", void 0);
+], Order.prototype, "number", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 'standart' }),
+    (0, mongoose_1.Prop)({ default: 'standart' }),
     __metadata("design:type", String)
-], OrderModel.prototype, "type", void 0);
+], Order.prototype, "type", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 'new' }),
+    (0, mongoose_1.Prop)({ default: 'new' }),
     __metadata("design:type", String)
-], OrderModel.prototype, "status", void 0);
+], Order.prototype, "status", void 0);
 __decorate([
-    (0, typegoose_1.prop)(),
+    (0, mongoose_1.Prop)({ type: () => Object }),
     __metadata("design:type", Object)
-], OrderModel.prototype, "managerId", void 0);
+], Order.prototype, "managerId", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: { IPaymentinfo }, _id: false }),
+    (0, mongoose_1.Prop)({ default: { IPaymentinfo }, _id: false }),
     __metadata("design:type", IPaymentinfo)
-], OrderModel.prototype, "payment", void 0);
+], Order.prototype, "payment", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", Array)
-], OrderModel.prototype, "content", void 0);
+], Order.prototype, "content", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", Array)
-], OrderModel.prototype, "deliveries", void 0);
-exports.OrderModel = OrderModel;
+], Order.prototype, "deliveries", void 0);
+Order = __decorate([
+    (0, mongoose_1.Schema)({ _id: true, timestamps: true, versionKey: false })
+], Order);
+exports.Order = Order;
+exports.OrderModel = mongoose_1.SchemaFactory.createForClass(Order);
 //# sourceMappingURL=order.model.js.map

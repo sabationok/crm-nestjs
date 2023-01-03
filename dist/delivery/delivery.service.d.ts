@@ -1,14 +1,13 @@
-import { DocumentType, ModelType } from '@typegoose/typegoose/lib/types';
-import { DeliveryModel } from './delivery.model';
+import { Model } from 'mongoose';
+import { Delivery, DeliveryDocument } from './delivery.model';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
 export declare class DeliveryService {
     private readonly deliveryModel;
-    constructor(deliveryModel: ModelType<DeliveryModel>);
-    getHello(): Promise<string>;
-    findAll(): Promise<DocumentType<any>>;
-    create(dto: CreateDeliveryDto): Promise<DocumentType<DeliveryModel>>;
-    delete(id: string): Promise<DocumentType<DeliveryModel> | null>;
-    updateById(id: string, dto: CreateDeliveryDto): Promise<DocumentType<DeliveryModel> | null>;
-    findById(id: string): Promise<DocumentType<DeliveryModel>[]>;
-    findByOrderId(id: string): Promise<DocumentType<DeliveryModel>[]>;
+    constructor(deliveryModel: Model<DeliveryDocument>);
+    findAll(): Promise<Delivery[]>;
+    create(dto: CreateDeliveryDto): Promise<Delivery>;
+    delete(id: string): Promise<Delivery | null>;
+    updateById(id: string, dto: CreateDeliveryDto): Promise<Delivery | null>;
+    findById(id: string): Promise<Delivery[]>;
+    findByOrderId(id: string): Promise<Delivery[]>;
 }

@@ -1,10 +1,8 @@
-import { TimeStamps, Base } from '@typegoose/typegoose/lib/defaultClasses';
-import { ObjectId } from 'mongoose';
-export declare type TUserRoles = 'SUPER_ADMIN' | 'ADMIN' | 'MANAGER' | 'TOP_MANAGER' | 'VENDOR' | 'VENDOR_MANAGER' | 'USER' | 'GUEST';
+import { HydratedDocument, ObjectId } from 'mongoose';
+export declare type UserDocument = HydratedDocument<User>;
+export declare type TUserRoles = 'SUPER_ADMIN' | 'ADMIN' | 'MANAGER' | 'TOP_MANAGER' | 'VENDOR' | 'SUPLYER_MANAGER' | 'CUSTOMER' | 'GUEST';
 export declare type TUserStatus = 'ACTIVE' | 'NOT_ACTIVE' | 'BAN';
-export interface UserModel extends Base {
-}
-export declare class UserModel extends TimeStamps {
+export declare class User {
     email: string;
     passwordHash: string;
     name: string;
@@ -14,3 +12,4 @@ export declare class UserModel extends TimeStamps {
     manager?: ObjectId;
     vendors?: string[];
 }
+export declare const UserModel: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any>, any, any>;
