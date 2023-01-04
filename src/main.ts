@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function start(app: any, PORT: number, globalPrefix: string) {
-  await app.listen(PORT);
+  await app.listen(process.env.PORT || PORT);
 
   console.log(`Server started. http://localhost:${PORT}/${globalPrefix}/`);
 }
