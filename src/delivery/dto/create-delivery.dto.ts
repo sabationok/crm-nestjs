@@ -1,4 +1,3 @@
-import { prop } from '@typegoose/typegoose';
 import {
   IsArray,
   IsNumber,
@@ -18,7 +17,7 @@ export class CreateDeliveryDto {
   @IsNumber()
   deliveryPrice: number;
 
-  @prop()
+  @IsString()
   transporter: string;
 
   @IsString()
