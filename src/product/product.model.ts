@@ -1,6 +1,3 @@
-import { prop } from '@typegoose/typegoose';
-import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, ObjectId } from 'mongoose';
 
@@ -26,37 +23,37 @@ export class ProductPriceInfo {
 @Schema({ versionKey: false })
 export class SectionInfo {
   @Prop({ default: null, type: () => Object })
-  id: ObjectId;
+  _id?: ObjectId;
 
   @Prop({ default: '000' })
-  name: string;
+  name?: string;
 }
 @Schema({ versionKey: false })
 export class CategoryInfo {
   @Prop({ default: null, type: () => Object })
-  ownerId: ObjectId;
+  ownerId?: ObjectId;
 
   @Prop({ default: '000' })
-  owner: string;
+  owner?: string;
 
   @Prop({ default: null, type: () => Object })
-  id: ObjectId;
+  _id?: ObjectId;
 
   @Prop({ default: '000' })
-  name: string;
+  name?: string;
 }
 @Schema({ versionKey: false })
 export class ProductCategoryInfo {
   @Prop({ default: { SectionInfo }, _id: false })
-  section: SectionInfo;
+  section?: SectionInfo;
 
   @Prop({ default: { CategoryInfo }, _id: false })
-  category: CategoryInfo;
+  category?: CategoryInfo;
 }
 @Schema({ versionKey: false })
 export class ProductAvailabilityInfo {
   @Prop({ default: 'notAvailable' })
-  availability: 'available' | 'notAvailable' | 'awaiting';
+  availability?: 'available' | 'notAvailable' | 'awaiting';
 
   @Prop({ default: false })
   standartOrder?: boolean;
@@ -74,37 +71,37 @@ export class ProductAvailabilityInfo {
 @Schema({ _id: true, timestamps: true, versionKey: false })
 export class Product {
   @Prop({ default: false })
-  isApproved: boolean;
+  isApproved?: boolean;
 
   @Prop({ default: false })
-  isVisible: boolean;
+  isVisible?: boolean;
 
   @Prop({ default: null })
-  sku: string;
+  sku?: string;
 
   @Prop({ default: 'Назва товару' })
-  name: string;
+  name?: string;
 
   @Prop({ default: 'Назва бренду' })
-  brand: string;
+  brand?: string;
 
   @Prop({ default: { ProductPriceInfo }, _id: false })
-  priceInfo: ProductPriceInfo;
+  priceInfo?: ProductPriceInfo;
 
   @Prop({ default: { ProductCategoryInfo }, _id: false })
-  categoryInfo: ProductCategoryInfo;
+  categoryInfo?: ProductCategoryInfo;
 
   @Prop({ default: { ProductAvailabilityInfo }, _id: false })
-  availabilityInfo: ProductAvailabilityInfo;
+  availabilityInfo?: ProductAvailabilityInfo;
 
   @Prop({ default: null })
-  description: string;
+  description?: string;
 
   @Prop({ default: null })
-  innerComment: string;
+  innerComment?: string;
 
   @Prop({ default: [], type: () => [String] })
-  images: string[];
+  images?: string[];
 }
 
 export const ProductModel = SchemaFactory.createForClass(Product);

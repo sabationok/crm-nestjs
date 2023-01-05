@@ -66,6 +66,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "getAllforAll", null);
 __decorate([
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.Post)('create'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, request_decorator_1.UserRequest)()),

@@ -1,31 +1,29 @@
-import { Schema, SchemaFactory } from '@nestjs/mongoose';
-import { prop } from '@typegoose/typegoose';
-import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, ObjectId } from 'mongoose';
 
 export type CategoryDocument = HydratedDocument<Category>;
 
 @Schema({ _id: true, timestamps: true, versionKey: false })
 export class Category {
-  @prop({ default: 'section' })
+  @Prop({ default: 'section' })
   name: string;
 
-  @prop({ default: 'Id' })
+  @Prop({ default: 'Id', type: () => Object })
   owner: ObjectId;
 
-  @prop({ default: 'section' })
+  @Prop({ default: 'section' })
   ownerName: string;
 
-  @prop()
+  @Prop({ type: () => Object })
   section?: ObjectId;
 
-  @prop()
+  @Prop()
   sectionName?: string;
 
-  @prop()
+  @Prop()
   isSection?: boolean;
 
-  @prop({ default: false })
+  @Prop({ default: false })
   isArchived?: boolean;
 }
 

@@ -36,7 +36,7 @@ export class ProductController {
   }
 
   // @UseGuards(JwtAuthGuard)
-  // @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe())
   @Post('create')
   async create(@Body() dto: CreateProductDto, @UserRequest() req: any) {
     return this.productService.create(dto);

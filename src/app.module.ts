@@ -15,6 +15,8 @@ import { RefundsModule } from './refunds/refunds.module';
 // import { getTelegramConfig } from './configs/telegram.config';
 // import { ScheduleModule } from '@nestjs/schedule';
 // import { SitemapModule } from './sitemap/sitemap.module';
+import { TelegramModule } from './telegram/telegram.module';
+import { getTelegramConfig } from './configs/telegramConfig';
 
 @Module({
   imports: [
@@ -37,7 +39,14 @@ import { RefundsModule } from './refunds/refunds.module';
     CategoryModule,
 
     RefundsModule,
+
+    TelegramModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: getTelegramConfig,
+    }),
   ],
+
   providers: [],
 })
 export class AppModule {}

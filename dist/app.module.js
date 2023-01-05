@@ -17,6 +17,8 @@ const delivery_module_1 = require("./delivery/delivery.module");
 const category_module_1 = require("./category/category.module");
 const order_module_1 = require("./order/order.module");
 const refunds_module_1 = require("./refunds/refunds.module");
+const telegram_module_1 = require("./telegram/telegram.module");
+const telegramConfig_1 = require("./configs/telegramConfig");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -34,6 +36,11 @@ AppModule = __decorate([
             delivery_module_1.DeliveryModule,
             category_module_1.CategoryModule,
             refunds_module_1.RefundsModule,
+            telegram_module_1.TelegramModule.forRootAsync({
+                imports: [config_1.ConfigModule],
+                inject: [config_1.ConfigService],
+                useFactory: telegramConfig_1.getTelegramConfig,
+            }),
         ],
         providers: [],
     })

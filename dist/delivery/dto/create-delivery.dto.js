@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateDeliveryDto = void 0;
-const typegoose_1 = require("@typegoose/typegoose");
 const class_validator_1 = require("class-validator");
 class CreateDeliveryDto {
 }
@@ -27,7 +26,7 @@ __decorate([
     __metadata("design:type", Number)
 ], CreateDeliveryDto.prototype, "deliveryPrice", void 0);
 __decorate([
-    (0, typegoose_1.prop)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateDeliveryDto.prototype, "transporter", void 0);
 __decorate([

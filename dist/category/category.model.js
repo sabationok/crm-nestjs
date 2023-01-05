@@ -11,35 +11,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryModel = exports.Category = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
-const typegoose_1 = require("@typegoose/typegoose");
 let Category = class Category {
 };
 __decorate([
-    (0, typegoose_1.prop)({ default: 'section' }),
+    (0, mongoose_1.Prop)({ default: 'section' }),
     __metadata("design:type", String)
 ], Category.prototype, "name", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 'Id' }),
+    (0, mongoose_1.Prop)({ default: 'Id', type: () => Object }),
     __metadata("design:type", Object)
 ], Category.prototype, "owner", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 'section' }),
+    (0, mongoose_1.Prop)({ default: 'section' }),
     __metadata("design:type", String)
 ], Category.prototype, "ownerName", void 0);
 __decorate([
-    (0, typegoose_1.prop)(),
+    (0, mongoose_1.Prop)({ type: () => Object }),
     __metadata("design:type", Object)
 ], Category.prototype, "section", void 0);
 __decorate([
-    (0, typegoose_1.prop)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Category.prototype, "sectionName", void 0);
 __decorate([
-    (0, typegoose_1.prop)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Boolean)
 ], Category.prototype, "isSection", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: false }),
+    (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], Category.prototype, "isArchived", void 0);
 Category = __decorate([

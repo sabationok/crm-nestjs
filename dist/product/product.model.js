@@ -42,7 +42,7 @@ let SectionInfo = class SectionInfo {
 __decorate([
     (0, mongoose_1.Prop)({ default: null, type: () => Object }),
     __metadata("design:type", Object)
-], SectionInfo.prototype, "id", void 0);
+], SectionInfo.prototype, "_id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: '000' }),
     __metadata("design:type", String)
@@ -64,7 +64,7 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)({ default: null, type: () => Object }),
     __metadata("design:type", Object)
-], CategoryInfo.prototype, "id", void 0);
+], CategoryInfo.prototype, "_id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: '000' }),
     __metadata("design:type", String)
