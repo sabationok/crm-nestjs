@@ -18,9 +18,11 @@ const request_decorator_1 = require("../decorators/request.decorator");
 const category_service_1 = require("./category.service");
 const getUser_decorator_1 = require("../decorators/getUser.decorator");
 const create_category_dt_1 = require("./dto/create-category.dt");
+const telegram_service_1 = require("../telegram/telegram.service");
 let CategoryController = class CategoryController {
-    constructor(categoryServise) {
+    constructor(categoryServise, telegramService) {
         this.categoryServise = categoryServise;
+        this.telegramService = telegramService;
     }
     async getAll(user) {
         const result = await this.categoryServise.findAll();
@@ -28,7 +30,13 @@ let CategoryController = class CategoryController {
         if (result.length === 0) {
             throw new common_1.HttpException(`Not found any categories`, common_1.HttpStatus.NOT_FOUND);
         }
-        return { status: common_1.HttpStatus.OK, data: result, messsage: 'All categories' };
+        const tgRes = await this.telegramService.sendMessage(`Знайдено категорій: ${result.length}`);
+        return {
+            status: common_1.HttpStatus.OK,
+            messsage: 'All categories',
+            data: result,
+            tgRes,
+        };
     }
     async getByParentId(id) {
         const result = await this.categoryServise.findByOwnerId(id);
@@ -49,24 +57,24 @@ let CategoryController = class CategoryController {
         return {
             user,
             status: common_1.HttpStatus.OK,
-            data: result,
             messsage: `Children categories, parentId:${id}`,
+            data: result,
         };
     }
     async create(dto, req) {
         const result = await this.categoryServise.create(dto);
         return {
             status: common_1.HttpStatus.OK,
-            data: result,
             messsage: 'Created category',
+            data: result,
         };
     }
     async update(id, dto, req) {
         const result = await this.categoryServise.updateById(id, dto);
         return {
             status: common_1.HttpStatus.OK,
-            data: result,
             messsage: 'Updated category',
+            data: result,
         };
     }
     async deleteById(id, req) {
@@ -76,8 +84,8 @@ let CategoryController = class CategoryController {
         }
         return {
             status: common_1.HttpStatus.OK,
-            data: result,
             messsage: 'Deleted category',
+            data: result,
         };
     }
     async clearById(id, req) {
@@ -87,8 +95,8 @@ let CategoryController = class CategoryController {
         }
         return {
             status: common_1.HttpStatus.OK,
-            data: result,
             messsage: 'Deleted categories',
+            data: result,
         };
     }
 };
@@ -149,7 +157,8 @@ __decorate([
 ], CategoryController.prototype, "clearById", null);
 CategoryController = __decorate([
     (0, common_1.Controller)('category'),
-    __metadata("design:paramtypes", [category_service_1.CategoryService])
+    __metadata("design:paramtypes", [category_service_1.CategoryService,
+        telegram_service_1.TelegramService])
 ], CategoryController);
 exports.CategoryController = CategoryController;
 //# sourceMappingURL=category.controller.js.map

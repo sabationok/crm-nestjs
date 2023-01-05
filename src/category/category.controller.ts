@@ -10,14 +10,17 @@ import {
   Post,
 } from '@nestjs/common';
 import { UserRequest } from 'src/decorators/request.decorator';
-import { CategoryModel } from './category.model';
 import { CategoryService } from './category.service';
 import { GetUser } from 'src/decorators/getUser.decorator';
 import { CreateCategoryDto } from './dto/create-category.dt';
+import { TelegramService } from 'src/telegram/telegram.service';
 
 @Controller('category')
 export class CategoryController {
-  constructor(private readonly categoryServise: CategoryService) {}
+  constructor(
+    private readonly categoryServise: CategoryService,
+    private readonly telegramService: TelegramService,
+  ) {}
 
   @Get('getAll')
   async getAll(@GetUser() user: any) {
@@ -29,7 +32,15 @@ export class CategoryController {
       throw new HttpException(`Not found any categories`, HttpStatus.NOT_FOUND);
     }
 
-    return { status: HttpStatus.OK, data: result, messsage: 'All categories' };
+    const tgRes = await this.telegramService.sendMessage(
+      `Знайдено категорій: ${result.length}`,
+    );
+    return {
+      status: HttpStatus.OK,
+      messsage: 'All categories',
+      data: result,
+      tgRes,
+    };
   }
 
   @Get('getByParentId/:id')
@@ -63,8 +74,8 @@ export class CategoryController {
     return {
       user,
       status: HttpStatus.OK,
-      data: result,
       messsage: `Children categories, parentId:${id}`,
+      data: result,
     };
   }
 
@@ -74,8 +85,8 @@ export class CategoryController {
 
     return {
       status: HttpStatus.OK,
-      data: result,
       messsage: 'Created category',
+      data: result,
     };
   }
 
@@ -89,8 +100,8 @@ export class CategoryController {
 
     return {
       status: HttpStatus.OK,
-      data: result,
       messsage: 'Updated category',
+      data: result,
     };
   }
 
@@ -107,8 +118,8 @@ export class CategoryController {
 
     return {
       status: HttpStatus.OK,
-      data: result,
       messsage: 'Deleted category',
+      data: result,
     };
   }
 
@@ -125,8 +136,8 @@ export class CategoryController {
 
     return {
       status: HttpStatus.OK,
-      data: result,
       messsage: 'Deleted categories',
+      data: result,
     };
   }
 }
