@@ -25,7 +25,8 @@ let OrderController = class OrderController {
         return this.orderService.findAll();
     }
     async create(dto, req) {
-        return this.orderService.create(dto);
+        const newOrder = await this.orderService.create(dto);
+        return { message: 'Orders created successfully', data: newOrder };
     }
 };
 __decorate([

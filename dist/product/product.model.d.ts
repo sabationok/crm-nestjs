@@ -29,8 +29,8 @@ export declare class ProductAvailabilityInfo {
     specialOrderTime?: number;
 }
 export declare class Product {
-    isApproved?: boolean;
-    isVisible?: boolean;
+    approvedStatus?: 'success' | 'pending' | 'reject';
+    visibilityStatus?: boolean;
     sku?: string;
     name?: string;
     brand?: string;

@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateCategoryDto = void 0;
 const class_validator_1 = require("class-validator");
+const mongoose_1 = require("mongoose");
 class CreateCategoryDto {
 }
 __decorate([
@@ -20,7 +21,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsObject)(),
-    __metadata("design:type", Object)
+    __metadata("design:type", mongoose_1.Types.ObjectId)
 ], CreateCategoryDto.prototype, "owner", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
@@ -30,7 +31,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsObject)(),
-    __metadata("design:type", Object)
+    __metadata("design:type", mongoose_1.Types.ObjectId)
 ], CreateCategoryDto.prototype, "section", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),

@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryModel = exports.Category = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
 let Category = class Category {
 };
 __decorate([
@@ -18,16 +19,16 @@ __decorate([
     __metadata("design:type", String)
 ], Category.prototype, "name", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: 'Id', type: () => Object }),
-    __metadata("design:type", Object)
+    (0, mongoose_1.Prop)({ default: 'Id', type: () => mongoose_2.Types.ObjectId }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Category.prototype, "owner", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: 'section' }),
     __metadata("design:type", String)
 ], Category.prototype, "ownerName", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: () => Object }),
-    __metadata("design:type", Object)
+    (0, mongoose_1.Prop)({ type: () => mongoose_2.Types.ObjectId }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Category.prototype, "section", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),

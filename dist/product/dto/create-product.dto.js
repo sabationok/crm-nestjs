@@ -15,12 +15,12 @@ class CreateProductDto {
 }
 __decorate([
     (0, class_validator_1.IsBoolean)(),
-    __metadata("design:type", Boolean)
-], CreateProductDto.prototype, "isApproved", void 0);
+    __metadata("design:type", String)
+], CreateProductDto.prototype, "approvedStatus", void 0);
 __decorate([
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
-], CreateProductDto.prototype, "isVisible", void 0);
+], CreateProductDto.prototype, "visibilityStatus", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

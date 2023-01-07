@@ -26,20 +26,14 @@ export class CategoryController {
   async getAll(@GetUser() user: any) {
     const result = await this.categoryServise.findAll();
 
-    user = { _id: 'df1sd5f13bsd5f13b', name: 'Antonio' };
-
     if (result.length === 0) {
       throw new HttpException(`Not found any categories`, HttpStatus.NOT_FOUND);
     }
 
-    const tgRes = await this.telegramService.sendMessage(
-      `Знайдено категорій: ${result.length}`,
-    );
     return {
       status: HttpStatus.OK,
       messsage: 'All categories',
       data: result,
-      tgRes,
     };
   }
 

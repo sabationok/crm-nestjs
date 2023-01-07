@@ -10,7 +10,6 @@ export declare class CategoryController {
         status: HttpStatus;
         messsage: string;
         data: import("./category.model").Category[];
-        tgRes: import("typegram").Message.TextMessage;
     }>;
     getByParentId(id: string): Promise<{
         status: HttpStatus;

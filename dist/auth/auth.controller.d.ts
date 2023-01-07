@@ -1,11 +1,13 @@
 import { HttpStatus } from '@nestjs/common';
+import { TelegramService } from 'src/telegram/telegram.service';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { SetUserRoleDto } from './dto/setUserRole.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 export declare class AuthController {
     private readonly authService;
-    constructor(authService: AuthService);
+    private readonly telegramService;
+    constructor(authService: AuthService, telegramService: TelegramService);
     getAll(): Promise<import("./user.model").User[]>;
     getUserById(userId: string): Promise<{
         status: HttpStatus;
@@ -38,8 +40,16 @@ export declare class AuthController {
         data: import("./user.model").User;
         message: string;
     }>;
-    register(dto: AuthDto): Promise<import("./user.model").User | null>;
+    register(dto: AuthDto): Promise<{
+        status: HttpStatus;
+        message: string;
+        newUser: import("./user.model").User | null;
+    }>;
     login({ email, password }: AuthDto): Promise<{
-        access_token: string;
+        status: HttpStatus;
+        message: string;
+        loginDdata: {
+            access_token: string;
+        };
     }>;
 }

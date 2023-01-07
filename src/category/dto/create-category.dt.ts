@@ -1,5 +1,5 @@
 import { IsBoolean, IsObject, IsOptional, IsString } from 'class-validator';
-import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 
 export class CreateCategoryDto {
   @IsString()
@@ -7,7 +7,7 @@ export class CreateCategoryDto {
 
   @IsOptional()
   @IsObject()
-  owner?: ObjectId;
+  owner?: Types.ObjectId;
 
   @IsOptional()
   @IsString()
@@ -15,7 +15,7 @@ export class CreateCategoryDto {
 
   @IsOptional()
   @IsObject()
-  section?: ObjectId;
+  section?: Types.ObjectId;
 
   @IsOptional()
   @IsString()

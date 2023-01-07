@@ -16,6 +16,7 @@ import {
 } from '@nestjs/common';
 import { GetUser } from 'src/decorators/getUser.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt.guards';
+import { TelegramService } from 'src/telegram/telegram.service';
 
 import { ALREADY_REGISTERED_ERROR } from './auth.constants';
 import { AuthService } from './auth.service';
@@ -25,7 +26,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly telegramService: TelegramService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('getAllUsers')
@@ -120,7 +124,12 @@ export class AuthController {
     if (oldUser) {
       throw new BadRequestException(ALREADY_REGISTERED_ERROR);
     }
-    return this.authService.createUser(dto);
+    const newUser = await this.authService.createUser(dto);
+
+    await this.telegramService.sendMessage(
+      `Зареєстровано нового користувача: ${newUser}`,
+    );
+    return { status: HttpStatus.OK, message: 'New user rigister', newUser };
   }
 
   @UsePipes(new ValidationPipe())
@@ -130,9 +139,15 @@ export class AuthController {
     const validatedUser = await this.authService.validateUser(email, password);
 
     if (!validatedUser) {
-      throw new HttpException('', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Unauthorized user', HttpStatus.UNAUTHORIZED);
     }
 
-    return this.authService.login(email, validatedUser.role);
+    const loginDdata = await this.authService.login(email, validatedUser.role);
+
+    await this.telegramService.sendMessage(
+      `Авторизовано користувача: ${validatedUser}`,
+    );
+
+    return { status: HttpStatus.OK, message: 'Login success', loginDdata };
   }
 }

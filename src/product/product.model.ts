@@ -70,11 +70,11 @@ export class ProductAvailabilityInfo {
 
 @Schema({ _id: true, timestamps: true, versionKey: false })
 export class Product {
-  @Prop({ default: false })
-  isApproved?: boolean;
+  @Prop({ default: 'pending' })
+  approvedStatus?: 'success' | 'pending' | 'reject';
 
   @Prop({ default: false })
-  isVisible?: boolean;
+  visibilityStatus?: boolean;
 
   @Prop({ default: null })
   sku?: string;
@@ -85,13 +85,13 @@ export class Product {
   @Prop({ default: 'Назва бренду' })
   brand?: string;
 
-  @Prop({ default: { ProductPriceInfo }, _id: false })
+  @Prop({ default: { ProductPriceInfo } })
   priceInfo?: ProductPriceInfo;
 
-  @Prop({ default: { ProductCategoryInfo }, _id: false })
+  @Prop({ default: { ProductCategoryInfo } })
   categoryInfo?: ProductCategoryInfo;
 
-  @Prop({ default: { ProductAvailabilityInfo }, _id: false })
+  @Prop({ default: { ProductAvailabilityInfo } })
   availabilityInfo?: ProductAvailabilityInfo;
 
   @Prop({ default: null })

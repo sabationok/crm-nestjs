@@ -116,13 +116,13 @@ exports.ProductAvailabilityInfo = ProductAvailabilityInfo;
 let Product = class Product {
 };
 __decorate([
-    (0, mongoose_1.Prop)({ default: false }),
-    __metadata("design:type", Boolean)
-], Product.prototype, "isApproved", void 0);
+    (0, mongoose_1.Prop)({ default: 'pending' }),
+    __metadata("design:type", String)
+], Product.prototype, "approvedStatus", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
-], Product.prototype, "isVisible", void 0);
+], Product.prototype, "visibilityStatus", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", String)
@@ -136,15 +136,15 @@ __decorate([
     __metadata("design:type", String)
 ], Product.prototype, "brand", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: { ProductPriceInfo }, _id: false }),
+    (0, mongoose_1.Prop)({ default: { ProductPriceInfo } }),
     __metadata("design:type", ProductPriceInfo)
 ], Product.prototype, "priceInfo", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: { ProductCategoryInfo }, _id: false }),
+    (0, mongoose_1.Prop)({ default: { ProductCategoryInfo } }),
     __metadata("design:type", ProductCategoryInfo)
 ], Product.prototype, "categoryInfo", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: { ProductAvailabilityInfo }, _id: false }),
+    (0, mongoose_1.Prop)({ default: { ProductAvailabilityInfo } }),
     __metadata("design:type", ProductAvailabilityInfo)
 ], Product.prototype, "availabilityInfo", void 0);
 __decorate([

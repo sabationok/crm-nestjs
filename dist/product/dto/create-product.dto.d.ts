@@ -28,8 +28,8 @@ export interface IProductAvailabilityInfo {
     specialOrderTime?: number;
 }
 export declare class CreateProductDto {
-    isApproved?: boolean;
-    isVisible?: boolean;
+    approvedStatus?: 'success' | 'pending' | 'reject';
+    visibilityStatus?: boolean;
     sku?: string;
     name?: string;
     brand?: string;

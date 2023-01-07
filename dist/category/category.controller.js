@@ -26,16 +26,13 @@ let CategoryController = class CategoryController {
     }
     async getAll(user) {
         const result = await this.categoryServise.findAll();
-        user = { _id: 'df1sd5f13bsd5f13b', name: 'Antonio' };
         if (result.length === 0) {
             throw new common_1.HttpException(`Not found any categories`, common_1.HttpStatus.NOT_FOUND);
         }
-        const tgRes = await this.telegramService.sendMessage(`Знайдено категорій: ${result.length}`);
         return {
             status: common_1.HttpStatus.OK,
             messsage: 'All categories',
             data: result,
-            tgRes,
         };
     }
     async getByParentId(id) {

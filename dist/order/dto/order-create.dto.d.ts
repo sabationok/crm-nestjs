@@ -4,9 +4,9 @@ export interface IPaymentinfo {
     status: string;
 }
 export declare class CreateOrderDto {
-    number: string;
-    type: string;
-    status: string;
+    number?: string;
+    type?: string;
+    status?: string;
     payment: IPaymentinfo;
     content: ObjectId[];
     deliveries: ObjectId[];

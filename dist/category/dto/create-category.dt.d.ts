@@ -1,9 +1,9 @@
-import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 export declare class CreateCategoryDto {
     name: string;
-    owner?: ObjectId;
+    owner?: Types.ObjectId;
     ownerName?: string;
-    section?: ObjectId;
+    section?: Types.ObjectId;
     sectionName?: string;
     isSection?: boolean;
     isArchived?: boolean;

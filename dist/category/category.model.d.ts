@@ -1,10 +1,10 @@
-import { HydratedDocument, ObjectId } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 export declare type CategoryDocument = HydratedDocument<Category>;
 export declare class Category {
     name: string;
-    owner: ObjectId;
+    owner: Types.ObjectId;
     ownerName: string;
-    section?: ObjectId;
+    section?: Types.ObjectId;
     sectionName?: string;
     isSection?: boolean;
     isArchived?: boolean;

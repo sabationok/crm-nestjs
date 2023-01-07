@@ -32,10 +32,10 @@ export interface IProductAvailabilityInfo {
 }
 export class CreateProductDto {
   @IsBoolean()
-  isApproved?: boolean;
+  approvedStatus?: 'success' | 'pending' | 'reject';
 
   @IsBoolean()
-  isVisible?: boolean;
+  visibilityStatus?: boolean;
 
   @IsString()
   sku?: string;

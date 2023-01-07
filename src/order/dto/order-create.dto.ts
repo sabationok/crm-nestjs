@@ -8,13 +8,13 @@ export interface IPaymentinfo {
 }
 export class CreateOrderDto {
   @IsString()
-  number: string;
+  number?: string;
 
   @IsString()
-  type: string;
+  type?: string;
 
   @IsString()
-  status: string;
+  status?: string;
 
   @IsObject()
   payment: IPaymentinfo;

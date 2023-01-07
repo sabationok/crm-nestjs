@@ -16,14 +16,16 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const getUser_decorator_1 = require("../decorators/getUser.decorator");
 const jwt_guards_1 = require("../guards/jwt.guards");
+const telegram_service_1 = require("../telegram/telegram.service");
 const auth_constants_1 = require("./auth.constants");
 const auth_service_1 = require("./auth.service");
 const auth_dto_1 = require("./dto/auth.dto");
 const setUserRole_dto_1 = require("./dto/setUserRole.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
 let AuthController = class AuthController {
-    constructor(authService) {
+    constructor(authService, telegramService) {
         this.authService = authService;
+        this.telegramService = telegramService;
     }
     async getAll() {
         return this.authService.getAllUsers();
@@ -77,14 +79,18 @@ let AuthController = class AuthController {
         if (oldUser) {
             throw new common_1.BadRequestException(auth_constants_1.ALREADY_REGISTERED_ERROR);
         }
-        return this.authService.createUser(dto);
+        const newUser = await this.authService.createUser(dto);
+        await this.telegramService.sendMessage(`Зареєстровано нового користувача: ${newUser}`);
+        return { status: common_1.HttpStatus.OK, message: 'New user rigister', newUser };
     }
     async login({ email, password }) {
         const validatedUser = await this.authService.validateUser(email, password);
         if (!validatedUser) {
-            throw new common_1.HttpException('', common_1.HttpStatus.UNAUTHORIZED);
+            throw new common_1.HttpException('Unauthorized user', common_1.HttpStatus.UNAUTHORIZED);
         }
-        return this.authService.login(email, validatedUser.role);
+        const loginDdata = await this.authService.login(email, validatedUser.role);
+        await this.telegramService.sendMessage(`Авторизовано користувача: ${validatedUser}`);
+        return { status: common_1.HttpStatus.OK, message: 'Login success', loginDdata };
     }
 };
 __decorate([
@@ -154,7 +160,8 @@ __decorate([
 ], AuthController.prototype, "login", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        telegram_service_1.TelegramService])
 ], AuthController);
 exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controller.js.map

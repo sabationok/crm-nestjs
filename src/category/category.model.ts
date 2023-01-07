@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, ObjectId } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export type CategoryDocument = HydratedDocument<Category>;
 
@@ -8,14 +8,14 @@ export class Category {
   @Prop({ default: 'section' })
   name: string;
 
-  @Prop({ default: 'Id', type: () => Object })
-  owner: ObjectId;
+  @Prop({ default: 'Id', type: () => Types.ObjectId })
+  owner: Types.ObjectId;
 
   @Prop({ default: 'section' })
   ownerName: string;
 
-  @Prop({ type: () => Object })
-  section?: ObjectId;
+  @Prop({ type: () => Types.ObjectId })
+  section?: Types.ObjectId;
 
   @Prop()
   sectionName?: string;
