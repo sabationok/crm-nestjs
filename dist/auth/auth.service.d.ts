@@ -10,8 +10,8 @@ export declare class AuthService {
     private readonly findUserModel;
     private readonly jwtService;
     constructor(userModel: Model<UserDocument>, findUserModel: Model<FindUserDocument>, jwtService: JwtService);
-    getAllUsers(): Promise<User[]>;
-    getUserById(id: string): Promise<User | null>;
+    getAllUsers(): Promise<FindUser[]>;
+    getUserById(id: string): Promise<FindUser | null>;
     findUserByEmail(email: string): Promise<FindUser | null>;
     getCurrentUserInfo(email: string): Promise<FindUser | null>;
     createUser(dto: AuthDto): Promise<User | null>;

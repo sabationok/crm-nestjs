@@ -72,11 +72,16 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('getCurrentUser')
   async getCurrentUser(@GetUser() user: any) {
+    const currentUser = await this.authService.getUserById(user._id);
+
     console.log(user);
     return {
       status: HttpStatus.OK,
       message: 'Current user',
-      data: user,
+      data: {
+        ...user,
+        status: currentUser?.status,
+      },
     };
   }
 

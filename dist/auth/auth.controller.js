@@ -42,11 +42,12 @@ let AuthController = class AuthController {
         return { status: common_1.HttpStatus.OK, data: result, message: 'Updating success' };
     }
     async getCurrentUser(user) {
+        const currentUser = await this.authService.getUserById(user._id);
         console.log(user);
         return {
             status: common_1.HttpStatus.OK,
             message: 'Current user',
-            data: user,
+            data: Object.assign(Object.assign({}, user), { status: currentUser === null || currentUser === void 0 ? void 0 : currentUser.status }),
         };
     }
     async getCurrentUserInfo(user) {

@@ -24,11 +24,11 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async getAllUsers(): Promise<User[]> {
+  async getAllUsers(): Promise<FindUser[]> {
     return this.userModel.find().exec();
   }
 
-  async getUserById(id: string): Promise<User | null> {
+  async getUserById(id: string): Promise<FindUser | null> {
     return this.userModel.findById(id).exec();
   }
 
