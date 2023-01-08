@@ -1,7 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthDto } from './dto/auth.dto';
 import { genSaltSync, hash, compare } from 'bcryptjs';
-import { USER_NOT_FOUND_ERROR, WRONG_PASSWORD_ERROR } from './auth.constants';
+import {
+  USER_NOT_FOUND_ERROR,
+  WRONG_CREDENTIALS_ERROR,
+} from './auth.constants';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SetUserRoleDto } from './dto/setUserRole.dto';
@@ -80,13 +83,13 @@ export class AuthService {
     const isCorrectPassword = await compare(password, user.passwordHash);
 
     if (!isCorrectPassword) {
-      throw new UnauthorizedException(WRONG_PASSWORD_ERROR);
+      throw new UnauthorizedException(WRONG_CREDENTIALS_ERROR);
     }
 
     return { email: user.email, role: user.role };
   }
 
-  async login(email: string, role: string) {
+  async login(email: string, role?: string) {
     const payload = { email, role };
 
     return {

@@ -21,26 +21,25 @@ export declare class AuthController {
     }>;
     getCurrentUser(user: any): Promise<{
         status: HttpStatus;
+        message: string;
         data: any;
-        message: string;
     }>;
-    getCurrentUserInfo(user: any): Promise<{
+    getCurrentUserInfo(user: any, req: any): Promise<{
         status: HttpStatus;
-        data: {
-            status: import("./user.model").TUserStatus;
-            role: import("./user.model").TUserRoles;
-            email: string;
-            name: string;
-            phone: string;
-        };
         message: string;
+        data: any;
     }>;
     setUserRoleById(id: string, roleDto: SetUserRoleDto): Promise<{
         status: HttpStatus;
-        data: import("./user.model").User;
         message: string;
+        data: import("./user.model").User;
     }>;
     register(dto: AuthDto): Promise<{
+        status: HttpStatus;
+        message: string;
+        newUser: import("./user.model").User | null;
+    }>;
+    registerByAdmin(dto: AuthDto): Promise<{
         status: HttpStatus;
         message: string;
         newUser: import("./user.model").User | null;
@@ -48,7 +47,7 @@ export declare class AuthController {
     login({ email, password }: AuthDto): Promise<{
         status: HttpStatus;
         message: string;
-        loginDdata: {
+        data: {
             access_token: string;
         };
     }>;

@@ -6,8 +6,8 @@ export declare class JwtStrategy extends JwtStrategy_base {
     private readonly configService;
     constructor(configService: ConfigService);
     validate({ email, role }: Pick<UserDto, 'email' | 'role'>): Promise<{
-        email: string;
-        role: string;
+        email: string | undefined;
+        role: string | undefined;
     }>;
 }
 export {};

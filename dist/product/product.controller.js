@@ -30,6 +30,7 @@ let ProductController = class ProductController {
         return this.productService.findAll();
     }
     async create(dto, req) {
+        console.log(dto);
         return this.productService.create(dto);
     }
     async getBiId(id) {
@@ -66,6 +67,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "getAllforAll", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.Post)('create'),
     __param(0, (0, common_1.Body)()),

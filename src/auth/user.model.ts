@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { HydratedDocument, ObjectId } from 'mongoose';
+import { HydratedDocument, ObjectId, Types } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -16,31 +16,49 @@ export type TUserRoles =
 
 export type TUserStatus = 'ACTIVE' | 'NOT_ACTIVE' | 'BAN';
 
-@Schema({ _id: true, timestamps: true, versionKey: false })
-export class User {
-  @Prop({ unique: true })
-  email: string;
+@Schema({ versionKey: false })
+export class Manager {
+  @Prop({ type: () => [Types.ObjectId] })
+  vendors?: Types.ObjectId[];
+}
+
+@Schema({ versionKey: false })
+export class Vendor {
+  @Prop({ type: () => Types.ObjectId })
+  managerId?: Types.ObjectId;
 
   @Prop()
+  managerCode?: string;
+}
+
+@Schema({ _id: true, timestamps: true, versionKey: false })
+export class User {
+  @Prop({ unique: true, required: true })
+  email: string;
+
+  @Prop({ required: true })
   passwordHash: string;
 
+  @Prop()
+  login?: string;
+
   @Prop({ default: null })
-  name: string;
+  name?: string;
 
   @Prop({ default: null, unique: true })
-  phone: string;
+  phone?: string;
 
   @Prop({ default: 'GUEST' })
-  role: TUserRoles;
+  role?: TUserRoles;
 
   @Prop({ default: 'NOT_ACTIVE' })
-  status: TUserStatus;
+  status?: TUserStatus;
 
-  @Prop({ type: () => Object })
-  manager?: ObjectId;
+  @Prop({ type: () => Manager })
+  manager?: Manager;
 
-  @Prop({ type: () => [String] })
-  vendors?: string[];
+  @Prop({ type: () => Vendor })
+  vendor?: Vendor;
 }
 
 export const UserModel = SchemaFactory.createForClass(User);

@@ -9,18 +9,47 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserModel = exports.User = void 0;
+exports.UserModel = exports.User = exports.Vendor = exports.Manager = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
-let User = class User {
+const mongoose_2 = require("mongoose");
+let Manager = class Manager {
 };
 __decorate([
-    (0, mongoose_1.Prop)({ unique: true }),
-    __metadata("design:type", String)
-], User.prototype, "email", void 0);
+    (0, mongoose_1.Prop)({ type: () => [mongoose_2.Types.ObjectId] }),
+    __metadata("design:type", Array)
+], Manager.prototype, "vendors", void 0);
+Manager = __decorate([
+    (0, mongoose_1.Schema)({ versionKey: false })
+], Manager);
+exports.Manager = Manager;
+let Vendor = class Vendor {
+};
+__decorate([
+    (0, mongoose_1.Prop)({ type: () => mongoose_2.Types.ObjectId }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], Vendor.prototype, "managerId", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
+], Vendor.prototype, "managerCode", void 0);
+Vendor = __decorate([
+    (0, mongoose_1.Schema)({ versionKey: false })
+], Vendor);
+exports.Vendor = Vendor;
+let User = class User {
+};
+__decorate([
+    (0, mongoose_1.Prop)({ unique: true, required: true }),
+    __metadata("design:type", String)
+], User.prototype, "email", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
 ], User.prototype, "passwordHash", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], User.prototype, "login", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", String)
@@ -38,13 +67,13 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "status", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: () => Object }),
-    __metadata("design:type", Object)
+    (0, mongoose_1.Prop)({ type: () => Manager }),
+    __metadata("design:type", Manager)
 ], User.prototype, "manager", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: () => [String] }),
-    __metadata("design:type", Array)
-], User.prototype, "vendors", void 0);
+    (0, mongoose_1.Prop)({ type: () => Vendor }),
+    __metadata("design:type", Vendor)
+], User.prototype, "vendor", void 0);
 User = __decorate([
     (0, mongoose_1.Schema)({ _id: true, timestamps: true, versionKey: false })
 ], User);

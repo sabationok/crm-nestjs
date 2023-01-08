@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const getUser_decorator_1 = require("../decorators/getUser.decorator");
+const request_decorator_1 = require("../decorators/request.decorator");
 const jwt_guards_1 = require("../guards/jwt.guards");
 const telegram_service_1 = require("../telegram/telegram.service");
 const auth_constants_1 = require("./auth.constants");
@@ -44,14 +45,14 @@ let AuthController = class AuthController {
     async getCurrentUser(user) {
         return {
             status: common_1.HttpStatus.OK,
-            data: user,
             message: 'Current user',
+            data: user,
         };
     }
-    async getCurrentUserInfo(user) {
+    async getCurrentUserInfo(user, req) {
         const result = await this.authService.getCurrentUserInfo(user.email);
         if (!result) {
-            throw new common_1.HttpException('', common_1.HttpStatus.NOT_FOUND);
+            throw new common_1.HttpException('Unauthorized', common_1.HttpStatus.UNAUTHORIZED);
         }
         const userInfo = {
             status: result === null || result === void 0 ? void 0 : result.status,
@@ -60,11 +61,16 @@ let AuthController = class AuthController {
             name: result === null || result === void 0 ? void 0 : result.name,
             phone: result === null || result === void 0 ? void 0 : result.phone,
         };
-        const managerInfo = Object.assign(Object.assign({}, userInfo), { vendors: result === null || result === void 0 ? void 0 : result.vendors });
+        if ((result === null || result === void 0 ? void 0 : result.role) === 'MANAGER') {
+            userInfo.managerInfo = result === null || result === void 0 ? void 0 : result.manager;
+        }
+        if ((result === null || result === void 0 ? void 0 : result.role) === 'VENDOR') {
+            userInfo.venroInfo = result === null || result === void 0 ? void 0 : result.vendor;
+        }
         return {
             status: common_1.HttpStatus.OK,
-            data: (result === null || result === void 0 ? void 0 : result.role) === 'MANAGER' ? managerInfo : userInfo,
             message: 'Current user info',
+            data: userInfo,
         };
     }
     async setUserRoleById(id, roleDto) {
@@ -72,7 +78,7 @@ let AuthController = class AuthController {
         if (!result) {
             throw new common_1.HttpException('Not found user for update ', common_1.HttpStatus.NOT_FOUND);
         }
-        return { status: common_1.HttpStatus.OK, data: result, message: 'Updating success' };
+        return { status: common_1.HttpStatus.OK, message: 'Updating success', data: result };
     }
     async register(dto) {
         const oldUser = await this.authService.findUserByEmail(dto.email);
@@ -83,14 +89,24 @@ let AuthController = class AuthController {
         await this.telegramService.sendMessage(`Зареєстровано нового користувача: ${newUser}`);
         return { status: common_1.HttpStatus.OK, message: 'New user rigister', newUser };
     }
+    async registerByAdmin(dto) {
+        console.log(dto);
+        const oldUser = await this.authService.findUserByEmail(dto.email);
+        if (oldUser) {
+            throw new common_1.HttpException(auth_constants_1.ALREADY_REGISTERED_ERROR, common_1.HttpStatus.CONFLICT);
+        }
+        const newUser = await this.authService.createUser(dto);
+        await this.telegramService.sendMessage(`Зареєстровано нового користувача адміністратором: ${newUser}`);
+        return { status: common_1.HttpStatus.OK, message: 'New user rigister', newUser };
+    }
     async login({ email, password }) {
-        const validatedUser = await this.authService.validateUser(email, password);
-        if (!validatedUser) {
+        const result = await this.authService.validateUser(email, password);
+        if (!result) {
             throw new common_1.HttpException('Unauthorized user', common_1.HttpStatus.UNAUTHORIZED);
         }
-        const loginDdata = await this.authService.login(email, validatedUser.role);
-        await this.telegramService.sendMessage(`Авторизовано користувача: ${validatedUser}`);
-        return { status: common_1.HttpStatus.OK, message: 'Login success', loginDdata };
+        const loginData = await this.authService.login(email);
+        await this.telegramService.sendMessage(`Авторизовано користувача: ${email}`);
+        return { status: common_1.HttpStatus.OK, message: 'Login success', data: loginData };
     }
 };
 __decorate([
@@ -129,8 +145,9 @@ __decorate([
     (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
     (0, common_1.Get)('getCurrentUserInfo'),
     __param(0, (0, getUser_decorator_1.GetUser)()),
+    __param(1, (0, request_decorator_1.UserRequest)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getCurrentUserInfo", null);
 __decorate([
@@ -143,7 +160,7 @@ __decorate([
 ], AuthController.prototype, "setUserRoleById", null);
 __decorate([
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),
-    (0, common_1.Post)('register'),
+    (0, common_1.Post)('signUp'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [auth_dto_1.AuthDto]),
@@ -151,8 +168,16 @@ __decorate([
 ], AuthController.prototype, "register", null);
 __decorate([
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),
+    (0, common_1.Post)('signUpByAdmin'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [auth_dto_1.AuthDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "registerByAdmin", null);
+__decorate([
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.HttpCode)(200),
-    (0, common_1.Post)('login'),
+    (0, common_1.Post)('signIn'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [auth_dto_1.AuthDto]),

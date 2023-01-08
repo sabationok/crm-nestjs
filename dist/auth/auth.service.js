@@ -67,7 +67,7 @@ let AuthService = class AuthService {
         }
         const isCorrectPassword = await (0, bcryptjs_1.compare)(password, user.passwordHash);
         if (!isCorrectPassword) {
-            throw new common_1.UnauthorizedException(auth_constants_1.WRONG_PASSWORD_ERROR);
+            throw new common_1.UnauthorizedException(auth_constants_1.WRONG_CREDENTIALS_ERROR);
         }
         return { email: user.email, role: user.role };
     }

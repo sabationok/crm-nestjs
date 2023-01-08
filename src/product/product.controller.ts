@@ -35,10 +35,12 @@ export class ProductController {
     return this.productService.findAll();
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   @Post('create')
   async create(@Body() dto: CreateProductDto, @UserRequest() req: any) {
+    console.log(dto);
+
     return this.productService.create(dto);
   }
 

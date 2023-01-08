@@ -17,9 +17,9 @@ export declare class AuthService {
     setUserRoleById(id: string, roleDto: SetUserRoleDto): Promise<User | null>;
     validateUser(email: string, password: string): Promise<{
         email: string;
-        role: import("./user.model").TUserRoles;
+        role: import("./user.model").TUserRoles | undefined;
     }>;
-    login(email: string, role: string): Promise<{
+    login(email: string, role?: string): Promise<{
         access_token: string;
     }>;
 }
