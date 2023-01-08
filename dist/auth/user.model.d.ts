@@ -19,5 +19,6 @@ export declare class User {
     status?: TUserStatus;
     manager?: Manager;
     vendor?: Vendor;
+    access_token?: string;
 }
 export declare const UserModel: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any>, any, any>;

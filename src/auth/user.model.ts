@@ -59,6 +59,9 @@ export class User {
 
   @Prop({ type: () => Vendor })
   vendor?: Vendor;
+
+  @Prop({ default: '' })
+  access_token?: string;
 }
 
 export const UserModel = SchemaFactory.createForClass(User);

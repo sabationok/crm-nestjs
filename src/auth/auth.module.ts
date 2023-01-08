@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { getJwtConfig } from 'src/configs/jwt_config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'src/strategies/jwt.strategy';
+import { FindUserModel } from './findUser.model';
 
 @Module({
   controllers: [AuthController],
@@ -16,6 +17,14 @@ import { JwtStrategy } from 'src/strategies/jwt.strategy';
       {
         name: 'UserModel',
         schema: UserModel,
+        collection: 'User',
+      },
+    ]),
+
+    MongooseModule.forFeature([
+      {
+        name: 'FindUserModel',
+        schema: FindUserModel,
         collection: 'User',
       },
     ]),

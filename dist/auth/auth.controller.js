@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const getUser_decorator_1 = require("../decorators/getUser.decorator");
-const request_decorator_1 = require("../decorators/request.decorator");
 const jwt_guards_1 = require("../guards/jwt.guards");
 const telegram_service_1 = require("../telegram/telegram.service");
 const auth_constants_1 = require("./auth.constants");
@@ -43,34 +42,36 @@ let AuthController = class AuthController {
         return { status: common_1.HttpStatus.OK, data: result, message: 'Updating success' };
     }
     async getCurrentUser(user) {
+        console.log(user);
         return {
             status: common_1.HttpStatus.OK,
             message: 'Current user',
             data: user,
         };
     }
-    async getCurrentUserInfo(user, req) {
-        const result = await this.authService.getCurrentUserInfo(user.email);
-        if (!result) {
+    async getCurrentUserInfo(user) {
+        const userInfo = await this.authService.getCurrentUserInfo(user.email);
+        if (!userInfo) {
             throw new common_1.HttpException('Unauthorized', common_1.HttpStatus.UNAUTHORIZED);
         }
-        const userInfo = {
-            status: result === null || result === void 0 ? void 0 : result.status,
-            role: result === null || result === void 0 ? void 0 : result.role,
-            email: result === null || result === void 0 ? void 0 : result.email,
-            name: result === null || result === void 0 ? void 0 : result.name,
-            phone: result === null || result === void 0 ? void 0 : result.phone,
+        const addInfo = {
+            status: userInfo === null || userInfo === void 0 ? void 0 : userInfo.status,
+            role: userInfo === null || userInfo === void 0 ? void 0 : userInfo.role,
+            email: userInfo === null || userInfo === void 0 ? void 0 : userInfo.email,
+            name: userInfo === null || userInfo === void 0 ? void 0 : userInfo.name,
+            phone: userInfo === null || userInfo === void 0 ? void 0 : userInfo.phone,
+            _id: userInfo === null || userInfo === void 0 ? void 0 : userInfo._id,
         };
-        if ((result === null || result === void 0 ? void 0 : result.role) === 'MANAGER') {
-            userInfo.managerInfo = result === null || result === void 0 ? void 0 : result.manager;
+        if ((addInfo === null || addInfo === void 0 ? void 0 : addInfo.role) === 'MANAGER') {
+            addInfo.managerInfo = user === null || user === void 0 ? void 0 : user.manager;
         }
-        if ((result === null || result === void 0 ? void 0 : result.role) === 'VENDOR') {
-            userInfo.venroInfo = result === null || result === void 0 ? void 0 : result.vendor;
+        if ((userInfo === null || userInfo === void 0 ? void 0 : userInfo.role) === 'VENDOR') {
+            addInfo.venroInfo = user === null || user === void 0 ? void 0 : user.vendor;
         }
         return {
             status: common_1.HttpStatus.OK,
             message: 'Current user info',
-            data: userInfo,
+            data: { userInfo, addInfo },
         };
     }
     async setUserRoleById(id, roleDto) {
@@ -99,14 +100,19 @@ let AuthController = class AuthController {
         await this.telegramService.sendMessage(`Зареєстровано нового користувача адміністратором: ${newUser}`);
         return { status: common_1.HttpStatus.OK, message: 'New user rigister', newUser };
     }
-    async login({ email, password }) {
+    async signIn({ email, password }) {
         const result = await this.authService.validateUser(email, password);
         if (!result) {
-            throw new common_1.HttpException('Unauthorized user', common_1.HttpStatus.UNAUTHORIZED);
+            throw new common_1.HttpException(auth_constants_1.UNAUTHORIZED_USER, common_1.HttpStatus.UNAUTHORIZED);
         }
-        const loginData = await this.authService.login(email);
+        const loginData = await this.authService.logIn(email, result.role, result._id);
         await this.telegramService.sendMessage(`Авторизовано користувача: ${email}`);
-        return { status: common_1.HttpStatus.OK, message: 'Login success', data: loginData };
+        return { status: common_1.HttpStatus.OK, message: auth_constants_1.LOGIN_SUCCESS, data: loginData };
+    }
+    async signOut(user) {
+        const logOutUser = await this.authService.logOut(user._id);
+        await this.telegramService.sendMessage(`Користувач завершив сеанс (${logOutUser === null || logOutUser === void 0 ? void 0 : logOutUser.email})`);
+        return { status: common_1.HttpStatus.OK, message: auth_constants_1.LOGOUT_SUCCESS };
     }
 };
 __decorate([
@@ -145,9 +151,8 @@ __decorate([
     (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
     (0, common_1.Get)('getCurrentUserInfo'),
     __param(0, (0, getUser_decorator_1.GetUser)()),
-    __param(1, (0, request_decorator_1.UserRequest)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getCurrentUserInfo", null);
 __decorate([
@@ -182,7 +187,16 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [auth_dto_1.AuthDto]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "login", null);
+], AuthController.prototype, "signIn", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
+    (0, common_1.HttpCode)(200),
+    (0, common_1.Post)('signOut'),
+    __param(0, (0, getUser_decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "signOut", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService,

@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UserDto } from 'src/auth/dto/user.dto';
+import { FindUserDto } from 'src/auth/dto/findUserDto.dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: configService.get('JWT_SECRET'),
     });
   }
-  async validate({ email, role }: Pick<UserDto, 'email' | 'role'>) {
-    return { email, role };
+  async validate({ role, _id }: Pick<FindUserDto, 'role' | '_id'>) {
+    return { role, _id };
   }
 }

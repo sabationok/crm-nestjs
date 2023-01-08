@@ -23,8 +23,8 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         });
         this.configService = configService;
     }
-    async validate({ email, role }) {
-        return { email, role };
+    async validate({ role, _id }) {
+        return { role, _id };
     }
 };
 JwtStrategy = __decorate([

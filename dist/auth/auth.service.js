@@ -20,8 +20,9 @@ const jwt_1 = require("@nestjs/jwt");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 let AuthService = class AuthService {
-    constructor(userModel, jwtService) {
+    constructor(userModel, findUserModel, jwtService) {
         this.userModel = userModel;
+        this.findUserModel = findUserModel;
         this.jwtService = jwtService;
     }
     async getAllUsers() {
@@ -31,7 +32,7 @@ let AuthService = class AuthService {
         return this.userModel.findById(id).exec();
     }
     async findUserByEmail(email) {
-        return this.userModel.findOne({ email }).exec();
+        return this.findUserModel.findOne({ email }).exec();
     }
     async getCurrentUserInfo(email) {
         return this.findUserByEmail(email);
@@ -69,19 +70,30 @@ let AuthService = class AuthService {
         if (!isCorrectPassword) {
             throw new common_1.UnauthorizedException(auth_constants_1.WRONG_CREDENTIALS_ERROR);
         }
-        return { email: user.email, role: user.role };
+        return { email: user.email, role: user.role, _id: user._id };
     }
-    async login(email, role) {
-        const payload = { email, role };
+    async logIn(email, role, _id) {
+        const payload = { role, _id };
+        const access_token = await this.jwtService.signAsync(payload);
+        const logedUser = await this.userModel.findByIdAndUpdate(_id, { access_token }, { new: true });
+        if (!logedUser) {
+            throw new common_1.UnauthorizedException(auth_constants_1.USER_NOT_FOUND_ERROR);
+        }
         return {
-            access_token: await this.jwtService.signAsync(payload),
+            access_token,
         };
+    }
+    async logOut(_id) {
+        const userForLogOut = await this.getUserById(_id);
+        return this.userModel.findByIdAndUpdate(_id, { access_token: '' }, { new: true });
     }
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)('UserModel')),
+    __param(1, (0, mongoose_1.InjectModel)('FindUserModel')),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         jwt_1.JwtService])
 ], AuthService);
 exports.AuthService = AuthService;

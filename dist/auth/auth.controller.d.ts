@@ -24,10 +24,13 @@ export declare class AuthController {
         message: string;
         data: any;
     }>;
-    getCurrentUserInfo(user: any, req: any): Promise<{
+    getCurrentUserInfo(user: any): Promise<{
         status: HttpStatus;
         message: string;
-        data: any;
+        data: {
+            userInfo: import("./findUser.model").FindUser;
+            addInfo: any;
+        };
     }>;
     setUserRoleById(id: string, roleDto: SetUserRoleDto): Promise<{
         status: HttpStatus;
@@ -44,11 +47,15 @@ export declare class AuthController {
         message: string;
         newUser: import("./user.model").User | null;
     }>;
-    login({ email, password }: AuthDto): Promise<{
+    signIn({ email, password }: AuthDto): Promise<{
         status: HttpStatus;
         message: string;
         data: {
             access_token: string;
         };
+    }>;
+    signOut(user: any): Promise<{
+        status: HttpStatus;
+        message: string;
     }>;
 }

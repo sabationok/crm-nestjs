@@ -9,13 +9,18 @@ import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SetUserRoleDto } from './dto/setUserRole.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './user.model';
+import { FindUser, FindUserDocument } from './findUser.model';
+import { HttpException } from '@nestjs/common/exceptions';
+import { HttpStatus } from '@nestjs/common/enums';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel('UserModel') private readonly userModel: Model<UserDocument>,
+    @InjectModel('FindUserModel')
+    private readonly findUserModel: Model<FindUserDocument>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -27,11 +32,11 @@ export class AuthService {
     return this.userModel.findById(id).exec();
   }
 
-  async findUserByEmail(email: string): Promise<User | null> {
-    return this.userModel.findOne({ email }).exec();
+  async findUserByEmail(email: string): Promise<FindUser | null> {
+    return this.findUserModel.findOne({ email }).exec();
   }
 
-  async getCurrentUserInfo(email: string): Promise<User | null> {
+  async getCurrentUserInfo(email: string): Promise<FindUser | null> {
     return this.findUserByEmail(email);
   }
 
@@ -86,14 +91,36 @@ export class AuthService {
       throw new UnauthorizedException(WRONG_CREDENTIALS_ERROR);
     }
 
-    return { email: user.email, role: user.role };
+    return { email: user.email, role: user.role, _id: user._id };
   }
 
-  async login(email: string, role?: string) {
-    const payload = { email, role };
+  async logIn(email?: string, role?: string, _id?: Types.ObjectId) {
+    const payload = { role, _id };
+
+    const access_token = await this.jwtService.signAsync(payload);
+
+    const logedUser = await this.userModel.findByIdAndUpdate(
+      _id,
+      { access_token },
+      { new: true },
+    );
+
+    if (!logedUser) {
+      throw new UnauthorizedException(USER_NOT_FOUND_ERROR);
+    }
 
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token,
     };
+  }
+
+  async logOut(_id: string) {
+    const userForLogOut = await this.getUserById(_id);
+
+    return this.userModel.findByIdAndUpdate(
+      _id,
+      { access_token: '' },
+      { new: true },
+    );
   }
 }

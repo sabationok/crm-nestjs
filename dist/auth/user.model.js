@@ -74,6 +74,10 @@ __decorate([
     (0, mongoose_1.Prop)({ type: () => Vendor }),
     __metadata("design:type", Vendor)
 ], User.prototype, "vendor", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: '' }),
+    __metadata("design:type", String)
+], User.prototype, "access_token", void 0);
 User = __decorate([
     (0, mongoose_1.Schema)({ _id: true, timestamps: true, versionKey: false })
 ], User);

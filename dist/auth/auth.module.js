@@ -17,6 +17,7 @@ const jwt_1 = require("@nestjs/jwt");
 const jwt_config_1 = require("../configs/jwt_config");
 const passport_1 = require("@nestjs/passport");
 const jwt_strategy_1 = require("../strategies/jwt.strategy");
+const findUser_model_1 = require("./findUser.model");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -27,6 +28,13 @@ AuthModule = __decorate([
                 {
                     name: 'UserModel',
                     schema: user_model_1.UserModel,
+                    collection: 'User',
+                },
+            ]),
+            mongoose_1.MongooseModule.forFeature([
+                {
+                    name: 'FindUserModel',
+                    schema: findUser_model_1.FindUserModel,
                     collection: 'User',
                 },
             ]),
