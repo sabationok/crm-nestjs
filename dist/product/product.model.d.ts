@@ -1,4 +1,4 @@
-import { HydratedDocument, ObjectId } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 export declare type ProductDocument = HydratedDocument<Product>;
 export declare class ProductPriceInfo {
     price?: number;
@@ -7,19 +7,13 @@ export declare class ProductPriceInfo {
     sale?: number;
     isCommission?: boolean;
 }
-export declare class SectionInfo {
-    _id?: ObjectId;
-    name?: string;
-}
 export declare class CategoryInfo {
-    ownerId?: ObjectId;
-    owner?: string;
-    _id?: ObjectId;
-    name?: string;
-}
-export declare class ProductCategoryInfo {
-    section?: SectionInfo;
-    category?: CategoryInfo;
+    sectionName?: string;
+    section?: Types.ObjectId;
+    owner?: Types.ObjectId;
+    ownerName?: string;
+    _id?: Types.ObjectId;
+    category?: string;
 }
 export declare class ProductAvailabilityInfo {
     availability?: 'available' | 'notAvailable' | 'awaiting';
@@ -28,14 +22,21 @@ export declare class ProductAvailabilityInfo {
     specialOrder?: boolean;
     specialOrderTime?: number;
 }
+export declare class Author {
+    _id?: Types.ObjectId;
+    role?: string;
+    name?: string;
+}
 export declare class Product {
     approvedStatus?: 'success' | 'pending' | 'reject';
     visibilityStatus?: boolean;
     sku?: string;
     name?: string;
     brand?: string;
+    creator: Author;
+    updator?: Author;
     priceInfo?: ProductPriceInfo;
-    categoryInfo?: ProductCategoryInfo;
+    categoryId: Types.ObjectId;
     availabilityInfo?: ProductAvailabilityInfo;
     description?: string;
     innerComment?: string;

@@ -1,1 +1,1 @@
-{"version":3,"file":"jwt_config.js","sourceRoot":"","sources":["../../src/configs/jwt_config.ts"],"names":[],"mappings":";;;AAGO,MAAM,YAAY,GAAG,KAAK,EAAE,aAA4B,EAA2B,EAAE;IAC1F,OAAO;QACL,MAAM,EAAE,aAAa,CAAC,GAAG,CAAC,YAAY,CAAC;KACxC,CAAC;AACJ,CAAC,CAAA;AAJY,QAAA,YAAY,gBAIxB"}
+{"version":3,"file":"jwt_config.js","sourceRoot":"","sources":["../../src/configs/jwt_config.ts"],"names":[],"mappings":";;;AAGO,MAAM,YAAY,GAAG,KAAK,EAC/B,aAA4B,EACD,EAAE;IAC7B,OAAO;QACL,MAAM,EAAE,aAAa,CAAC,GAAG,CAAC,YAAY,CAAC;KAIxC,CAAC;AACJ,CAAC,CAAC;AATW,QAAA,YAAY,gBASvB"}

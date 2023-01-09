@@ -7,20 +7,15 @@ import {
 } from './auth.constants';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { SetUserRoleDto } from './dto/setUserRole.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { User, UserDocument } from './user.model';
-import { FindUser, FindUserDocument } from './findUser.model';
-import { HttpException } from '@nestjs/common/exceptions';
-import { HttpStatus } from '@nestjs/common/enums';
+import { TUserRoles, User, UserDocument } from './user.model';
+import { FindUser } from './findUser.model';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel('UserModel') private readonly userModel: Model<UserDocument>,
-    @InjectModel('FindUserModel')
-    private readonly findUserModel: Model<FindUserDocument>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -28,12 +23,12 @@ export class AuthService {
     return this.userModel.find().exec();
   }
 
-  async getUserById(id: string): Promise<FindUser | null> {
+  async getUserById(id: string | Types.ObjectId): Promise<FindUser | null> {
     return this.userModel.findById(id).exec();
   }
 
   async findUserByEmail(email: string): Promise<FindUser | null> {
-    return this.findUserModel.findOne({ email }).exec();
+    return this.userModel.findOne({ email }).exec();
   }
 
   async getCurrentUserInfo(email: string): Promise<FindUser | null> {
@@ -55,30 +50,24 @@ export class AuthService {
     id: string,
     updateDto: UpdateUserDto,
   ): Promise<User | null> {
-    const updateData = {
-      name: updateDto?.name,
-      phone: updateDto?.phone,
-    };
-
-    const updatedUser = this.userModel.findByIdAndUpdate(id, updateData, {
+    const updatedUser = this.userModel.findByIdAndUpdate(id, updateDto, {
       new: true,
     });
 
     return updatedUser;
   }
 
-  async setUserRoleById(
-    id: string,
-    roleDto: SetUserRoleDto,
-  ): Promise<User | null> {
-    const updatedUser = this.userModel.findByIdAndUpdate(id, roleDto, {
-      new: true,
-    });
+  async setUserRoleById(id: string, role: TUserRoles): Promise<User | null> {
+    const updatedUser = this.userModel.findByIdAndUpdate(
+      id,
+      { role },
+      { new: true },
+    );
 
     return updatedUser;
   }
 
-  async validateUser(email: string, password: string) {
+  async validateUser(email: string, password: string): Promise<object | any> {
     const user = await this.findUserByEmail(email);
 
     if (!user) {
@@ -94,7 +83,11 @@ export class AuthService {
     return { email: user.email, role: user.role, _id: user._id };
   }
 
-  async logIn(email?: string, role?: string, _id?: Types.ObjectId) {
+  async logIn(
+    email?: string,
+    role?: string,
+    _id?: Types.ObjectId,
+  ): Promise<User> {
     const payload = { role, _id };
 
     const access_token = await this.jwtService.signAsync(payload);
@@ -109,14 +102,10 @@ export class AuthService {
       throw new UnauthorizedException(USER_NOT_FOUND_ERROR);
     }
 
-    return {
-      access_token,
-    };
+    return logedUser;
   }
 
-  async logOut(_id: string) {
-    const userForLogOut = await this.getUserById(_id);
-
+  async logOut(_id: string): Promise<User | null> {
     return this.userModel.findByIdAndUpdate(
       _id,
       { access_token: '' },

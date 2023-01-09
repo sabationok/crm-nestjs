@@ -13,17 +13,20 @@ import {
   Patch,
   Param,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { GetUser } from 'src/decorators/getUser.decorator';
 import { UserRequest } from 'src/decorators/request.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt.guards';
+import { UserStorage } from 'src/helpers/userStorage.helper';
 import { TelegramService } from 'src/telegram/telegram.service';
-
 import {
   ALREADY_REGISTERED_ERROR,
   LOGIN_SUCCESS,
   UNAUTHORIZED_USER,
   LOGOUT_SUCCESS,
+  ROLE_UPDATE_SUCCESS,
+  ROLE_UPDATE_ERROR,
   LOGOUT_ERROR,
 } from './auth.constants';
 import { AuthService } from './auth.service';
@@ -69,19 +72,54 @@ export class AuthController {
     return { status: HttpStatus.OK, data: result, message: 'Updating success' };
   }
 
+  @UsePipes(new ValidationPipe())
+  // @UseGuards(JwtAuthGuard)
+  @Patch('setUserRoleById/:id')
+  async setUserRoleById(
+    @Param('id') id: string,
+    @Body() roleDto: SetUserRoleDto,
+  ) {
+    const userForUpdate = await this.authService.getUserById(id);
+
+    if (userForUpdate?.role === roleDto?.role) {
+      throw new HttpException(ROLE_UPDATE_ERROR, HttpStatus.NOT_FOUND);
+    }
+
+    const updatedUser = await this.authService.setUserRoleById(
+      id,
+      roleDto?.role,
+    );
+
+    if (!updatedUser) {
+      throw new HttpException(
+        ROLE_UPDATE_ERROR,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    const data = {
+      email: updatedUser?.email,
+      role: updatedUser?.role,
+    };
+
+    return {
+      status: HttpStatus.OK,
+      message: ROLE_UPDATE_SUCCESS(updatedUser?.email, updatedUser?.role),
+      data,
+    };
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('getCurrentUser')
-  async getCurrentUser(@GetUser() user: any) {
+  async getCurrentUser(@GetUser() user: any, @Req() req: any) {
     const currentUser = await this.authService.getUserById(user._id);
 
-    console.log(user);
+    const data = { ...user, status: currentUser?.status };
+
     return {
       status: HttpStatus.OK,
       message: 'Current user',
-      data: {
-        ...user,
-        status: currentUser?.status,
-      },
+      data: req.userInfo,
     };
   }
 
@@ -95,12 +133,13 @@ export class AuthController {
     }
 
     const addInfo: any = {
+      _id: userInfo?._id,
       status: userInfo?.status,
       role: userInfo?.role,
       email: userInfo?.email,
       name: userInfo?.name,
       phone: userInfo?.phone,
-      _id: userInfo?._id,
+      user,
     };
 
     if (addInfo?.role === 'MANAGER') {
@@ -114,22 +153,6 @@ export class AuthController {
       message: 'Current user info',
       data: { userInfo, addInfo },
     };
-  }
-
-  @Patch('setUserRoleById/:id')
-  async setUserRoleById(
-    @Param('id') id: string,
-    @Body() roleDto: SetUserRoleDto,
-  ) {
-    const result = await this.authService.setUserRoleById(id, roleDto);
-
-    if (!result) {
-      throw new HttpException(
-        'Not found user for update ',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    return { status: HttpStatus.OK, message: 'Updating success', data: result };
   }
 
   @UsePipes(new ValidationPipe())
@@ -168,24 +191,32 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
   @Post('signIn')
-  async signIn(@Body() { email, password }: AuthDto) {
+  async signIn(@Body() { email, password }: AuthDto, @Req() req: any) {
     const result = await this.authService.validateUser(email, password);
 
     if (!result) {
       throw new HttpException(UNAUTHORIZED_USER, HttpStatus.UNAUTHORIZED);
     }
 
-    const loginData = await this.authService.logIn(
+    const loggedUser = await this.authService.logIn(
       email,
       result.role,
       result._id,
     );
 
+    req.loggedUser = loggedUser;
+
     await this.telegramService.sendMessage(
-      `Авторизовано користувача: ${email}`,
+      `Авторизовано користувача: ${email} `,
     );
 
-    return { status: HttpStatus.OK, message: LOGIN_SUCCESS, data: loginData };
+    return {
+      status: HttpStatus.OK,
+      message: LOGIN_SUCCESS,
+      data: {
+        access_token: loggedUser.access_token,
+      },
+    };
   }
 
   @UseGuards(JwtAuthGuard)

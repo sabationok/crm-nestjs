@@ -1,4 +1,10 @@
+import { Types } from 'mongoose';
 export declare class UpdateUserDto {
-    name: string;
-    phone: string;
+    _id?: Types.ObjectId;
+    createdAt?: string;
+    passwordHash?: string | undefined;
+    updatedAt?: string;
+    access_token?: string;
+    email?: string;
+    role?: string;
 }

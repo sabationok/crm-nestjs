@@ -1,3 +1,4 @@
+import { TUserRoles } from '../user.model';
 export declare class SetUserRoleDto {
-    role: string;
+    role: TUserRoles;
 }

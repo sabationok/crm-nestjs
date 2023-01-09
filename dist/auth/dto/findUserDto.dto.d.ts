@@ -1,8 +1,10 @@
 import { Types } from 'mongoose';
 export declare class FindUserDto {
-    email?: string;
-    login?: string;
-    role?: string;
     _id?: Types.ObjectId;
+    createdAt?: string;
+    passwordHash?: string | undefined;
+    updatedAt?: string;
     access_token?: string;
+    email?: string;
+    role?: string;
 }

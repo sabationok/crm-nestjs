@@ -4,62 +4,47 @@ import {
   IsBoolean,
   IsObject,
   IsOptional,
+  ValidateNested,
 } from 'class-validator';
-import { ObjectId, Types } from 'mongoose';
+import { Types } from 'mongoose';
+import {
+  IProductAvailabilityInfo,
+  IProductPriceInfo,
+} from './create-product.dto';
 
-export interface IProductPriceInfo {
-  price?: number;
-  cost?: number;
-  currency?: string;
-  sale?: number;
-  isCommission?: boolean;
-  cashbackId?: number;
-}
-
-export interface ICategory {
-  _id: ObjectId;
-  category: string;
-  owner?: string;
-  ownerName?: Types.ObjectId;
-  section?: string;
-  sectionName?: Types.ObjectId;
-}
-
-export interface IProductAvailabilityInfo {
-  availability: 'available' | 'notAvailable' | 'awaiting';
-  standartOrder?: boolean;
-  standartOrderTime?: number;
-  specialOrder?: boolean;
-  specialOrderTime?: number;
-}
-
-export class CreateProductDto {
+export class UpdateProductDto {
+  @IsOptional()
   @IsString()
   approvedStatus?: 'success' | 'pending' | 'reject';
 
+  @IsOptional()
   @IsBoolean()
   visibilityStatus?: boolean;
 
+  @IsOptional()
   @IsString()
   sku?: string;
 
+  @IsOptional()
   @IsString()
   name?: string;
 
+  @IsOptional()
   @IsString()
   brand?: string;
 
+  @IsOptional()
   @IsObject()
+  @ValidateNested()
   priceInfo?: IProductPriceInfo;
 
-  // @IsObject()
-  // categoryInfo?: ICategory;
-
+  @IsOptional()
   @IsString()
   categoryId?: Types.ObjectId;
 
   @IsOptional()
   @IsObject()
+  @ValidateNested()
   availabilityInfo?: IProductAvailabilityInfo;
 
   @IsOptional()

@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, ObjectId } from 'mongoose';
+import { HydratedDocument, ObjectId, Types } from 'mongoose';
 
 export type ProductDocument = HydratedDocument<Product>;
 
-@Schema({ versionKey: false })
+@Schema({ _id: false, versionKey: false })
 export class ProductPriceInfo {
   @Prop({ default: 0 })
   price?: number;
@@ -20,37 +20,29 @@ export class ProductPriceInfo {
   @Prop({ default: false })
   isCommission?: boolean;
 }
-@Schema({ versionKey: false })
-export class SectionInfo {
-  @Prop({ default: null, type: () => Object })
-  _id?: ObjectId;
 
-  @Prop({ default: '000' })
-  name?: string;
-}
-@Schema({ versionKey: false })
+@Schema({ _id: false, versionKey: false })
 export class CategoryInfo {
-  @Prop({ default: null, type: () => Object })
-  ownerId?: ObjectId;
+  @Prop({ default: '000' })
+  sectionName?: string;
+
+  @Prop({ default: null, type: () => Types.ObjectId })
+  section?: Types.ObjectId;
+
+  @Prop({ default: null, type: () => Types.ObjectId })
+  owner?: Types.ObjectId;
 
   @Prop({ default: '000' })
-  owner?: string;
+  ownerName?: string;
 
-  @Prop({ default: null, type: () => Object })
-  _id?: ObjectId;
+  @Prop({ default: null, type: () => Types.ObjectId })
+  _id?: Types.ObjectId;
 
   @Prop({ default: '000' })
-  name?: string;
+  category?: string;
 }
-@Schema({ versionKey: false })
-export class ProductCategoryInfo {
-  @Prop({ default: { SectionInfo }, _id: false })
-  section?: SectionInfo;
 
-  @Prop({ default: { CategoryInfo }, _id: false })
-  category?: CategoryInfo;
-}
-@Schema({ versionKey: false })
+@Schema({ _id: false, versionKey: false })
 export class ProductAvailabilityInfo {
   @Prop({ default: 'notAvailable' })
   availability?: 'available' | 'notAvailable' | 'awaiting';
@@ -68,6 +60,18 @@ export class ProductAvailabilityInfo {
   specialOrderTime?: number;
 }
 
+@Schema({ _id: false, versionKey: false })
+export class Author {
+  @Prop({ default: null })
+  _id?: Types.ObjectId;
+
+  @Prop({ default: null })
+  role?: string;
+
+  @Prop({ default: null })
+  name?: string;
+}
+
 @Schema({ _id: true, timestamps: true, versionKey: false })
 export class Product {
   @Prop({ default: 'pending' })
@@ -76,7 +80,7 @@ export class Product {
   @Prop({ default: false })
   visibilityStatus?: boolean;
 
-  @Prop({ default: null })
+  @Prop({ default: null, unique: true })
   sku?: string;
 
   @Prop({ default: 'Назва товару' })
@@ -85,13 +89,22 @@ export class Product {
   @Prop({ default: 'Назва бренду' })
   brand?: string;
 
+  @Prop({ default: { Author }, type: () => Author })
+  creator: Author;
+
+  @Prop({ default: { Author }, type: () => Author })
+  updator?: Author;
+
   @Prop({ default: { ProductPriceInfo } })
   priceInfo?: ProductPriceInfo;
 
-  @Prop({ default: { ProductCategoryInfo } })
-  categoryInfo?: ProductCategoryInfo;
+  @Prop({ default: null, type: () => Types.ObjectId })
+  categoryId: Types.ObjectId;
 
-  @Prop({ default: { ProductAvailabilityInfo } })
+  @Prop({
+    default: () => ProductAvailabilityInfo,
+    type: () => ProductAvailabilityInfo,
+  })
   availabilityInfo?: ProductAvailabilityInfo;
 
   @Prop({ default: null })

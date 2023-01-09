@@ -41,13 +41,32 @@ let AuthController = class AuthController {
         }
         return { status: common_1.HttpStatus.OK, data: result, message: 'Updating success' };
     }
-    async getCurrentUser(user) {
+    async setUserRoleById(id, roleDto) {
+        const userForUpdate = await this.authService.getUserById(id);
+        if ((userForUpdate === null || userForUpdate === void 0 ? void 0 : userForUpdate.role) === (roleDto === null || roleDto === void 0 ? void 0 : roleDto.role)) {
+            throw new common_1.HttpException(auth_constants_1.ROLE_UPDATE_ERROR, common_1.HttpStatus.NOT_FOUND);
+        }
+        const updatedUser = await this.authService.setUserRoleById(id, roleDto === null || roleDto === void 0 ? void 0 : roleDto.role);
+        if (!updatedUser) {
+            throw new common_1.HttpException(auth_constants_1.ROLE_UPDATE_ERROR, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        const data = {
+            email: updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.email,
+            role: updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.role,
+        };
+        return {
+            status: common_1.HttpStatus.OK,
+            message: (0, auth_constants_1.ROLE_UPDATE_SUCCESS)(updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.email, updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.role),
+            data,
+        };
+    }
+    async getCurrentUser(user, req) {
         const currentUser = await this.authService.getUserById(user._id);
-        console.log(user);
+        const data = Object.assign(Object.assign({}, user), { status: currentUser === null || currentUser === void 0 ? void 0 : currentUser.status });
         return {
             status: common_1.HttpStatus.OK,
             message: 'Current user',
-            data: Object.assign(Object.assign({}, user), { status: currentUser === null || currentUser === void 0 ? void 0 : currentUser.status }),
+            data: req.userInfo,
         };
     }
     async getCurrentUserInfo(user) {
@@ -56,12 +75,13 @@ let AuthController = class AuthController {
             throw new common_1.HttpException('Unauthorized', common_1.HttpStatus.UNAUTHORIZED);
         }
         const addInfo = {
+            _id: userInfo === null || userInfo === void 0 ? void 0 : userInfo._id,
             status: userInfo === null || userInfo === void 0 ? void 0 : userInfo.status,
             role: userInfo === null || userInfo === void 0 ? void 0 : userInfo.role,
             email: userInfo === null || userInfo === void 0 ? void 0 : userInfo.email,
             name: userInfo === null || userInfo === void 0 ? void 0 : userInfo.name,
             phone: userInfo === null || userInfo === void 0 ? void 0 : userInfo.phone,
-            _id: userInfo === null || userInfo === void 0 ? void 0 : userInfo._id,
+            user,
         };
         if ((addInfo === null || addInfo === void 0 ? void 0 : addInfo.role) === 'MANAGER') {
             addInfo.managerInfo = user === null || user === void 0 ? void 0 : user.manager;
@@ -74,13 +94,6 @@ let AuthController = class AuthController {
             message: 'Current user info',
             data: { userInfo, addInfo },
         };
-    }
-    async setUserRoleById(id, roleDto) {
-        const result = await this.authService.setUserRoleById(id, roleDto);
-        if (!result) {
-            throw new common_1.HttpException('Not found user for update ', common_1.HttpStatus.NOT_FOUND);
-        }
-        return { status: common_1.HttpStatus.OK, message: 'Updating success', data: result };
     }
     async register(dto) {
         const oldUser = await this.authService.findUserByEmail(dto.email);
@@ -101,14 +114,21 @@ let AuthController = class AuthController {
         await this.telegramService.sendMessage(`Зареєстровано нового користувача адміністратором: ${newUser}`);
         return { status: common_1.HttpStatus.OK, message: 'New user rigister', newUser };
     }
-    async signIn({ email, password }) {
+    async signIn({ email, password }, req) {
         const result = await this.authService.validateUser(email, password);
         if (!result) {
             throw new common_1.HttpException(auth_constants_1.UNAUTHORIZED_USER, common_1.HttpStatus.UNAUTHORIZED);
         }
-        const loginData = await this.authService.logIn(email, result.role, result._id);
-        await this.telegramService.sendMessage(`Авторизовано користувача: ${email}`);
-        return { status: common_1.HttpStatus.OK, message: auth_constants_1.LOGIN_SUCCESS, data: loginData };
+        const loggedUser = await this.authService.logIn(email, result.role, result._id);
+        req.loggedUser = loggedUser;
+        await this.telegramService.sendMessage(`Авторизовано користувача: ${email} `);
+        return {
+            status: common_1.HttpStatus.OK,
+            message: auth_constants_1.LOGIN_SUCCESS,
+            data: {
+                access_token: loggedUser.access_token,
+            },
+        };
     }
     async signOut(user) {
         const logOutUser = await this.authService.logOut(user._id);
@@ -141,11 +161,21 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "updateUserById", null);
 __decorate([
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
+    (0, common_1.Patch)('setUserRoleById/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, setUserRole_dto_1.SetUserRoleDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "setUserRoleById", null);
+__decorate([
     (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
     (0, common_1.Get)('getCurrentUser'),
     __param(0, (0, getUser_decorator_1.GetUser)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getCurrentUser", null);
 __decorate([
@@ -156,14 +186,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getCurrentUserInfo", null);
-__decorate([
-    (0, common_1.Patch)('setUserRoleById/:id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, setUserRole_dto_1.SetUserRoleDto]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "setUserRoleById", null);
 __decorate([
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.Post)('signUp'),
@@ -185,8 +207,9 @@ __decorate([
     (0, common_1.HttpCode)(200),
     (0, common_1.Post)('signIn'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [auth_dto_1.AuthDto]),
+    __metadata("design:paramtypes", [auth_dto_1.AuthDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signIn", null);
 __decorate([

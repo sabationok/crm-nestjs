@@ -9,8 +9,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductModel = exports.Product = exports.ProductAvailabilityInfo = exports.ProductCategoryInfo = exports.CategoryInfo = exports.SectionInfo = exports.ProductPriceInfo = void 0;
+exports.ProductModel = exports.Product = exports.Author = exports.ProductAvailabilityInfo = exports.CategoryInfo = exports.ProductPriceInfo = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
 let ProductPriceInfo = class ProductPriceInfo {
 };
 __decorate([
@@ -34,59 +35,39 @@ __decorate([
     __metadata("design:type", Boolean)
 ], ProductPriceInfo.prototype, "isCommission", void 0);
 ProductPriceInfo = __decorate([
-    (0, mongoose_1.Schema)({ versionKey: false })
+    (0, mongoose_1.Schema)({ _id: false, versionKey: false })
 ], ProductPriceInfo);
 exports.ProductPriceInfo = ProductPriceInfo;
-let SectionInfo = class SectionInfo {
-};
-__decorate([
-    (0, mongoose_1.Prop)({ default: null, type: () => Object }),
-    __metadata("design:type", Object)
-], SectionInfo.prototype, "_id", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: '000' }),
-    __metadata("design:type", String)
-], SectionInfo.prototype, "name", void 0);
-SectionInfo = __decorate([
-    (0, mongoose_1.Schema)({ versionKey: false })
-], SectionInfo);
-exports.SectionInfo = SectionInfo;
 let CategoryInfo = class CategoryInfo {
 };
 __decorate([
-    (0, mongoose_1.Prop)({ default: null, type: () => Object }),
-    __metadata("design:type", Object)
-], CategoryInfo.prototype, "ownerId", void 0);
+    (0, mongoose_1.Prop)({ default: '000' }),
+    __metadata("design:type", String)
+], CategoryInfo.prototype, "sectionName", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: null, type: () => mongoose_2.Types.ObjectId }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], CategoryInfo.prototype, "section", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: null, type: () => mongoose_2.Types.ObjectId }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], CategoryInfo.prototype, "owner", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: '000' }),
     __metadata("design:type", String)
-], CategoryInfo.prototype, "owner", void 0);
+], CategoryInfo.prototype, "ownerName", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: null, type: () => Object }),
-    __metadata("design:type", Object)
+    (0, mongoose_1.Prop)({ default: null, type: () => mongoose_2.Types.ObjectId }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
 ], CategoryInfo.prototype, "_id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: '000' }),
     __metadata("design:type", String)
-], CategoryInfo.prototype, "name", void 0);
+], CategoryInfo.prototype, "category", void 0);
 CategoryInfo = __decorate([
-    (0, mongoose_1.Schema)({ versionKey: false })
+    (0, mongoose_1.Schema)({ _id: false, versionKey: false })
 ], CategoryInfo);
 exports.CategoryInfo = CategoryInfo;
-let ProductCategoryInfo = class ProductCategoryInfo {
-};
-__decorate([
-    (0, mongoose_1.Prop)({ default: { SectionInfo }, _id: false }),
-    __metadata("design:type", SectionInfo)
-], ProductCategoryInfo.prototype, "section", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: { CategoryInfo }, _id: false }),
-    __metadata("design:type", CategoryInfo)
-], ProductCategoryInfo.prototype, "category", void 0);
-ProductCategoryInfo = __decorate([
-    (0, mongoose_1.Schema)({ versionKey: false })
-], ProductCategoryInfo);
-exports.ProductCategoryInfo = ProductCategoryInfo;
 let ProductAvailabilityInfo = class ProductAvailabilityInfo {
 };
 __decorate([
@@ -110,9 +91,27 @@ __decorate([
     __metadata("design:type", Number)
 ], ProductAvailabilityInfo.prototype, "specialOrderTime", void 0);
 ProductAvailabilityInfo = __decorate([
-    (0, mongoose_1.Schema)({ versionKey: false })
+    (0, mongoose_1.Schema)({ _id: false, versionKey: false })
 ], ProductAvailabilityInfo);
 exports.ProductAvailabilityInfo = ProductAvailabilityInfo;
+let Author = class Author {
+};
+__decorate([
+    (0, mongoose_1.Prop)({ default: null }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], Author.prototype, "_id", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: null }),
+    __metadata("design:type", String)
+], Author.prototype, "role", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: null }),
+    __metadata("design:type", String)
+], Author.prototype, "name", void 0);
+Author = __decorate([
+    (0, mongoose_1.Schema)({ _id: false, versionKey: false })
+], Author);
+exports.Author = Author;
 let Product = class Product {
 };
 __decorate([
@@ -124,7 +123,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Product.prototype, "visibilityStatus", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: null }),
+    (0, mongoose_1.Prop)({ default: null, unique: true }),
     __metadata("design:type", String)
 ], Product.prototype, "sku", void 0);
 __decorate([
@@ -136,15 +135,26 @@ __decorate([
     __metadata("design:type", String)
 ], Product.prototype, "brand", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ default: { Author }, type: () => Author }),
+    __metadata("design:type", Author)
+], Product.prototype, "creator", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: { Author }, type: () => Author }),
+    __metadata("design:type", Author)
+], Product.prototype, "updator", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ default: { ProductPriceInfo } }),
     __metadata("design:type", ProductPriceInfo)
 ], Product.prototype, "priceInfo", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: { ProductCategoryInfo } }),
-    __metadata("design:type", ProductCategoryInfo)
-], Product.prototype, "categoryInfo", void 0);
+    (0, mongoose_1.Prop)({ default: null, type: () => mongoose_2.Types.ObjectId }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], Product.prototype, "categoryId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: { ProductAvailabilityInfo } }),
+    (0, mongoose_1.Prop)({
+        default: () => ProductAvailabilityInfo,
+        type: () => ProductAvailabilityInfo,
+    }),
     __metadata("design:type", ProductAvailabilityInfo)
 ], Product.prototype, "availabilityInfo", void 0);
 __decorate([

@@ -17,7 +17,6 @@ const jwt_1 = require("@nestjs/jwt");
 const jwt_config_1 = require("../configs/jwt_config");
 const passport_1 = require("@nestjs/passport");
 const jwt_strategy_1 = require("../strategies/jwt.strategy");
-const findUser_model_1 = require("./findUser.model");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -31,13 +30,6 @@ AuthModule = __decorate([
                     collection: 'User',
                 },
             ]),
-            mongoose_1.MongooseModule.forFeature([
-                {
-                    name: 'FindUserModel',
-                    schema: findUser_model_1.FindUserModel,
-                    collection: 'User',
-                },
-            ]),
             config_1.ConfigModule,
             jwt_1.JwtModule.registerAsync({
                 imports: [config_1.ConfigModule],
@@ -47,6 +39,7 @@ AuthModule = __decorate([
             passport_1.PassportModule,
         ],
         providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],
+        exports: [auth_service_1.AuthService],
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;

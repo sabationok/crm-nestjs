@@ -19,19 +19,19 @@ const getUser_decorator_1 = require("../decorators/getUser.decorator");
 const jwt_guards_1 = require("../guards/jwt.guards");
 const product_service_1 = require("./product.service");
 const create_product_dto_1 = require("./dto/create-product.dto");
+const auth_service_1 = require("../auth/auth.service");
+const user_model_1 = require("../auth/user.model");
+const update_product_dto_1 = require("./dto/update-product.dto");
 let ProductController = class ProductController {
-    constructor(productService) {
+    constructor(productService, authService) {
         this.productService = productService;
+        this.authService = authService;
     }
     async getAll(user) {
         return this.productService.findAll();
     }
     async getAllforAll(req) {
         return this.productService.findAll();
-    }
-    async create(dto, req) {
-        console.log(dto);
-        return this.productService.create(dto);
     }
     async getBiId(id) {
         return this.productService.findByProductId(id);
@@ -42,12 +42,47 @@ let ProductController = class ProductController {
             throw new common_1.HttpException('', common_1.HttpStatus.NOT_FOUND);
         }
     }
-    async patch(id, dto) {
-        const updatedDoc = await this.productService.updateById(id, dto);
-        if (!updatedDoc) {
-            throw new common_1.HttpException('', common_1.HttpStatus.NOT_FOUND);
+    async create(dto, user) {
+        try {
+            const creator = await this.authService.getUserById(user._id);
+            const newProduct = Object.assign({ creator: {
+                    _id: user._id,
+                    role: user.role,
+                    name: creator === null || creator === void 0 ? void 0 : creator.name,
+                } }, dto);
+            common_1.Logger.log(creator === null || creator === void 0 ? void 0 : creator.email);
+            const createdProduct = await this.productService.create(newProduct);
+            if (!createdProduct) {
+                throw new common_1.HttpException('Помилка при створенні продукту', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return {
+                status: common_1.HttpStatus.CREATED,
+                message: 'Створено новий продукт',
+                data: createdProduct,
+            };
         }
-        return updatedDoc;
+        catch (error) {
+            common_1.Logger.log(error);
+            throw new common_1.HttpException('Помилка бази даних', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async patch(productId, dto, user) {
+        const creator = await this.authService.getUserById(user._id);
+        const updateProductData = Object.assign({ updator: {
+                _id: user._id,
+                user: creator === null || creator === void 0 ? void 0 : creator.role,
+                name: creator === null || creator === void 0 ? void 0 : creator.name,
+            } }, dto);
+        const updatedDoc = await this.productService.updateById(productId, updateProductData);
+        if (!updatedDoc) {
+            throw new common_1.HttpException('Продукт для оновлення, відсутній', common_1.HttpStatus.NOT_FOUND);
+        }
+        return {
+            status: common_1.HttpStatus.OK,
+            message: `Оновлено "${productId}"`,
+            data: updatedDoc,
+            updateProductData,
+        };
     }
     async find(dto) { }
 };
@@ -56,7 +91,7 @@ __decorate([
     (0, common_1.Get)('getAll'),
     __param(0, (0, getUser_decorator_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [user_model_1.User]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "getAll", null);
 __decorate([
@@ -66,16 +101,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "getAllforAll", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
-    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
-    (0, common_1.Post)('create'),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, request_decorator_1.UserRequest)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_product_dto_1.CreateProductDto, Object]),
-    __metadata("design:returntype", Promise)
-], ProductController.prototype, "create", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
     (0, common_1.Get)(':id'),
@@ -93,12 +118,24 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "delete", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.Post)('create'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, getUser_decorator_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, create_product_dto_1.CreateProductDto]),
+    __metadata("design:paramtypes", [create_product_dto_1.CreateProductDto, Object]),
+    __metadata("design:returntype", Promise)
+], ProductController.prototype, "create", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
+    (0, common_1.Patch)('update/:productId'),
+    __param(0, (0, common_1.Param)('productId')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, getUser_decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_product_dto_1.UpdateProductDto, Object]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "patch", null);
 __decorate([
@@ -111,7 +148,8 @@ __decorate([
 ], ProductController.prototype, "find", null);
 ProductController = __decorate([
     (0, common_1.Controller)('product'),
-    __metadata("design:paramtypes", [product_service_1.ProductService])
+    __metadata("design:paramtypes", [product_service_1.ProductService,
+        auth_service_1.AuthService])
 ], ProductController);
 exports.ProductController = ProductController;
 //# sourceMappingURL=product.controller.js.map

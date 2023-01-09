@@ -1,24 +1,19 @@
-import { ObjectId } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 export interface IProductPriceInfo {
     price?: number;
     cost?: number;
     currency?: string;
     sale?: number;
     isCommission?: boolean;
+    cashbackId?: number;
 }
-export interface Section {
-    id: ObjectId;
-    name: string;
-}
-export interface Category {
-    ownerName?: ObjectId;
+export interface ICategory {
+    _id: ObjectId;
+    category: string;
     owner?: string;
-    id: ObjectId;
-    name: string;
-}
-export interface IProductCategoryInfo {
-    section: Section;
-    category: Category;
+    ownerName?: Types.ObjectId;
+    section?: string;
+    sectionName?: Types.ObjectId;
 }
 export interface IProductAvailabilityInfo {
     availability: 'available' | 'notAvailable' | 'awaiting';
@@ -34,7 +29,7 @@ export declare class CreateProductDto {
     name?: string;
     brand?: string;
     priceInfo?: IProductPriceInfo;
-    categoryInfo?: IProductCategoryInfo;
+    categoryId?: Types.ObjectId;
     availabilityInfo?: IProductAvailabilityInfo;
     description?: string;
     innerComment?: string;

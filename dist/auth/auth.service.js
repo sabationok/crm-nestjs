@@ -20,9 +20,8 @@ const jwt_1 = require("@nestjs/jwt");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 let AuthService = class AuthService {
-    constructor(userModel, findUserModel, jwtService) {
+    constructor(userModel, jwtService) {
         this.userModel = userModel;
-        this.findUserModel = findUserModel;
         this.jwtService = jwtService;
     }
     async getAllUsers() {
@@ -32,7 +31,7 @@ let AuthService = class AuthService {
         return this.userModel.findById(id).exec();
     }
     async findUserByEmail(email) {
-        return this.findUserModel.findOne({ email }).exec();
+        return this.userModel.findOne({ email }).exec();
     }
     async getCurrentUserInfo(email) {
         return this.findUserByEmail(email);
@@ -46,19 +45,13 @@ let AuthService = class AuthService {
         return newUser.save();
     }
     async updateUserById(id, updateDto) {
-        const updateData = {
-            name: updateDto === null || updateDto === void 0 ? void 0 : updateDto.name,
-            phone: updateDto === null || updateDto === void 0 ? void 0 : updateDto.phone,
-        };
-        const updatedUser = this.userModel.findByIdAndUpdate(id, updateData, {
+        const updatedUser = this.userModel.findByIdAndUpdate(id, updateDto, {
             new: true,
         });
         return updatedUser;
     }
-    async setUserRoleById(id, roleDto) {
-        const updatedUser = this.userModel.findByIdAndUpdate(id, roleDto, {
-            new: true,
-        });
+    async setUserRoleById(id, role) {
+        const updatedUser = this.userModel.findByIdAndUpdate(id, { role }, { new: true });
         return updatedUser;
     }
     async validateUser(email, password) {
@@ -79,21 +72,16 @@ let AuthService = class AuthService {
         if (!logedUser) {
             throw new common_1.UnauthorizedException(auth_constants_1.USER_NOT_FOUND_ERROR);
         }
-        return {
-            access_token,
-        };
+        return logedUser;
     }
     async logOut(_id) {
-        const userForLogOut = await this.getUserById(_id);
         return this.userModel.findByIdAndUpdate(_id, { access_token: '' }, { new: true });
     }
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)('UserModel')),
-    __param(1, (0, mongoose_1.InjectModel)('FindUserModel')),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model,
         jwt_1.JwtService])
 ], AuthService);
 exports.AuthService = AuthService;
