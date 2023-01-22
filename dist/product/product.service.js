@@ -16,6 +16,7 @@ exports.ProductService = void 0;
 const mongoose_1 = require("mongoose");
 const common_1 = require("@nestjs/common");
 const mongoose_2 = require("@nestjs/mongoose");
+const product_model_1 = require("./product.model");
 let ProductService = class ProductService {
     constructor(productModel) {
         this.productModel = productModel;
@@ -38,7 +39,7 @@ let ProductService = class ProductService {
 };
 ProductService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_2.InjectModel)('ProductModel')),
+    __param(0, (0, mongoose_2.InjectModel)(product_model_1.Product.name)),
     __metadata("design:paramtypes", [mongoose_1.Model])
 ], ProductService);
 exports.ProductService = ProductService;

@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 
 import { OrderDocument, OrderModel, Order } from './order.model';
 import { CreateOrderDto } from './dto/order-create.dto';
+
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class OrderService {
   constructor(
-    @InjectModel('OrderModel')
+    @InjectModel(Order.name)
     private readonly orderModel: Model<OrderDocument>,
   ) {}
 
@@ -28,8 +29,8 @@ export class OrderService {
     return this.orderModel.findByIdAndUpdate(id, dto).exec();
   }
 
-  async findById(id: string): Promise<Order[]> {
-    return this.orderModel.find({ _id: id }).exec();
+  async findById(id: string): Promise<Order | null> {
+    return this.orderModel.findById(id).exec();
   }
 
   async findByCreatorId(id: string): Promise<Order[]> {
@@ -38,5 +39,29 @@ export class OrderService {
 
   async findByManagerId(id: string): Promise<Order[]> {
     return this.orderModel.find({ managerId: id }).exec();
+  }
+
+  async addShipment(orderId: string, shipmentId: string) {
+    return this.orderModel.findByIdAndUpdate(
+      orderId,
+      { $addToSet: { shipments: shipmentId } },
+      { new: true },
+    );
+  }
+  async removeShipment(orderId: string, shipmentId: string) {
+    return this.orderModel.findByIdAndUpdate(
+      orderId,
+      { $pull: { shipments: shipmentId } },
+      { new: true },
+    );
+  }
+  async getOrderWithShipments(orderId: string) {
+    return (
+      this.orderModel
+        .findById(orderId)
+        .populate({ path: 'shipments', select: 'ttn' })
+        // .populate({ path: 'creator', select: 'role' })
+        .exec()
+    );
   }
 }

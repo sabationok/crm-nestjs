@@ -28,19 +28,40 @@ let ProductController = class ProductController {
         this.authService = authService;
     }
     async getAll(user) {
-        return this.productService.findAll();
+        const products = await this.productService.findAll();
+        if (!products) {
+            throw new common_1.HttpException('Not found any products', common_1.HttpStatus.NOT_FOUND);
+        }
+        return {
+            status: common_1.HttpStatus.OK,
+            message: 'Found products',
+            data: products,
+        };
     }
     async getAllforAll(req) {
         return this.productService.findAll();
     }
-    async getBiId(id) {
-        return this.productService.findByProductId(id);
+    async getBiId({ id }) {
+        const product = await this.productService.findByProductId(id);
+        if (!product) {
+            throw new common_1.HttpException('Not found product', common_1.HttpStatus.NOT_FOUND);
+        }
+        return {
+            status: common_1.HttpStatus.OK,
+            message: 'Found product',
+            data: product,
+        };
     }
     async delete(id) {
         const deletedDoc = await this.productService.delete(id);
         if (!deletedDoc) {
-            throw new common_1.HttpException('', common_1.HttpStatus.NOT_FOUND);
+            throw new common_1.HttpException('Not product for deleting', common_1.HttpStatus.NOT_FOUND);
         }
+        return {
+            status: common_1.HttpStatus.OK,
+            message: 'Deleting success',
+            data: deletedDoc,
+        };
     }
     async create(dto, user) {
         try {
@@ -106,7 +127,7 @@ __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "getBiId", null);
 __decorate([

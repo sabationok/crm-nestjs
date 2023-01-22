@@ -9,9 +9,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrderModel = exports.Order = exports.OrderItem = exports.OrderItemComponent = exports.IPaymentinfo = void 0;
+exports.OrderModel = exports.testOrder = exports.Order = exports.OrderItem = exports.OrderItemComponent = exports.IPaymentinfo = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const user_model_1 = require("../auth/user.model");
+const shipment_model_1 = require("../shipments/shipment.model");
 let IPaymentinfo = class IPaymentinfo {
 };
 __decorate([
@@ -31,15 +33,19 @@ __decorate([
     __metadata("design:type", Number)
 ], IPaymentinfo.prototype, "total", void 0);
 IPaymentinfo = __decorate([
-    (0, mongoose_1.Schema)({ versionKey: false })
+    (0, mongoose_1.Schema)({ _id: false, timestamps: false, versionKey: false })
 ], IPaymentinfo);
 exports.IPaymentinfo = IPaymentinfo;
 let OrderItemComponent = class OrderItemComponent {
 };
 __decorate([
-    (0, mongoose_1.Prop)({ default: null, type: () => [mongoose_2.Types.ObjectId] }),
+    (0, mongoose_1.Prop)({ default: null, ref: 'Products', type: () => [mongoose_2.Types.ObjectId] }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], OrderItemComponent.prototype, "_id", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: null }),
+    __metadata("design:type", String)
+], OrderItemComponent.prototype, "sku", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", String)
@@ -59,55 +65,43 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
-], OrderItemComponent.prototype, "sale", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: 0 }),
-    __metadata("design:type", Number)
-], OrderItemComponent.prototype, "summ", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: 0 }),
-    __metadata("design:type", Number)
-], OrderItemComponent.prototype, "saleSumm", void 0);
+], OrderItemComponent.prototype, "total", void 0);
 OrderItemComponent = __decorate([
-    (0, mongoose_1.Schema)({ versionKey: false })
+    (0, mongoose_1.Schema)({ _id: false, timestamps: false, versionKey: false })
 ], OrderItemComponent);
 exports.OrderItemComponent = OrderItemComponent;
 let OrderItem = class OrderItem {
 };
 __decorate([
-    (0, mongoose_1.Prop)({ default: null, type: () => [mongoose_2.Types.ObjectId] }),
+    (0, mongoose_1.Prop)({ default: null, ref: 'Products', type: () => [mongoose_2.Types.ObjectId] }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], OrderItem.prototype, "_id", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: null }),
-    __metadata("design:type", String)
-], OrderItem.prototype, "imgUrl", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: null }),
-    __metadata("design:type", String)
-], OrderItem.prototype, "name", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: null }),
-    __metadata("design:type", String)
-], OrderItem.prototype, "sku", void 0);
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], OrderItem.prototype, "quantity", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
-], OrderItem.prototype, "totalPrice", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: null }),
-    __metadata("design:type", String)
-], OrderItem.prototype, "ttn", void 0);
+], OrderItem.prototype, "price", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
-], OrderItem.prototype, "ttnCost", void 0);
+], OrderItem.prototype, "sale", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], OrderItem.prototype, "total", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: null, ref: 'Shipments' }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], OrderItem.prototype, "shipment", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: { OrderItemComponent } }),
     __metadata("design:type", Array)
 ], OrderItem.prototype, "components", void 0);
 OrderItem = __decorate([
-    (0, mongoose_1.Schema)({ versionKey: false })
+    (0, mongoose_1.Schema)({ _id: false, timestamps: false, versionKey: false })
 ], OrderItem);
 exports.OrderItem = OrderItem;
 let Order = class Order {
@@ -117,13 +111,9 @@ __decorate([
     __metadata("design:type", String)
 ], Order.prototype, "number", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: null, type: () => mongoose_2.Types.ObjectId }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: user_model_1.User.name }),
+    __metadata("design:type", user_model_1.User)
 ], Order.prototype, "creator", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: null, type: () => mongoose_2.Types.ObjectId }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], Order.prototype, "updator", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: 'standart' }),
     __metadata("design:type", String)
@@ -133,11 +123,7 @@ __decorate([
     __metadata("design:type", String)
 ], Order.prototype, "status", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: () => mongoose_2.Types.ObjectId }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
-], Order.prototype, "managerId", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ default: { IPaymentinfo }, _id: false }),
+    (0, mongoose_1.Prop)({ default: { IPaymentinfo } }),
     __metadata("design:type", IPaymentinfo)
 ], Order.prototype, "payment", void 0);
 __decorate([
@@ -145,24 +131,25 @@ __decorate([
     __metadata("design:type", Array)
 ], Order.prototype, "contentIdArr", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: [], type: () => [OrderItem] }),
+    (0, mongoose_1.Prop)({ default: [OrderItem], type: () => [OrderItem] }),
     __metadata("design:type", Array)
 ], Order.prototype, "content", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
-], Order.prototype, "totalPrice", void 0);
+], Order.prototype, "totalValue", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
-], Order.prototype, "totalDeliveriesCount", void 0);
+], Order.prototype, "totalShipmentsCount", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: [], type: () => [Object] }),
+    (0, mongoose_1.Prop)({ type: [{ type: mongoose_2.Types.ObjectId, ref: shipment_model_1.Shipment.name }] }),
     __metadata("design:type", Array)
-], Order.prototype, "deliveries", void 0);
+], Order.prototype, "shipments", void 0);
 Order = __decorate([
     (0, mongoose_1.Schema)({ _id: true, timestamps: true, versionKey: false })
 ], Order);
 exports.Order = Order;
+exports.testOrder = 'test =======================================================';
 exports.OrderModel = mongoose_1.SchemaFactory.createForClass(Order);
 //# sourceMappingURL=order.model.js.map

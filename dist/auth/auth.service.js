@@ -19,13 +19,14 @@ const auth_constants_1 = require("./auth.constants");
 const jwt_1 = require("@nestjs/jwt");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const user_model_1 = require("./user.model");
 let AuthService = class AuthService {
     constructor(userModel, jwtService) {
         this.userModel = userModel;
         this.jwtService = jwtService;
     }
-    async getAllUsers() {
-        return this.userModel.find().exec();
+    async getAllUsers(projection) {
+        return this.userModel.find({}, projection).exec();
     }
     async getUserById(id) {
         return this.userModel.findById(id).exec();
@@ -33,8 +34,8 @@ let AuthService = class AuthService {
     async findUserByEmail(email) {
         return this.userModel.findOne({ email }).exec();
     }
-    async getCurrentUserInfo(email) {
-        return this.findUserByEmail(email);
+    async getCurrentUserInfo(id) {
+        return this.userModel.findById(id, '-passwordHash -access_token');
     }
     async createUser(dto) {
         const salt = (0, bcryptjs_1.genSaltSync)(10);
@@ -63,10 +64,11 @@ let AuthService = class AuthService {
         if (!isCorrectPassword) {
             throw new common_1.UnauthorizedException(auth_constants_1.WRONG_CREDENTIALS_ERROR);
         }
-        return { email: user.email, role: user.role, _id: user._id };
+        return user;
     }
-    async logIn(email, role, _id) {
-        const payload = { role, _id };
+    async logIn(_id, role, status) {
+        const payload = { _id, role, status };
+        console.log('payload', payload);
         const access_token = await this.jwtService.signAsync(payload);
         const logedUser = await this.userModel.findByIdAndUpdate(_id, { access_token }, { new: true });
         if (!logedUser) {
@@ -80,7 +82,7 @@ let AuthService = class AuthService {
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)('UserModel')),
+    __param(0, (0, mongoose_1.InjectModel)(user_model_1.User.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         jwt_1.JwtService])
 ], AuthService);

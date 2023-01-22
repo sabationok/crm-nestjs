@@ -8,16 +8,20 @@ export declare class AuthController {
     private readonly authService;
     private readonly telegramService;
     constructor(authService: AuthService, telegramService: TelegramService);
-    getAll(): Promise<import("./findUser.model").FindUser[]>;
+    getAll(): Promise<{
+        status: HttpStatus;
+        message: string;
+        data: import("./user.model").FindUser[];
+    }>;
     getUserById(userId: string): Promise<{
         status: HttpStatus;
-        data: import("./findUser.model").FindUser | null;
         message: string;
+        data: import("./user.model").FindUser | null;
     }>;
     updateUserById(id: string, updateDto: UpdateUserDto): Promise<{
         status: HttpStatus;
-        data: import("./user.model").User;
         message: string;
+        data: import("./user.model").User;
     }>;
     setUserRoleById(id: string, roleDto: SetUserRoleDto): Promise<{
         status: HttpStatus;
@@ -35,10 +39,7 @@ export declare class AuthController {
     getCurrentUserInfo(user: any): Promise<{
         status: HttpStatus;
         message: string;
-        data: {
-            userInfo: import("./findUser.model").FindUser;
-            addInfo: any;
-        };
+        data: import("./user.model").FindUser;
     }>;
     register(dto: AuthDto): Promise<{
         status: HttpStatus;

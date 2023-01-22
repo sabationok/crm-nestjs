@@ -23,7 +23,6 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { User } from 'src/auth/user.model';
-import { UserStorage } from 'src/helpers/userStorage.helper';
 import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('product')
@@ -36,7 +35,17 @@ export class ProductController {
   @UseGuards(JwtAuthGuard)
   @Get('getAll')
   async getAll(@GetUser() user: User) {
-    return this.productService.findAll();
+    const products = await this.productService.findAll();
+
+    if (!products) {
+      throw new HttpException('Not found any products', HttpStatus.NOT_FOUND);
+    }
+
+    return {
+      status: HttpStatus.OK,
+      message: 'Found products',
+      data: products,
+    };
   }
 
   @Get('getAllforAll')
@@ -46,8 +55,18 @@ export class ProductController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async getBiId(@Param('id') id: string) {
-    return this.productService.findByProductId(id);
+  async getBiId(@Param('id') { id }: any) {
+    const product = await this.productService.findByProductId(id);
+
+    if (!product) {
+      throw new HttpException('Not found product', HttpStatus.NOT_FOUND);
+    }
+
+    return {
+      status: HttpStatus.OK,
+      message: 'Found product',
+      data: product,
+    };
   }
 
   @UseGuards(JwtAuthGuard)
@@ -56,8 +75,14 @@ export class ProductController {
     const deletedDoc = await this.productService.delete(id);
 
     if (!deletedDoc) {
-      throw new HttpException('', HttpStatus.NOT_FOUND);
+      throw new HttpException('Not product for deleting', HttpStatus.NOT_FOUND);
     }
+
+    return {
+      status: HttpStatus.OK,
+      message: 'Deleting success',
+      data: deletedDoc,
+    };
   }
 
   @UseGuards(JwtAuthGuard)

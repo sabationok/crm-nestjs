@@ -21,14 +21,14 @@ OrderModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 {
-                    name: 'OrderModel',
+                    name: order_model_1.Order.name,
                     schema: order_model_1.OrderModel,
-                    collection: 'Orders',
                 },
             ]),
             config_1.ConfigModule,
         ],
         providers: [order_service_1.OrderService],
+        exports: [order_service_1.OrderService],
     })
 ], OrderModule);
 exports.OrderModule = OrderModule;

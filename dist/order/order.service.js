@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderService = void 0;
 const common_1 = require("@nestjs/common");
+const order_model_1 = require("./order.model");
 const mongoose_1 = require("mongoose");
 const mongoose_2 = require("@nestjs/mongoose");
 let OrderService = class OrderService {
@@ -33,7 +34,7 @@ let OrderService = class OrderService {
         return this.orderModel.findByIdAndUpdate(id, dto).exec();
     }
     async findById(id) {
-        return this.orderModel.find({ _id: id }).exec();
+        return this.orderModel.findById(id).exec();
     }
     async findByCreatorId(id) {
         return this.orderModel.find({ creatorId: id }).exec();
@@ -41,10 +42,22 @@ let OrderService = class OrderService {
     async findByManagerId(id) {
         return this.orderModel.find({ managerId: id }).exec();
     }
+    async addShipment(orderId, shipmentId) {
+        return this.orderModel.findByIdAndUpdate(orderId, { $addToSet: { shipments: shipmentId } }, { new: true });
+    }
+    async removeShipment(orderId, shipmentId) {
+        return this.orderModel.findByIdAndUpdate(orderId, { $pull: { shipments: shipmentId } }, { new: true });
+    }
+    async getOrderWithShipments(orderId) {
+        return (this.orderModel
+            .findById(orderId)
+            .populate({ path: 'shipments', select: 'ttn' })
+            .exec());
+    }
 };
 OrderService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_2.InjectModel)('OrderModel')),
+    __param(0, (0, mongoose_2.InjectModel)(order_model_1.Order.name)),
     __metadata("design:paramtypes", [mongoose_1.Model])
 ], OrderService);
 exports.OrderService = OrderService;

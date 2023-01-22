@@ -21,7 +21,7 @@ CategoryModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 {
-                    name: 'CategoryModel',
+                    name: category_model_1.Category.name,
                     schema: category_model_1.CategoryModel,
                     collection: 'Categories',
                 },

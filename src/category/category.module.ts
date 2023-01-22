@@ -3,7 +3,7 @@ import { CategoryService } from './category.service';
 import { CategoryController } from './category.controller';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CategoryModel } from './category.model';
+import { Category, CategoryModel } from './category.model';
 
 @Module({
   controllers: [CategoryController],
@@ -11,7 +11,7 @@ import { CategoryModel } from './category.model';
   imports: [
     MongooseModule.forFeature([
       {
-        name: 'CategoryModel',
+        name: Category.name,
         schema: CategoryModel,
         collection: 'Categories',
       },

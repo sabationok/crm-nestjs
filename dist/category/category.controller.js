@@ -48,6 +48,7 @@ let CategoryController = class CategoryController {
     }
     async getById(id, user) {
         const result = await this.categoryServise.findById(id);
+        console.log('id', id);
         if (!result) {
             throw new common_1.HttpException(`Not found any category with id:${id}`, common_1.HttpStatus.NOT_FOUND);
         }

@@ -8,7 +8,16 @@ export declare class OrderService {
     create(dto: CreateOrderDto): Promise<Order>;
     delete(id: string): Promise<Order | null>;
     updateById(id: string, dto: CreateOrderDto): Promise<Order | null>;
-    findById(id: string): Promise<Order[]>;
+    findById(id: string): Promise<Order | null>;
     findByCreatorId(id: string): Promise<Order[]>;
     findByManagerId(id: string): Promise<Order[]>;
+    addShipment(orderId: string, shipmentId: string): Promise<(Order & import("mongoose").Document<any, any, any> & {
+        _id: any;
+    }) | null>;
+    removeShipment(orderId: string, shipmentId: string): Promise<(Order & import("mongoose").Document<any, any, any> & {
+        _id: any;
+    }) | null>;
+    getOrderWithShipments(orderId: string): Promise<Order & import("mongoose").Document<any, any, any> & {
+        _id: any;
+    }>;
 }

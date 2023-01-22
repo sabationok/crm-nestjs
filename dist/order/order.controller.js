@@ -15,33 +15,64 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderController = void 0;
 const common_1 = require("@nestjs/common");
 const order_service_1 = require("./order.service");
-const request_decorator_1 = require("../decorators/request.decorator");
 const order_create_dto_1 = require("./dto/order-create.dto");
 let OrderController = class OrderController {
     constructor(orderService) {
         this.orderService = orderService;
     }
-    async getAll(req) {
+    async getAll() {
         return this.orderService.findAll();
     }
-    async create(dto, req) {
-        const newOrder = await this.orderService.create(dto);
-        return { message: 'Orders created successfully', data: newOrder };
+    async getShimentsByOrderId(id) {
+        const orderPopulated = await this.orderService.getOrderWithShipments(id);
+        if (!orderPopulated) {
+            throw new common_1.HttpException('Order not found', common_1.HttpStatus.NOT_FOUND);
+        }
+        return {
+            status: common_1.HttpStatus.OK,
+            message: 'Order with shipments',
+            data: orderPopulated,
+        };
+    }
+    async addSipmentToOrder(id) { }
+    async create(dto) {
+        const newOrderData = Object.assign({ creator: '63ba350d7e5d95426e0fb2be' }, dto);
+        const newOrder = await this.orderService.create(newOrderData);
+        if (!newOrder) {
+            throw new common_1.HttpException('Createing error', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return {
+            status: common_1.HttpStatus.OK,
+            message: 'Order created',
+            data: newOrder,
+        };
     }
 };
 __decorate([
     (0, common_1.Get)('getAll'),
-    __param(0, (0, request_decorator_1.UserRequest)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], OrderController.prototype, "getAll", null);
 __decorate([
+    (0, common_1.Get)('/:id/shipments'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], OrderController.prototype, "getShimentsByOrderId", null);
+__decorate([
+    (0, common_1.Patch)('/:id/addShipment'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], OrderController.prototype, "addSipmentToOrder", null);
+__decorate([
     (0, common_1.Post)('create'),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, request_decorator_1.UserRequest)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [order_create_dto_1.CreateOrderDto, Object]),
+    __metadata("design:paramtypes", [order_create_dto_1.CreateOrderDto]),
     __metadata("design:returntype", Promise)
 ], OrderController.prototype, "create", null);
 OrderController = __decorate([

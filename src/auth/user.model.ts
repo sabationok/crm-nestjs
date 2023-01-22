@@ -64,4 +64,16 @@ export class User {
   access_token?: string;
 }
 
+@Schema({ _id: true, timestamps: true, versionKey: false })
+export class FindUser extends User {
+  @Prop({ type: () => Types.ObjectId })
+  _id?: Types.ObjectId;
+
+  @Prop({ type: () => Date })
+  createdAt?: Date;
+
+  @Prop({ type: () => Date })
+  updatedAt?: Date;
+}
+
 export const UserModel = SchemaFactory.createForClass(User);

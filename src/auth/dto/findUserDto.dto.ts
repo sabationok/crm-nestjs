@@ -29,4 +29,8 @@ export class FindUserDto {
   @IsOptional()
   @IsString()
   role?: string;
+
+  @IsOptional()
+  @IsString()
+  status?: string;
 }

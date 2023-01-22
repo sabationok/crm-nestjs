@@ -58,6 +58,8 @@ export class CategoryController {
   async getById(@Param('id') id: string, @GetUser() user: any) {
     const result = await this.categoryServise.findById(id);
 
+    console.log('id', id);
+
     if (!result) {
       throw new HttpException(
         `Not found any category with id:${id}`,

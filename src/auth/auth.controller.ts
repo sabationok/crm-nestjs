@@ -16,9 +16,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { GetUser } from 'src/decorators/getUser.decorator';
-import { UserRequest } from 'src/decorators/request.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt.guards';
-import { UserStorage } from 'src/helpers/userStorage.helper';
 import { TelegramService } from 'src/telegram/telegram.service';
 import {
   ALREADY_REGISTERED_ERROR,
@@ -44,7 +42,12 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('getAllUsers')
   async getAll() {
-    return this.authService.getAllUsers();
+    const users = await this.authService.getAllUsers();
+    return {
+      status: HttpStatus.OK,
+      message: 'All users',
+      data: users,
+    };
   }
 
   @UseGuards(JwtAuthGuard)
@@ -52,7 +55,11 @@ export class AuthController {
   async getUserById(@Query('userId') userId: string) {
     const result = await this.authService.getUserById(userId);
 
-    return { status: HttpStatus.OK, data: result, message: 'Found user' };
+    return {
+      status: HttpStatus.OK,
+      message: 'Found user',
+      data: result,
+    };
   }
 
   @UseGuards(JwtAuthGuard)
@@ -69,7 +76,11 @@ export class AuthController {
         HttpStatus.NOT_FOUND,
       );
     }
-    return { status: HttpStatus.OK, data: result, message: 'Updating success' };
+    return {
+      status: HttpStatus.OK,
+      message: 'Updating success',
+      data: result,
+    };
   }
 
   @UsePipes(new ValidationPipe())
@@ -112,46 +123,27 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('getCurrentUser')
   async getCurrentUser(@GetUser() user: any, @Req() req: any) {
-    const currentUser = await this.authService.getUserById(user._id);
-
-    const data = { ...user, status: currentUser?.status };
-
+    console.log(user);
     return {
       status: HttpStatus.OK,
       message: 'Current user',
-      data: req.userInfo,
+      data: user,
     };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('getCurrentUserInfo')
   async getCurrentUserInfo(@GetUser() user: any) {
-    const userInfo = await this.authService.getCurrentUserInfo(user.email);
+    const userInfo = await this.authService.getCurrentUserInfo(user._id);
 
     if (!userInfo) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    const addInfo: any = {
-      _id: userInfo?._id,
-      status: userInfo?.status,
-      role: userInfo?.role,
-      email: userInfo?.email,
-      name: userInfo?.name,
-      phone: userInfo?.phone,
-      user,
-    };
-
-    if (addInfo?.role === 'MANAGER') {
-      addInfo.managerInfo = user?.manager;
-    }
-    if (userInfo?.role === 'VENDOR') {
-      addInfo.venroInfo = user?.vendor;
-    }
     return {
       status: HttpStatus.OK,
       message: 'Current user info',
-      data: { userInfo, addInfo },
+      data: userInfo,
     };
   }
 
@@ -174,7 +166,6 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   @Post('signUpByAdmin')
   async registerByAdmin(@Body() dto: AuthDto) {
-    console.log(dto);
     const oldUser = await this.authService.findUserByEmail(dto.email);
 
     if (oldUser) {
@@ -194,17 +185,17 @@ export class AuthController {
   async signIn(@Body() { email, password }: AuthDto, @Req() req: any) {
     const result = await this.authService.validateUser(email, password);
 
+    console.log('loggedUser', result);
+
     if (!result) {
       throw new HttpException(UNAUTHORIZED_USER, HttpStatus.UNAUTHORIZED);
     }
 
     const loggedUser = await this.authService.logIn(
-      email,
-      result.role,
       result._id,
+      result.role,
+      result.status,
     );
-
-    req.loggedUser = loggedUser;
 
     await this.telegramService.sendMessage(
       `Авторизовано користувача: ${email} `,

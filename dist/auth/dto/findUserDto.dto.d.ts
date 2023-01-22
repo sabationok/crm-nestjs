@@ -7,4 +7,5 @@ export declare class FindUserDto {
     access_token?: string;
     email?: string;
     role?: string;
+    status?: string;
 }

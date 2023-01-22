@@ -8,7 +8,7 @@ import { CreateCategoryDto } from './dto/create-category.dt';
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectModel('CategoryModel')
+    @InjectModel(Category.name)
     private readonly categoryModel: Model<CategoryDocument>,
   ) {}
 

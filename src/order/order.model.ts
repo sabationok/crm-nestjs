@@ -1,11 +1,20 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, ObjectId, Types } from 'mongoose';
-export type OrderDocument = HydratedDocument<Order>;
+import {
+  HydratedDocument,
+  ObjectId,
+  SchemaTypes,
+  Types,
+  Document,
+} from 'mongoose';
+import { User } from 'src/auth/user.model';
+import { Shipment, ShipmentDocument } from 'src/shipments/shipment.model';
+// export type OrderDocument = HydratedDocument<Order>;
+export type OrderDocument = Order & Document;
 
-@Schema({ versionKey: false })
+@Schema({ _id: false, timestamps: false, versionKey: false })
 export class IPaymentinfo {
   @Prop({ default: null })
-  type?: 'iban' | 'card' | 'iban_bonuses' | 'card_bonuses';
+  type?: 'iban' | 'card' | 'iban_bonuses' | 'card_bonuses' | 'forFree';
 
   @Prop({ default: 'pending' })
   status?: 'pending' | 'success' | 'rejected' | 'modified';
@@ -16,10 +25,14 @@ export class IPaymentinfo {
   @Prop({ default: 0 })
   total?: number;
 }
-@Schema({ versionKey: false })
+
+@Schema({ _id: false, timestamps: false, versionKey: false })
 export class OrderItemComponent {
-  @Prop({ default: null, type: () => [Types.ObjectId] })
+  @Prop({ default: null, ref: 'Products', type: () => [Types.ObjectId] })
   _id?: Types.ObjectId;
+
+  @Prop({ default: null })
+  sku?: string;
 
   @Prop({ default: null })
   atribute_1?: string;
@@ -34,37 +47,40 @@ export class OrderItemComponent {
   price?: number;
 
   @Prop({ default: 0 })
+  total?: number;
+}
+
+@Schema({ _id: false, timestamps: false, versionKey: false })
+export class OrderItem {
+  @Prop({ default: null, ref: 'Products', type: () => [Types.ObjectId] })
+  _id?: Types.ObjectId;
+
+  // @Prop({ default: null })
+  // imgUrl?: string;
+
+  // @Prop({ default: null })
+  // name?: string;
+
+  // @Prop({ default: null })
+  // sku?: string;
+
+  @Prop({ default: 0 })
+  quantity?: number;
+
+  @Prop({ default: 0 })
+  price?: number;
+
+  @Prop({ default: 0 })
   sale?: number;
 
   @Prop({ default: 0 })
-  summ?: number;
+  total?: number;
 
-  @Prop({ default: 0 })
-  saleSumm?: number;
-}
+  @Prop({ default: null, ref: 'Shipments' })
+  shipment?: Types.ObjectId;
 
-@Schema({ versionKey: false })
-export class OrderItem {
-  @Prop({ default: null, type: () => [Types.ObjectId] })
-  _id?: Types.ObjectId;
-
-  @Prop({ default: null })
-  imgUrl?: string;
-
-  @Prop({ default: null })
-  name?: string;
-
-  @Prop({ default: null })
-  sku?: string;
-
-  @Prop({ default: 0 })
-  totalPrice?: number;
-
-  @Prop({ default: null })
-  ttn?: string;
-
-  @Prop({ default: 0 })
-  ttnCost?: number;
+  // @Prop({ default: 0 })
+  // ttnCost?: number;
 
   @Prop({ default: { OrderItemComponent } })
   components?: OrderItemComponent[];
@@ -75,38 +91,44 @@ export class Order {
   @Prop({ default: null, unique: false })
   number?: string;
 
-  @Prop({ default: null, type: () => Types.ObjectId })
-  creator: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: User.name })
+  creator?: User;
 
-  @Prop({ default: null, type: () => Types.ObjectId })
-  updator: Types.ObjectId;
+  // @Prop({ ref: User.name, type: Types.ObjectId })
+  // updator?: User;
 
   @Prop({ default: 'standart' })
   type?: 'standart' | 'mix';
 
   @Prop({ default: 'new' })
-  status?: 'new' | 'inWork' | 'success' | 'rejected' | 'canceled' | 'archived';
+  status?: 'new' | 'inWork' | 'success' | 'rejected' | 'archived';
 
-  @Prop({ type: () => Types.ObjectId })
-  managerId?: Types.ObjectId;
+  // @Prop({ ref: User.name, type: Types.ObjectId })
+  // managerId?: User;
 
-  @Prop({ default: { IPaymentinfo }, _id: false })
+  @Prop({ default: { IPaymentinfo } })
   payment?: IPaymentinfo;
 
   @Prop({ default: [], type: () => [Types.ObjectId] })
   contentIdArr?: Types.ObjectId[];
 
-  @Prop({ default: [], type: () => [OrderItem] })
+  @Prop({ default: [OrderItem], type: () => [OrderItem] })
   content?: OrderItem[];
 
   @Prop({ default: 0 })
-  totalPrice?: number;
+  totalValue?: number;
 
   @Prop({ default: 0 })
-  totalDeliveriesCount?: number;
+  totalShipmentsCount?: number;
 
-  @Prop({ default: [], type: () => [Object] })
-  deliveries?: ObjectId[];
+  // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Owner' }] })
+  // owner: Owner[];
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: Shipment.name }] })
+  shipments?: Shipment[];
 }
+
+export const testOrder =
+  'test =======================================================';
 
 export const OrderModel = SchemaFactory.createForClass(Order);

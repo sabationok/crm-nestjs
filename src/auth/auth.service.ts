@@ -9,18 +9,18 @@ import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { TUserRoles, User, UserDocument } from './user.model';
-import { FindUser } from './findUser.model';
+import { TUserRoles, User, UserDocument, FindUser } from './user.model';
+// import { FindUser } from './findUser.model';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel('UserModel') private readonly userModel: Model<UserDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
   ) {}
 
-  async getAllUsers(): Promise<FindUser[]> {
-    return this.userModel.find().exec();
+  async getAllUsers(projection?: string): Promise<FindUser[]> {
+    return this.userModel.find({}, projection).exec();
   }
 
   async getUserById(id: string | Types.ObjectId): Promise<FindUser | null> {
@@ -31,8 +31,8 @@ export class AuthService {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async getCurrentUserInfo(email: string): Promise<FindUser | null> {
-    return this.findUserByEmail(email);
+  async getCurrentUserInfo(id: string): Promise<FindUser | null> {
+    return this.userModel.findById(id, '-passwordHash -access_token');
   }
 
   async createUser(dto: AuthDto): Promise<User | null> {
@@ -80,15 +80,13 @@ export class AuthService {
       throw new UnauthorizedException(WRONG_CREDENTIALS_ERROR);
     }
 
-    return { email: user.email, role: user.role, _id: user._id };
+    return user;
   }
 
-  async logIn(
-    email?: string,
-    role?: string,
-    _id?: Types.ObjectId,
-  ): Promise<User> {
-    const payload = { role, _id };
+  async logIn(_id?: string, role?: string, status?: string): Promise<User> {
+    const payload = { _id, role, status };
+
+    console.log('payload', payload);
 
     const access_token = await this.jwtService.signAsync(payload);
 

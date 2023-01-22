@@ -28,18 +28,31 @@ let AuthController = class AuthController {
         this.telegramService = telegramService;
     }
     async getAll() {
-        return this.authService.getAllUsers();
+        const users = await this.authService.getAllUsers();
+        return {
+            status: common_1.HttpStatus.OK,
+            message: 'All users',
+            data: users,
+        };
     }
     async getUserById(userId) {
         const result = await this.authService.getUserById(userId);
-        return { status: common_1.HttpStatus.OK, data: result, message: 'Found user' };
+        return {
+            status: common_1.HttpStatus.OK,
+            message: 'Found user',
+            data: result,
+        };
     }
     async updateUserById(id, updateDto) {
         const result = await this.authService.updateUserById(id, updateDto);
         if (!result) {
             throw new common_1.HttpException('Not found user for update ', common_1.HttpStatus.NOT_FOUND);
         }
-        return { status: common_1.HttpStatus.OK, data: result, message: 'Updating success' };
+        return {
+            status: common_1.HttpStatus.OK,
+            message: 'Updating success',
+            data: result,
+        };
     }
     async setUserRoleById(id, roleDto) {
         const userForUpdate = await this.authService.getUserById(id);
@@ -61,38 +74,22 @@ let AuthController = class AuthController {
         };
     }
     async getCurrentUser(user, req) {
-        const currentUser = await this.authService.getUserById(user._id);
-        const data = Object.assign(Object.assign({}, user), { status: currentUser === null || currentUser === void 0 ? void 0 : currentUser.status });
+        console.log(user);
         return {
             status: common_1.HttpStatus.OK,
             message: 'Current user',
-            data: req.userInfo,
+            data: user,
         };
     }
     async getCurrentUserInfo(user) {
-        const userInfo = await this.authService.getCurrentUserInfo(user.email);
+        const userInfo = await this.authService.getCurrentUserInfo(user._id);
         if (!userInfo) {
             throw new common_1.HttpException('Unauthorized', common_1.HttpStatus.UNAUTHORIZED);
-        }
-        const addInfo = {
-            _id: userInfo === null || userInfo === void 0 ? void 0 : userInfo._id,
-            status: userInfo === null || userInfo === void 0 ? void 0 : userInfo.status,
-            role: userInfo === null || userInfo === void 0 ? void 0 : userInfo.role,
-            email: userInfo === null || userInfo === void 0 ? void 0 : userInfo.email,
-            name: userInfo === null || userInfo === void 0 ? void 0 : userInfo.name,
-            phone: userInfo === null || userInfo === void 0 ? void 0 : userInfo.phone,
-            user,
-        };
-        if ((addInfo === null || addInfo === void 0 ? void 0 : addInfo.role) === 'MANAGER') {
-            addInfo.managerInfo = user === null || user === void 0 ? void 0 : user.manager;
-        }
-        if ((userInfo === null || userInfo === void 0 ? void 0 : userInfo.role) === 'VENDOR') {
-            addInfo.venroInfo = user === null || user === void 0 ? void 0 : user.vendor;
         }
         return {
             status: common_1.HttpStatus.OK,
             message: 'Current user info',
-            data: { userInfo, addInfo },
+            data: userInfo,
         };
     }
     async register(dto) {
@@ -105,7 +102,6 @@ let AuthController = class AuthController {
         return { status: common_1.HttpStatus.OK, message: 'New user rigister', newUser };
     }
     async registerByAdmin(dto) {
-        console.log(dto);
         const oldUser = await this.authService.findUserByEmail(dto.email);
         if (oldUser) {
             throw new common_1.HttpException(auth_constants_1.ALREADY_REGISTERED_ERROR, common_1.HttpStatus.CONFLICT);
@@ -116,11 +112,11 @@ let AuthController = class AuthController {
     }
     async signIn({ email, password }, req) {
         const result = await this.authService.validateUser(email, password);
+        console.log('loggedUser', result);
         if (!result) {
             throw new common_1.HttpException(auth_constants_1.UNAUTHORIZED_USER, common_1.HttpStatus.UNAUTHORIZED);
         }
-        const loggedUser = await this.authService.logIn(email, result.role, result._id);
-        req.loggedUser = loggedUser;
+        const loggedUser = await this.authService.logIn(result._id, result.role, result.status);
         await this.telegramService.sendMessage(`Авторизовано користувача: ${email} `);
         return {
             status: common_1.HttpStatus.OK,

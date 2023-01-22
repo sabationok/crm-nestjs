@@ -8,10 +8,22 @@ export declare class ProductController {
     private readonly productService;
     private readonly authService;
     constructor(productService: ProductService, authService: AuthService);
-    getAll(user: User): Promise<import("./product.model").Product[]>;
+    getAll(user: User): Promise<{
+        status: HttpStatus;
+        message: string;
+        data: import("./product.model").Product[];
+    }>;
     getAllforAll(req: any): Promise<import("./product.model").Product[]>;
-    getBiId(id: string): Promise<import("./product.model").Product[]>;
-    delete(id: string): Promise<void>;
+    getBiId({ id }: any): Promise<{
+        status: HttpStatus;
+        message: string;
+        data: import("./product.model").Product[];
+    }>;
+    delete(id: string): Promise<{
+        status: HttpStatus;
+        message: string;
+        data: import("./product.model").Product;
+    }>;
     create(dto: CreateProductDto, user: any): Promise<{
         status: HttpStatus;
         message: string;

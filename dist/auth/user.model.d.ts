@@ -21,4 +21,9 @@ export declare class User {
     vendor?: Vendor;
     access_token?: string;
 }
+export declare class FindUser extends User {
+    _id?: Types.ObjectId;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
 export declare const UserModel: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any>, any, any>;

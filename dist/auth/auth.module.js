@@ -25,7 +25,7 @@ AuthModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 {
-                    name: 'UserModel',
+                    name: user_model_1.User.name,
                     schema: user_model_1.UserModel,
                     collection: 'User',
                 },
@@ -39,7 +39,7 @@ AuthModule = __decorate([
             passport_1.PassportModule,
         ],
         providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],
-        exports: [auth_service_1.AuthService],
+        exports: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;
