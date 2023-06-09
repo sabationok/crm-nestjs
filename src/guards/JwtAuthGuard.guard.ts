@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import createHttpException from '../helpers/createHttpException';
-import * as bcrypt from 'bcryptjs';
 import { UserDocument } from '../auth/user.model';
 import { Request } from 'express';
 
@@ -21,33 +20,23 @@ export interface IReqWithUserData extends Omit<IReqWithAuthData, 'body'> {
   user: Partial<UserDocument>;
   body: any;
 }
+
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class JwtAuthGuard implements CanActivate {
   constructor(private readonly authService: AuthService) {}
+
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const req: IReqWithUserData = ctx.switchToHttp().getRequest();
-    const { email, password } = req.body;
 
-    const user = await this.authService.findUserByEmail(email);
-
-    if (!user) {
-      throw createHttpException({
-        statusCode: HttpStatus.NOT_FOUND,
-        message: 'Користувач не знайдений',
-        innerCode: HttpStatus.NOT_FOUND,
-      });
+    const authorization = req.headers.authorization;
+    if (!authorization) {
+      throw createHttpException({ statusCode: HttpStatus.UNAUTHORIZED });
     }
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    const user = await this.authService.validateUserByBearerToken(
+      authorization,
+    );
 
-    if (!isPasswordValid) {
-      throw createHttpException({
-        statusCode: HttpStatus.UNAUTHORIZED,
-        message: 'Невірний email або пароль',
-        innerCode: HttpStatus.UNAUTHORIZED,
-      });
-    }
-
-    console.log('AuthGuard: Access granted.', user.email);
+    console.log('JwtAuthGuard: Access granted.', user.email);
     req.user = user;
     return true;
   }

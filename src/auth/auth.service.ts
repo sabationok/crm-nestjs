@@ -12,6 +12,12 @@ import { Model, Types } from 'mongoose';
 import { IUserBaseDoc, TUserRoles, User, UserDocument } from './user.model';
 import createHttpException from '../helpers/createHttpException';
 
+export interface ITokenPayload {
+  _id: string;
+  role?: string;
+  status?: string;
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -67,7 +73,28 @@ export class AuthService {
     return updatedUser;
   }
 
-  async validateUser(email: string, password: string): Promise<object | any> {
+  async validateUserByBearerToken(bearerToken: string) {
+    const [bearer, token] = bearerToken.split(' ');
+    if (bearer !== 'Bearer') {
+      throw createHttpException({ statusCode: HttpStatus.UNAUTHORIZED });
+    }
+
+    const { _id } = this.jwtService.verify<ITokenPayload>(token);
+
+    const user = await this.getUserById(_id);
+
+    if (!user || !user.access_token || user.access_token !== token) {
+      console.log('JwtAuthGuard: Access denied.');
+      throw createHttpException({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'Користувач не знайдений',
+        innerCode: HttpStatus.NOT_FOUND,
+      });
+    }
+    return user;
+  }
+
+  async validateUser(email: string, password: string): Promise<IUserBaseDoc> {
     const user = await this.findUserByEmail(email);
 
     if (!user || !user.passwordHash) {
@@ -89,24 +116,28 @@ export class AuthService {
     return user;
   }
 
-  async logIn(_id?: string, role?: string, status?: string): Promise<User> {
-    const payload = { _id, role, status };
+  async logIn(dto: AuthDto): Promise<IUserBaseDoc> {
+    const result = await this.validateUser(dto.email, dto.password);
 
-    console.log('payload', payload);
+    const payload: ITokenPayload = {
+      _id: result._id.toString(),
+      status: result.status,
+      role: result.role,
+    };
 
     const access_token = await this.jwtService.signAsync(payload);
 
-    const logedUser = await this.userModel.findByIdAndUpdate(
-      _id,
+    const loggedUser = await this.userModel.findByIdAndUpdate(
+      payload._id,
       { access_token },
       { new: true },
     );
 
-    if (!logedUser) {
+    if (!loggedUser) {
       throw new UnauthorizedException(USER_NOT_FOUND_ERROR);
     }
 
-    return logedUser;
+    return loggedUser;
   }
 
   async logOut(_id: string): Promise<User | null> {

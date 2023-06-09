@@ -3,6 +3,11 @@ import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Model, Types } from 'mongoose';
 import { IUserBaseDoc, TUserRoles, User, UserDocument } from './user.model';
+export interface ITokenPayload {
+    _id: string;
+    role?: string;
+    status?: string;
+}
 export declare class AuthService {
     private readonly userModel;
     private readonly jwtService;
@@ -14,7 +19,8 @@ export declare class AuthService {
     createUser(dto: AuthDto): Promise<User | null>;
     updateUserById(id: string, updateDto: UpdateUserDto): Promise<User | null>;
     setUserRoleById(id: string, role: TUserRoles): Promise<User | null>;
-    validateUser(email: string, password: string): Promise<object | any>;
-    logIn(_id?: string, role?: string, status?: string): Promise<User>;
+    validateUserByBearerToken(bearerToken: string): Promise<IUserBaseDoc>;
+    validateUser(email: string, password: string): Promise<IUserBaseDoc>;
+    logIn(dto: AuthDto): Promise<IUserBaseDoc>;
     logOut(_id: string): Promise<User | null>;
 }

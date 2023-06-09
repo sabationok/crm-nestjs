@@ -56,6 +56,23 @@ let AuthService = class AuthService {
         const updatedUser = this.userModel.findByIdAndUpdate(id, { role }, { new: true });
         return updatedUser;
     }
+    async validateUserByBearerToken(bearerToken) {
+        const [bearer, token] = bearerToken.split(' ');
+        if (bearer !== 'Bearer') {
+            throw (0, createHttpException_1.default)({ statusCode: common_1.HttpStatus.UNAUTHORIZED });
+        }
+        const { _id } = this.jwtService.verify(token);
+        const user = await this.getUserById(_id);
+        if (!user || !user.access_token || user.access_token !== token) {
+            console.log('JwtAuthGuard: Access denied.');
+            throw (0, createHttpException_1.default)({
+                statusCode: common_1.HttpStatus.NOT_FOUND,
+                message: 'Користувач не знайдений',
+                innerCode: common_1.HttpStatus.NOT_FOUND,
+            });
+        }
+        return user;
+    }
     async validateUser(email, password) {
         const user = await this.findUserByEmail(email);
         if (!user || !user.passwordHash) {
@@ -73,15 +90,19 @@ let AuthService = class AuthService {
         }
         return user;
     }
-    async logIn(_id, role, status) {
-        const payload = { _id, role, status };
-        console.log('payload', payload);
+    async logIn(dto) {
+        const result = await this.validateUser(dto.email, dto.password);
+        const payload = {
+            _id: result._id.toString(),
+            status: result.status,
+            role: result.role,
+        };
         const access_token = await this.jwtService.signAsync(payload);
-        const logedUser = await this.userModel.findByIdAndUpdate(_id, { access_token }, { new: true });
-        if (!logedUser) {
+        const loggedUser = await this.userModel.findByIdAndUpdate(payload._id, { access_token }, { new: true });
+        if (!loggedUser) {
             throw new common_1.UnauthorizedException(auth_constants_1.USER_NOT_FOUND_ERROR);
         }
-        return logedUser;
+        return loggedUser;
     }
     async logOut(_id) {
         return this.userModel.findByIdAndUpdate(_id, { access_token: '' }, { new: true });

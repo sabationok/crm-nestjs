@@ -1,15 +1,11 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
   HttpCode,
   HttpException,
   HttpStatus,
-  Param,
-  Patch,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { GetUser } from 'src/decorators/getUser.decorator';
@@ -18,17 +14,13 @@ import {
   ALREADY_REGISTERED_ERROR,
   LOGIN_SUCCESS,
   LOGOUT_SUCCESS,
-  ROLE_UPDATE_ERROR,
-  ROLE_UPDATE_SUCCESS,
-  UNAUTHORIZED_USER,
 } from './auth.constants';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
-import { SetUserRoleDto } from './dto/setUserRole.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { AuthGuard } from '../guards/AuthGuard.guard';
 import { createAppResponse } from '../helpers/createAppResponse';
-import { IUserBaseDoc } from './user.model';
+import { IUserBase, IUserBaseDoc } from './user.model';
+import { JwtAuthGuard } from '../guards/JwtAuthGuard.guard';
+import createHttpException from '../helpers/createHttpException';
 
 @Controller('auth')
 export class AuthController {
@@ -37,93 +29,8 @@ export class AuthController {
     private readonly telegramService: TelegramService,
   ) {}
 
-  @Get('getAllUsers')
-  @UseGuards(AuthGuard)
-  async getAll() {
-    const users = await this.authService.getAllUsers();
-    return createAppResponse({
-      statusCode: HttpStatus.OK,
-      message: 'All users',
-      data: {
-        meta: {},
-        data: users,
-      },
-    });
-  }
-
-  @Get('getUserById')
-  @UseGuards(AuthGuard)
-  async getUserById(@GetUser() user: IUserBaseDoc) {
-    return createAppResponse({
-      statusCode: HttpStatus.OK,
-      message: 'Found user',
-      data: {
-        meta: {},
-        data: user,
-      },
-    });
-  }
-  @Patch('updateUserById/:id')
-  @UseGuards(AuthGuard)
-  async updateUserById(
-    @Param('id') id: string,
-    @Body() updateDto: UpdateUserDto,
-  ) {
-    const result = await this.authService.updateUserById(id, updateDto);
-
-    if (!result) {
-      throw new HttpException(
-        'Not found user for update ',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    return createAppResponse({
-      statusCode: HttpStatus.OK,
-      message: 'Updating success',
-      data: {
-        meta: {},
-        data: result,
-      },
-    });
-  }
-
-  @Patch('setUserRoleById/:id')
-  async setUserRoleById(
-    @Param('id') id: string,
-    @Body() roleDto: SetUserRoleDto,
-  ) {
-    const userForUpdate = await this.authService.getUserById(id);
-
-    if (userForUpdate?.role === roleDto?.role) {
-      throw new HttpException(ROLE_UPDATE_ERROR, HttpStatus.NOT_FOUND);
-    }
-
-    const updatedUser = await this.authService.setUserRoleById(
-      id,
-      roleDto?.role,
-    );
-
-    if (!updatedUser) {
-      throw new HttpException(
-        ROLE_UPDATE_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-
-    const data = {
-      email: updatedUser?.email,
-      role: updatedUser?.role,
-    };
-
-    return {
-      status: HttpStatus.OK,
-      message: ROLE_UPDATE_SUCCESS(updatedUser?.email, updatedUser?.role),
-      data,
-    };
-  }
-
   @Get('getCurrent')
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   async getCurrentById(@GetUser() { access_token, email }: IUserBaseDoc) {
     return createAppResponse({
       statusCode: HttpStatus.OK,
@@ -136,18 +43,18 @@ export class AuthController {
   }
 
   @Get('getCurrentUserInfo')
-  async getCurrentUserInfo(@GetUser() user: any) {
-    const userInfo = await this.authService.getCurrentUserInfo(user._id);
+  @UseGuards(JwtAuthGuard)
+  async getCurrentUserInfo(@GetUser() user: IUserBase) {
+    const newUser: Partial<IUserBase> = user;
 
-    if (!userInfo) {
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    }
-
-    return {
-      status: HttpStatus.OK,
+    return createAppResponse({
+      statusCode: HttpStatus.OK,
       message: 'Current user info',
-      data: userInfo,
-    };
+      data: {
+        meta: {},
+        data: newUser,
+      },
+    });
   }
 
   @Post('signUp')
@@ -155,7 +62,10 @@ export class AuthController {
     const oldUser = await this.authService.findUserByEmail(dto.email);
 
     if (oldUser) {
-      throw new BadRequestException(ALREADY_REGISTERED_ERROR);
+      throw createHttpException({
+        statusCode: HttpStatus.CONFLICT,
+        message: ALREADY_REGISTERED_ERROR,
+      });
     }
     const newUser = await this.authService.createUser(dto);
 
@@ -181,22 +91,12 @@ export class AuthController {
   }
 
   @Post('signIn')
-  async signIn(@Body() { email, password }: AuthDto, @Req() req: any) {
-    const result = await this.authService.validateUser(email, password);
-
-    if (!result) {
-      throw new HttpException(UNAUTHORIZED_USER, HttpStatus.UNAUTHORIZED);
-    }
-
-    const loggedUser = await this.authService.logIn(
-      result._id,
-      result.role,
-      result.status,
-    );
+  async signIn(@Body() { email, password }: AuthDto) {
+    const loggedUser = await this.authService.logIn({ email, password });
 
     this.telegramService.sendMessage(`Авторизовано користувача: ${email} `);
 
-    console.log('loggedUser', result);
+    console.log('loggedUser', loggedUser);
 
     return createAppResponse({
       statusCode: HttpStatus.OK,
