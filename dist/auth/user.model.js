@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserModel = exports.FindUser = exports.User = exports.Vendor = exports.Manager = exports.Base = void 0;
+exports.UserModel = exports.FullUser = exports.User = exports.Vendor = exports.Manager = exports.Base = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 class Base {
@@ -81,23 +81,23 @@ User = __decorate([
     (0, mongoose_1.Schema)({ _id: true, timestamps: true, versionKey: false })
 ], User);
 exports.User = User;
-let FindUser = class FindUser extends User {
+let FullUser = class FullUser extends User {
 };
 __decorate([
     (0, mongoose_1.Prop)({ type: () => mongoose_2.Types.ObjectId }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
-], FindUser.prototype, "_id", void 0);
+], FullUser.prototype, "_id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: () => Date }),
     __metadata("design:type", Date)
-], FindUser.prototype, "createdAt", void 0);
+], FullUser.prototype, "createdAt", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: () => Date }),
     __metadata("design:type", Date)
-], FindUser.prototype, "updatedAt", void 0);
-FindUser = __decorate([
+], FullUser.prototype, "updatedAt", void 0);
+FullUser = __decorate([
     (0, mongoose_1.Schema)({ _id: true, timestamps: true, versionKey: false })
-], FindUser);
-exports.FindUser = FindUser;
+], FullUser);
+exports.FullUser = FullUser;
 exports.UserModel = mongoose_1.SchemaFactory.createForClass(User);
 //# sourceMappingURL=user.model.js.map

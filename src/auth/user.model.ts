@@ -14,13 +14,33 @@ export type TUserRoles =
   | 'CUSTOMER'
   | 'GUEST';
 
-export type UserStatusType = 'ACTIVE' | 'NOT_ACTIVE' | 'BAN';
+export type UserStatusType = 'ACTIVE' | 'NOT_ACTIVE' | 'BANED';
 
 export class Base {
   _id: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IBase {
+  _id?: Types.ObjectId;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface IUserBase extends IBase, User {
+  login?: string;
+  name?: string;
+  phone?: string;
+  role?: TUserRoles;
+  status?: UserStatusType;
+  manager?: { vendors?: Types.ObjectId[] };
+  vendor?: { manager?: Types.ObjectId };
+  access_token?: string;
+}
+
+export interface IUserBaseDoc extends HydratedDocument<IUserBase> {}
+
 @Schema({ versionKey: false })
 export class Manager {
   @Prop({ type: () => [Types.ObjectId] })
@@ -67,7 +87,7 @@ export class User {
 }
 
 @Schema({ _id: true, timestamps: true, versionKey: false })
-export class FindUser extends User {
+export class FullUser extends User {
   @Prop({ type: () => Types.ObjectId })
   _id: Types.ObjectId;
 

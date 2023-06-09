@@ -6,8 +6,10 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PermissionsService } from '../permissions/permissions.service';
-import createError from '../helpers/createError';
-import { FindUser } from '../auth/user.model';
+import createHttpException from '../helpers/createHttpException';
+import { IReqWithUserData } from './AuthGuard.guard';
+import { PermissionDocument } from '../permissions/permission.model';
+import mongoose from 'mongoose';
 
 // import * as bcrypt from 'bcrypt';
 
@@ -15,12 +17,8 @@ export interface ReqBodyWithAuthData {
   email: string;
   password: string;
 }
-export interface ReqWithUserData {
-  user: FindUser;
-  body: {
-    email: string;
-    password: string;
-  };
+export interface IReqWithPermissionData extends IReqWithUserData {
+  permission: Partial<PermissionDocument>;
 }
 @Injectable()
 export class PermissionGuard implements CanActivate {
@@ -29,16 +27,22 @@ export class PermissionGuard implements CanActivate {
     private readonly permissionsService: PermissionsService,
   ) {}
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
-    const req: ReqWithUserData = ctx.switchToHttp().getRequest();
-    const { user } = req;
+    const req: IReqWithPermissionData = ctx.switchToHttp().getRequest();
+    const [id] = req.baseUrl.replace('/api/', '').split('/');
+    console.log('PermissionGuard', req);
 
-    const permission = await this.permissionsService.findOneByUserId(user._id);
-    console.log(permission);
-
-    if (!permission) {
-      throw createError({ statusCode: HttpStatus.FORBIDDEN });
+    if (!mongoose.isValidObjectId(id)) {
+      throw createHttpException({ statusCode: HttpStatus.FORBIDDEN });
     }
 
+    const permission = await this.permissionsService.getById(id);
+
+    if (!permission) {
+      throw createHttpException({ statusCode: HttpStatus.FORBIDDEN });
+    }
+
+    console.log(permission);
+    req.permission = permission;
     return true;
   }
 }

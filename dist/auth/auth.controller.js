@@ -15,13 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const getUser_decorator_1 = require("../decorators/getUser.decorator");
-const jwt_guards_1 = require("../guards/jwt.guards");
 const telegram_service_1 = require("../telegram/telegram.service");
 const auth_constants_1 = require("./auth.constants");
 const auth_service_1 = require("./auth.service");
 const auth_dto_1 = require("./dto/auth.dto");
 const setUserRole_dto_1 = require("./dto/setUserRole.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
+const AuthGuard_guard_1 = require("../guards/AuthGuard.guard");
+const createAppResponse_1 = require("../helpers/createAppResponse");
 let AuthController = class AuthController {
     constructor(authService, telegramService) {
         this.authService = authService;
@@ -29,30 +30,38 @@ let AuthController = class AuthController {
     }
     async getAll() {
         const users = await this.authService.getAllUsers();
-        return {
-            status: common_1.HttpStatus.OK,
+        return (0, createAppResponse_1.createAppResponse)({
+            statusCode: common_1.HttpStatus.OK,
             message: 'All users',
-            data: users,
-        };
+            data: {
+                meta: {},
+                data: users,
+            },
+        });
     }
-    async getUserById(userId) {
-        const result = await this.authService.getUserById(userId);
-        return {
-            status: common_1.HttpStatus.OK,
+    async getUserById(user) {
+        return (0, createAppResponse_1.createAppResponse)({
+            statusCode: common_1.HttpStatus.OK,
             message: 'Found user',
-            data: result,
-        };
+            data: {
+                meta: {},
+                data: user,
+            },
+        });
     }
     async updateUserById(id, updateDto) {
         const result = await this.authService.updateUserById(id, updateDto);
         if (!result) {
             throw new common_1.HttpException('Not found user for update ', common_1.HttpStatus.NOT_FOUND);
         }
-        return {
-            status: common_1.HttpStatus.OK,
+        return (0, createAppResponse_1.createAppResponse)({
+            statusCode: common_1.HttpStatus.OK,
             message: 'Updating success',
-            data: result,
-        };
+            data: {
+                meta: {},
+                data: result,
+            },
+        });
     }
     async setUserRoleById(id, roleDto) {
         const userForUpdate = await this.authService.getUserById(id);
@@ -73,13 +82,15 @@ let AuthController = class AuthController {
             data,
         };
     }
-    async getCurrentUser(user, req) {
-        console.log(user);
-        return {
-            status: common_1.HttpStatus.OK,
-            message: 'Current user',
-            data: user,
-        };
+    async getCurrentById({ access_token, email }) {
+        return (0, createAppResponse_1.createAppResponse)({
+            statusCode: common_1.HttpStatus.OK,
+            message: 'Found user',
+            data: {
+                meta: {},
+                data: { access_token, email },
+            },
+        });
     }
     async getCurrentUserInfo(user) {
         const userInfo = await this.authService.getCurrentUserInfo(user._id);
@@ -112,19 +123,20 @@ let AuthController = class AuthController {
     }
     async signIn({ email, password }, req) {
         const result = await this.authService.validateUser(email, password);
-        console.log('loggedUser', result);
         if (!result) {
             throw new common_1.HttpException(auth_constants_1.UNAUTHORIZED_USER, common_1.HttpStatus.UNAUTHORIZED);
         }
         const loggedUser = await this.authService.logIn(result._id, result.role, result.status);
-        await this.telegramService.sendMessage(`Авторизовано користувача: ${email} `);
-        return {
-            status: common_1.HttpStatus.OK,
+        this.telegramService.sendMessage(`Авторизовано користувача: ${email} `);
+        console.log('loggedUser', result);
+        return (0, createAppResponse_1.createAppResponse)({
+            statusCode: common_1.HttpStatus.OK,
             message: auth_constants_1.LOGIN_SUCCESS,
             data: {
-                access_token: loggedUser.access_token,
+                meta: {},
+                data: { access_token: loggedUser.access_token },
             },
-        };
+        });
     }
     async signOut(user) {
         const logOutUser = await this.authService.logOut(user._id);
@@ -133,23 +145,23 @@ let AuthController = class AuthController {
     }
 };
 __decorate([
-    (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
     (0, common_1.Get)('getAllUsers'),
+    (0, common_1.UseGuards)(AuthGuard_guard_1.AuthGuard),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getAll", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
     (0, common_1.Get)('getUserById'),
-    __param(0, (0, common_1.Query)('userId')),
+    (0, common_1.UseGuards)(AuthGuard_guard_1.AuthGuard),
+    __param(0, (0, getUser_decorator_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getUserById", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
     (0, common_1.Patch)('updateUserById/:id'),
+    (0, common_1.UseGuards)(AuthGuard_guard_1.AuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -157,7 +169,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "updateUserById", null);
 __decorate([
-    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.Patch)('setUserRoleById/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -166,16 +177,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "setUserRoleById", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
-    (0, common_1.Get)('getCurrentUser'),
+    (0, common_1.Get)('getCurrent'),
+    (0, common_1.UseGuards)(AuthGuard_guard_1.AuthGuard),
     __param(0, (0, getUser_decorator_1.GetUser)()),
-    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "getCurrentUser", null);
+], AuthController.prototype, "getCurrentById", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
     (0, common_1.Get)('getCurrentUserInfo'),
     __param(0, (0, getUser_decorator_1.GetUser)()),
     __metadata("design:type", Function),
@@ -183,7 +192,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getCurrentUserInfo", null);
 __decorate([
-    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.Post)('signUp'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -191,7 +199,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 __decorate([
-    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.Post)('signUpByAdmin'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -199,8 +206,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "registerByAdmin", null);
 __decorate([
-    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
-    (0, common_1.HttpCode)(200),
     (0, common_1.Post)('signIn'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
@@ -209,7 +214,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signIn", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_guards_1.JwtAuthGuard),
     (0, common_1.HttpCode)(200),
     (0, common_1.Post)('signOut'),
     __param(0, (0, getUser_decorator_1.GetUser)()),

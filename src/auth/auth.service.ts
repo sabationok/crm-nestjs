@@ -8,30 +8,9 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { HydratedDocument, Model, Types } from 'mongoose';
-import { TUserRoles, User, UserDocument } from './user.model';
-import createError from '../helpers/createError';
-
-export interface IBase {
-  _id?: Types.ObjectId;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-export interface IUserBase extends IBase {
-  email?: string;
-  passwordHash?: string;
-  login?: string;
-  name?: string;
-  phone?: string;
-  role?: TUserRoles;
-  status?: string;
-  manager?: { vendors?: Types.ObjectId[] };
-  vendor?: { manager?: Types.ObjectId };
-  access_token?: string;
-}
-
-export interface IUserBaseDoc extends HydratedDocument<IUserBase> {}
+import { Model, Types } from 'mongoose';
+import { IUserBaseDoc, TUserRoles, User, UserDocument } from './user.model';
+import createHttpException from '../helpers/createHttpException';
 
 @Injectable()
 export class AuthService {
@@ -53,7 +32,7 @@ export class AuthService {
   }
 
   async getCurrentUserInfo(id: string): Promise<IUserBaseDoc | null> {
-    return this.userModel.findById(id, '-passwordHash -access_token');
+    return this.userModel.findById(id, '-passwordHash -access_token').exec();
   }
 
   async createUser(dto: AuthDto): Promise<User | null> {
@@ -92,7 +71,7 @@ export class AuthService {
     const user = await this.findUserByEmail(email);
 
     if (!user || !user.passwordHash) {
-      throw createError({
+      throw createHttpException({
         statusCode: HttpStatus.NOT_FOUND,
         reason: USER_NOT_FOUND_ERROR,
       });
@@ -101,7 +80,7 @@ export class AuthService {
     const isCorrectPassword = await compare(password, user.passwordHash);
 
     if (!isCorrectPassword) {
-      throw createError({
+      throw createHttpException({
         statusCode: HttpStatus.UNAUTHORIZED,
         reason: WRONG_CREDENTIALS_ERROR,
       });

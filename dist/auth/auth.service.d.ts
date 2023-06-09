@@ -1,31 +1,8 @@
 import { AuthDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { HydratedDocument, Model, Types } from 'mongoose';
-import { TUserRoles, User, UserDocument } from './user.model';
-export interface IBase {
-    _id?: Types.ObjectId;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
-export interface IUserBase extends IBase {
-    email?: string;
-    passwordHash?: string;
-    login?: string;
-    name?: string;
-    phone?: string;
-    role?: TUserRoles;
-    status?: string;
-    manager?: {
-        vendors?: Types.ObjectId[];
-    };
-    vendor?: {
-        manager?: Types.ObjectId;
-    };
-    access_token?: string;
-}
-export interface IUserBaseDoc extends HydratedDocument<IUserBase> {
-}
+import { Model, Types } from 'mongoose';
+import { IUserBaseDoc, TUserRoles, User, UserDocument } from './user.model';
 export declare class AuthService {
     private readonly userModel;
     private readonly jwtService;

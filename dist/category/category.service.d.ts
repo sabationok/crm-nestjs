@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import { Category, CategoryDocument } from './category.model';
-import { CreateCategoryDto } from './dto/create-category.dt';
+import { CreateCategoryDto } from './dto/create-category.dto';
 export declare class CategoryService {
     private readonly categoryModel;
     constructor(categoryModel: Model<CategoryDocument>);

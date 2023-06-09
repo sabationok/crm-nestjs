@@ -8,21 +8,21 @@ const messages: Record<number, any> = {
   [HttpStatus.CONFLICT]: 'Conflict',
 };
 
-type CreateExceptionOptions = {
+type CustomHttpExceptionOptions = {
   statusCode?: number;
   innerCode?: number;
   message?: string;
   reason?: string;
+  error?: any;
 };
 
-export type CustomError = CreateExceptionOptions;
-function createError({
+function createHttpException({
   statusCode = HttpStatus.INTERNAL_SERVER_ERROR,
   innerCode = HttpStatus.INTERNAL_SERVER_ERROR,
   message = messages[statusCode],
   reason = messages[innerCode],
-}: CreateExceptionOptions): CustomError {
-  const response: CustomError = {
+}: CustomHttpExceptionOptions) {
+  const response: CustomHttpExceptionOptions = {
     statusCode,
     message,
   };
@@ -35,6 +35,4 @@ function createError({
   return new HttpException(response, statusCode, { cause: new Error(message) });
 }
 
-const er = createError({});
-
-export default createError;
+export default createHttpException;

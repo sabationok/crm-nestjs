@@ -19,7 +19,7 @@ const category_service_1 = require("./category.service");
 const getUser_decorator_1 = require("../decorators/getUser.decorator");
 const create_category_dto_1 = require("./dto/create-category.dto");
 const telegram_service_1 = require("../telegram/telegram.service");
-const createError_1 = require("../helpers/createError");
+const createHttpException_1 = require("../helpers/createHttpException");
 let CategoryController = class CategoryController {
     constructor(categoryService, telegramService) {
         this.categoryService = categoryService;
@@ -28,7 +28,7 @@ let CategoryController = class CategoryController {
     async getAll(user) {
         const result = await this.categoryService.findAll();
         if (result.length === 0) {
-            throw (0, createError_1.default)({
+            throw (0, createHttpException_1.default)({
                 statusCode: common_1.HttpStatus.NOT_FOUND,
                 message: `Not found any categories`,
             });

@@ -14,7 +14,7 @@ import { CategoryService } from './category.service';
 import { GetUser } from 'src/decorators/getUser.decorator';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { TelegramService } from 'src/telegram/telegram.service';
-import createError from '../helpers/createError';
+import createHttpException from '../helpers/createHttpException';
 
 @Controller('category')
 export class CategoryController {
@@ -28,7 +28,7 @@ export class CategoryController {
     const result = await this.categoryService.findAll();
 
     if (result.length === 0) {
-      throw createError({
+      throw createHttpException({
         statusCode: HttpStatus.NOT_FOUND,
         message: `Not found any categories`,
       });

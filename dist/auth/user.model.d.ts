@@ -25,11 +25,32 @@
 import { HydratedDocument, Types } from 'mongoose';
 export type UserDocument = HydratedDocument<User>;
 export type TUserRoles = 'SUPER_ADMIN' | 'ADMIN' | 'MANAGER' | 'TOP_MANAGER' | 'VENDOR' | 'SUPLYER_MANAGER' | 'CUSTOMER' | 'GUEST';
-export type UserStatusType = 'ACTIVE' | 'NOT_ACTIVE' | 'BAN';
+export type UserStatusType = 'ACTIVE' | 'NOT_ACTIVE' | 'BANED';
 export declare class Base {
     _id: Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
+}
+export interface IBase {
+    _id?: Types.ObjectId;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+export interface IUserBase extends IBase, User {
+    login?: string;
+    name?: string;
+    phone?: string;
+    role?: TUserRoles;
+    status?: UserStatusType;
+    manager?: {
+        vendors?: Types.ObjectId[];
+    };
+    vendor?: {
+        manager?: Types.ObjectId;
+    };
+    access_token?: string;
+}
+export interface IUserBaseDoc extends HydratedDocument<IUserBase> {
 }
 export declare class Manager {
     vendors?: Types.ObjectId[];
@@ -49,7 +70,7 @@ export declare class User {
     vendor?: Vendor;
     access_token?: string;
 }
-export declare class FindUser extends User {
+export declare class FullUser extends User {
     _id: Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
