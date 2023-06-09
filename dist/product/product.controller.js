@@ -14,12 +14,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductController = void 0;
 const common_1 = require("@nestjs/common");
-const request_decorator_1 = require("../decorators/request.decorator");
+const UserReq_decorator_1 = require("../decorators/UserReq.decorator");
 const getUser_decorator_1 = require("../decorators/getUser.decorator");
 const jwt_guards_1 = require("../guards/jwt.guards");
 const product_service_1 = require("./product.service");
-const create_product_dto_1 = require("./dto/create-product.dto");
 const auth_service_1 = require("../auth/auth.service");
+const create_product_dto_1 = require("./dto/create-product.dto");
 const user_model_1 = require("../auth/user.model");
 const update_product_dto_1 = require("./dto/update-product.dto");
 let ProductController = class ProductController {
@@ -117,7 +117,7 @@ __decorate([
 ], ProductController.prototype, "getAll", null);
 __decorate([
     (0, common_1.Get)('getAllforAll'),
-    __param(0, (0, request_decorator_1.UserRequest)()),
+    __param(0, (0, UserReq_decorator_1.UserRequest)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

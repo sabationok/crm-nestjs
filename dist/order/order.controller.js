@@ -23,6 +23,22 @@ let OrderController = class OrderController {
     async getAll() {
         return this.orderService.findAll();
     }
+    async getById(id) {
+        const order = await this.orderService.findById(id);
+        if (!order) {
+            throw new common_1.HttpException('Order not found', common_1.HttpStatus.NOT_FOUND);
+        }
+        return { status: common_1.HttpStatus.OK, message: 'Found order', data: order };
+    }
+    async addContentToOrder(dto, id) {
+        console.log(dto);
+        const updatedOrder = await this.orderService.addContentItems(id, dto);
+        if (!updatedOrder) {
+            throw new common_1.HttpException('Not order for update', common_1.HttpStatus.NOT_FOUND);
+        }
+        console.log(updatedOrder);
+        return updatedOrder;
+    }
     async getShimentsByOrderId(id) {
         const orderPopulated = await this.orderService.getOrderWithShipments(id);
         if (!orderPopulated) {
@@ -54,6 +70,21 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], OrderController.prototype, "getAll", null);
+__decorate([
+    (0, common_1.Get)('/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], OrderController.prototype, "getById", null);
+__decorate([
+    (0, common_1.Patch)('/:id/addContent'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array, String]),
+    __metadata("design:returntype", Promise)
+], OrderController.prototype, "addContentToOrder", null);
 __decorate([
     (0, common_1.Get)('/:id/shipments'),
     __param(0, (0, common_1.Param)('id')),

@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
 import { AuthService } from 'src/auth/auth.service';
+import { CreateProductDto } from './dto/create-product.dto';
 import { User } from 'src/auth/user.model';
 import { UpdateProductDto } from './dto/update-product.dto';
 export declare class ProductController {

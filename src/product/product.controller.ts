@@ -10,18 +10,16 @@ import {
   Param,
   Patch,
   Post,
-  Query,
-  Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { UserRequest } from 'src/decorators/request.decorator';
+import { UserRequest } from 'src/decorators/UserReq.decorator';
 import { GetUser } from 'src/decorators/getUser.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt.guards';
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
 import { AuthService } from 'src/auth/auth.service';
+import { CreateProductDto } from './dto/create-product.dto';
 import { User } from 'src/auth/user.model';
 import { UpdateProductDto } from './dto/update-product.dto';
 

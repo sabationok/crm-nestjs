@@ -20,16 +20,17 @@ const jwt_1 = require("@nestjs/jwt");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const user_model_1 = require("./user.model");
+const createError_1 = require("../helpers/createError");
 let AuthService = class AuthService {
     constructor(userModel, jwtService) {
         this.userModel = userModel;
         this.jwtService = jwtService;
     }
     async getAllUsers(projection) {
-        return this.userModel.find({}, projection).exec();
+        return this.userModel.find({}, projection);
     }
     async getUserById(id) {
-        return this.userModel.findById(id).exec();
+        return this.userModel.findById(id).populate({ path: 'vendor' }).exec();
     }
     async findUserByEmail(email) {
         return this.userModel.findOne({ email }).exec();
@@ -57,12 +58,18 @@ let AuthService = class AuthService {
     }
     async validateUser(email, password) {
         const user = await this.findUserByEmail(email);
-        if (!user) {
-            throw new common_1.UnauthorizedException(auth_constants_1.USER_NOT_FOUND_ERROR);
+        if (!user || !user.passwordHash) {
+            throw (0, createError_1.default)({
+                statusCode: common_1.HttpStatus.NOT_FOUND,
+                reason: auth_constants_1.USER_NOT_FOUND_ERROR,
+            });
         }
         const isCorrectPassword = await (0, bcryptjs_1.compare)(password, user.passwordHash);
         if (!isCorrectPassword) {
-            throw new common_1.UnauthorizedException(auth_constants_1.WRONG_CREDENTIALS_ERROR);
+            throw (0, createError_1.default)({
+                statusCode: common_1.HttpStatus.UNAUTHORIZED,
+                reason: auth_constants_1.WRONG_CREDENTIALS_ERROR,
+            });
         }
         return user;
     }

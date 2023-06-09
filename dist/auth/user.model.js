@@ -9,9 +9,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserModel = exports.FindUser = exports.User = exports.Vendor = exports.Manager = void 0;
+exports.UserModel = exports.FindUser = exports.User = exports.Vendor = exports.Manager = exports.Base = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+class Base {
+}
+exports.Base = Base;
 let Manager = class Manager {
 };
 __decorate([
@@ -27,11 +30,7 @@ let Vendor = class Vendor {
 __decorate([
     (0, mongoose_1.Prop)({ type: () => mongoose_2.Types.ObjectId }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
-], Vendor.prototype, "managerId", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], Vendor.prototype, "managerCode", void 0);
+], Vendor.prototype, "manager", void 0);
 Vendor = __decorate([
     (0, mongoose_1.Schema)({ versionKey: false })
 ], Vendor);

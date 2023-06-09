@@ -1,7 +1,32 @@
+/// <reference types="mongoose/types/aggregate" />
+/// <reference types="mongoose/types/callback" />
+/// <reference types="mongoose/types/collection" />
+/// <reference types="mongoose/types/connection" />
+/// <reference types="mongoose/types/cursor" />
+/// <reference types="mongoose/types/document" />
+/// <reference types="mongoose/types/error" />
+/// <reference types="mongoose/types/expressions" />
+/// <reference types="mongoose/types/helpers" />
+/// <reference types="mongoose/types/middlewares" />
+/// <reference types="mongoose/types/indexes" />
+/// <reference types="mongoose/types/models" />
+/// <reference types="mongoose/types/mongooseoptions" />
+/// <reference types="mongoose/types/pipelinestage" />
+/// <reference types="mongoose/types/populate" />
+/// <reference types="mongoose/types/query" />
+/// <reference types="mongoose/types/schemaoptions" />
+/// <reference types="mongoose/types/schematypes" />
+/// <reference types="mongoose/types/session" />
+/// <reference types="mongoose/types/types" />
+/// <reference types="mongoose/types/utility" />
+/// <reference types="mongoose/types/validation" />
+/// <reference types="mongoose/types/virtuals" />
+/// <reference types="mongoose/types/inferschematype" />
 import { Types, Document } from 'mongoose';
 import { User } from 'src/auth/user.model';
+import { Product } from 'src/product/product.model';
 import { Shipment } from 'src/shipments/shipment.model';
-export declare type OrderDocument = Order & Document;
+export type OrderDocument = Order & Document;
 export declare class IPaymentinfo {
     type?: 'iban' | 'card' | 'iban_bonuses' | 'card_bonuses' | 'forFree';
     status?: 'pending' | 'success' | 'rejected' | 'modified';
@@ -18,25 +43,19 @@ export declare class OrderItemComponent {
     total?: number;
 }
 export declare class OrderItem {
-    _id?: Types.ObjectId;
+    itemInfo?: Product;
     quantity?: number;
     price?: number;
-    sale?: number;
     total?: number;
-    shipment?: Types.ObjectId;
+    shipment?: Shipment;
     components?: OrderItemComponent[];
 }
 export declare class Order {
     number?: string;
-    creator?: User;
-    type?: 'standart' | 'mix';
     status?: 'new' | 'inWork' | 'success' | 'rejected' | 'archived';
-    payment?: IPaymentinfo;
-    contentIdArr?: Types.ObjectId[];
+    managerId?: User;
+    contentIdArr?: OrderItem[];
     content?: OrderItem[];
-    totalValue?: number;
-    totalShipmentsCount?: number;
     shipments?: Shipment[];
 }
-export declare const testOrder = "test =======================================================";
-export declare const OrderModel: import("mongoose").Schema<Order, import("mongoose").Model<Order, any, any, any>, any, any>;
+export declare const OrderModel: import("mongoose").Schema<Order, import("mongoose").Model<Order, any, any, any, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Order>;

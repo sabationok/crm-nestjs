@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { HydratedDocument, ObjectId, Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -14,8 +14,13 @@ export type TUserRoles =
   | 'CUSTOMER'
   | 'GUEST';
 
-export type TUserStatus = 'ACTIVE' | 'NOT_ACTIVE' | 'BAN';
+export type UserStatusType = 'ACTIVE' | 'NOT_ACTIVE' | 'BAN';
 
+export class Base {
+  _id: Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
+}
 @Schema({ versionKey: false })
 export class Manager {
   @Prop({ type: () => [Types.ObjectId] })
@@ -25,10 +30,7 @@ export class Manager {
 @Schema({ versionKey: false })
 export class Vendor {
   @Prop({ type: () => Types.ObjectId })
-  managerId?: Types.ObjectId;
-
-  @Prop()
-  managerCode?: string;
+  manager?: Types.ObjectId;
 }
 
 @Schema({ _id: true, timestamps: true, versionKey: false })
@@ -52,7 +54,7 @@ export class User {
   role?: TUserRoles;
 
   @Prop({ default: 'NOT_ACTIVE' })
-  status?: TUserStatus;
+  status?: UserStatusType;
 
   @Prop({ type: () => Manager })
   manager?: Manager;
@@ -67,13 +69,13 @@ export class User {
 @Schema({ _id: true, timestamps: true, versionKey: false })
 export class FindUser extends User {
   @Prop({ type: () => Types.ObjectId })
-  _id?: Types.ObjectId;
+  _id: Types.ObjectId;
 
   @Prop({ type: () => Date })
-  createdAt?: Date;
+  createdAt: Date;
 
   @Prop({ type: () => Date })
-  updatedAt?: Date;
+  updatedAt: Date;
 }
 
 export const UserModel = SchemaFactory.createForClass(User);

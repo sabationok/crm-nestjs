@@ -5,5 +5,5 @@ export declare const WRONG_CREDENTIALS_ERROR = "\u0425\u0438\u0431\u043D\u0456 \
 export declare const LOGIN_SUCCESS = "\u0412\u0445\u0456\u0434 \u0443 \u0441\u0438\u0441\u0442\u0435\u043C\u0443 \u0443\u0441\u043F\u0456\u0448\u043D\u0438\u0439";
 export declare const LOGOUT_SUCCESS = "\u0421\u0435\u0430\u043D\u0441 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u043E";
 export declare const LOGOUT_ERROR = "\u041F\u043E\u043C\u0438\u043B\u043A\u0430 \u043F\u0456\u0434 \u0447\u0430\u0441 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u043D\u044F \u0441\u0435\u0430\u043D\u0441\u0443";
-export declare const ROLE_UPDATE_SUCCESS: (email?: string | undefined, role?: string | undefined) => string;
+export declare const ROLE_UPDATE_SUCCESS: (email?: string, role?: string) => string;
 export declare const ROLE_UPDATE_ERROR = "\u041F\u043E\u043C\u0438\u043B\u043A\u0430 \u043F\u0456\u0434 \u0447\u0430\u0441 \u0437\u043C\u0456\u043D\u0438 \u0440\u043E\u043B\u0456 \u043A\u043E\u0440\u0438\u0441\u0442\u0443\u0432\u0430\u0447\u0430";

@@ -10,7 +10,7 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.setGlobalPrefix('api');
     app.enableCors();
-    await start(app, 3030, 'api');
+    await start(app, 5000, 'api');
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

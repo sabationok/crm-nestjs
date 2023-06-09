@@ -15,15 +15,10 @@ const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongo_config_1 = require("./configs/mongo.config");
 const telegramConfig_1 = require("./configs/telegramConfig");
-const auth_module_1 = require("./auth/auth.module");
 const roles_module_1 = require("./roles/roles.module");
-const product_module_1 = require("./product/product.module");
-const category_module_1 = require("./category/category.module");
-const order_module_1 = require("./order/order.module");
-const shipments_module_1 = require("./shipments/shipments.module");
-const refunds_module_1 = require("./refunds/refunds.module");
 const telegram_module_1 = require("./telegram/telegram.module");
-const users_module_1 = require("./users/users.module");
+const permissions_module_1 = require("./permissions/permissions.module");
+const auth_module_1 = require("./auth/auth.module");
 let AppController = class AppController {
     async getHello() {
         return 'Hello my friend';
@@ -50,21 +45,17 @@ AppModule = __decorate([
                 inject: [config_1.ConfigService],
                 useFactory: mongo_config_1.getMongoConfig,
             }),
-            auth_module_1.AuthModule,
-            roles_module_1.RolesModule,
-            product_module_1.ProductModule,
-            order_module_1.OrderModule,
-            category_module_1.CategoryModule,
-            refunds_module_1.RefundsModule,
             telegram_module_1.TelegramModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 inject: [config_1.ConfigService],
                 useFactory: telegramConfig_1.getTelegramConfig,
             }),
-            shipments_module_1.ShipmentsModule,
-            users_module_1.UsersModule,
+            auth_module_1.AuthModule,
+            permissions_module_1.PermissionsModule,
+            roles_module_1.RolesModule,
         ],
         controllers: [AppController],
+        providers: [],
     })
 ], AppModule);
 exports.AppModule = AppModule;

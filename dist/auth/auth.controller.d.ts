@@ -11,12 +11,14 @@ export declare class AuthController {
     getAll(): Promise<{
         status: HttpStatus;
         message: string;
-        data: import("./user.model").FindUser[];
+        data: (import("mongoose").Document<unknown, any, import("./user.model").User> & Omit<import("./user.model").User & {
+            _id: import("mongoose").Types.ObjectId;
+        }, never>)[];
     }>;
     getUserById(userId: string): Promise<{
         status: HttpStatus;
         message: string;
-        data: import("./user.model").FindUser | null;
+        data: import("./auth.service").IUserBaseDoc | null;
     }>;
     updateUserById(id: string, updateDto: UpdateUserDto): Promise<{
         status: HttpStatus;
@@ -39,7 +41,7 @@ export declare class AuthController {
     getCurrentUserInfo(user: any): Promise<{
         status: HttpStatus;
         message: string;
-        data: import("./user.model").FindUser;
+        data: import("./auth.service").IUserBaseDoc;
     }>;
     register(dto: AuthDto): Promise<{
         status: HttpStatus;

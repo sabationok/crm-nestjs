@@ -14,7 +14,10 @@ export class OrderService {
   ) {}
 
   async findAll(): Promise<Order[]> {
-    return this.orderModel.find().exec();
+    return this.orderModel
+      .find()
+      .populate({ path: 'creator', select: 'role email' })
+      .exec();
   }
 
   async create(dto: CreateOrderDto): Promise<Order> {
@@ -30,7 +33,19 @@ export class OrderService {
   }
 
   async findById(id: string): Promise<Order | null> {
-    return this.orderModel.findById(id).exec();
+    return (
+      this.orderModel
+        .findById(id)
+        .populate({ path: 'creator', select: 'role email' })
+        // .populate({
+        //   path: 'content',
+        //   populate: {
+        //     path: 'itemInfo',
+        //     select: 'imgUrl',
+        //   },
+        // })
+        .exec()
+    );
   }
 
   async findByCreatorId(id: string): Promise<Order[]> {
@@ -40,7 +55,29 @@ export class OrderService {
   async findByManagerId(id: string): Promise<Order[]> {
     return this.orderModel.find({ managerId: id }).exec();
   }
-
+  async addContentItems(orderId: string, itemsIdsArr: string[]) {
+    return this.orderModel.findByIdAndUpdate(
+      orderId,
+      {
+        $push: { contentIdArr: { $each: itemsIdsArr, $sort: { _id: -1 } } },
+      },
+      { new: true },
+    );
+  }
+  async removeContentItem(orderId: string, itemId: string) {
+    return this.orderModel.findByIdAndUpdate(
+      orderId,
+      { $pull: { content: itemId } },
+      { new: true },
+    );
+  }
+  //   YourSchema.find()
+  //    .populate({
+  //         path: 'map_data',
+  //         populate: {
+  //             path: 'location'
+  //         }
+  // })
   async addShipment(orderId: string, shipmentId: string) {
     return this.orderModel.findByIdAndUpdate(
       orderId,
@@ -56,12 +93,9 @@ export class OrderService {
     );
   }
   async getOrderWithShipments(orderId: string) {
-    return (
-      this.orderModel
-        .findById(orderId)
-        .populate({ path: 'shipments', select: 'ttn' })
-        // .populate({ path: 'creator', select: 'role' })
-        .exec()
-    );
+    return this.orderModel
+      .findById(orderId)
+      .populate({ path: 'shipments', select: 'ttn' })
+      .exec();
   }
 }

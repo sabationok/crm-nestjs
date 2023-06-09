@@ -22,7 +22,10 @@ let OrderService = class OrderService {
         this.orderModel = orderModel;
     }
     async findAll() {
-        return this.orderModel.find().exec();
+        return this.orderModel
+            .find()
+            .populate({ path: 'creator', select: 'role email' })
+            .exec();
     }
     async create(dto) {
         return this.orderModel.create(dto);
@@ -34,13 +37,24 @@ let OrderService = class OrderService {
         return this.orderModel.findByIdAndUpdate(id, dto).exec();
     }
     async findById(id) {
-        return this.orderModel.findById(id).exec();
+        return (this.orderModel
+            .findById(id)
+            .populate({ path: 'creator', select: 'role email' })
+            .exec());
     }
     async findByCreatorId(id) {
         return this.orderModel.find({ creatorId: id }).exec();
     }
     async findByManagerId(id) {
         return this.orderModel.find({ managerId: id }).exec();
+    }
+    async addContentItems(orderId, itemsIdsArr) {
+        return this.orderModel.findByIdAndUpdate(orderId, {
+            $push: { contentIdArr: { $each: itemsIdsArr, $sort: { _id: -1 } } },
+        }, { new: true });
+    }
+    async removeContentItem(orderId, itemId) {
+        return this.orderModel.findByIdAndUpdate(orderId, { $pull: { content: itemId } }, { new: true });
     }
     async addShipment(orderId, shipmentId) {
         return this.orderModel.findByIdAndUpdate(orderId, { $addToSet: { shipments: shipmentId } }, { new: true });
@@ -49,10 +63,10 @@ let OrderService = class OrderService {
         return this.orderModel.findByIdAndUpdate(orderId, { $pull: { shipments: shipmentId } }, { new: true });
     }
     async getOrderWithShipments(orderId) {
-        return (this.orderModel
+        return this.orderModel
             .findById(orderId)
             .populate({ path: 'shipments', select: 'ttn' })
-            .exec());
+            .exec();
     }
 };
 OrderService = __decorate([

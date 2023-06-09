@@ -9,37 +9,41 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { UserRequest } from 'src/decorators/request.decorator';
+import { UserRequest } from 'src/decorators/UserReq.decorator';
 import { CategoryService } from './category.service';
 import { GetUser } from 'src/decorators/getUser.decorator';
-import { CreateCategoryDto } from './dto/create-category.dt';
+import { CreateCategoryDto } from './dto/create-category.dto';
 import { TelegramService } from 'src/telegram/telegram.service';
+import createError from '../helpers/createError';
 
 @Controller('category')
 export class CategoryController {
   constructor(
-    private readonly categoryServise: CategoryService,
+    private readonly categoryService: CategoryService,
     private readonly telegramService: TelegramService,
   ) {}
 
   @Get('getAll')
   async getAll(@GetUser() user: any) {
-    const result = await this.categoryServise.findAll();
+    const result = await this.categoryService.findAll();
 
     if (result.length === 0) {
-      throw new HttpException(`Not found any categories`, HttpStatus.NOT_FOUND);
+      throw createError({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: `Not found any categories`,
+      });
     }
 
     return {
       status: HttpStatus.OK,
-      messsage: 'All categories',
+      message: 'All categories',
       data: result,
     };
   }
 
   @Get('getByParentId/:id')
   async getByParentId(@Param('id') id: string) {
-    const result = await this.categoryServise.findByOwnerId(id);
+    const result = await this.categoryService.findByOwnerId(id);
 
     if (result.length === 0) {
       throw new HttpException(
@@ -49,14 +53,14 @@ export class CategoryController {
     }
     return {
       status: HttpStatus.OK,
+      message: `Children categories, parentId:${id}`,
       data: result,
-      messsage: `Children categories, parentId:${id}`,
     };
   }
 
   @Get(':id')
   async getById(@Param('id') id: string, @GetUser() user: any) {
-    const result = await this.categoryServise.findById(id);
+    const result = await this.categoryService.findById(id);
 
     console.log('id', id);
 
@@ -70,18 +74,18 @@ export class CategoryController {
     return {
       user,
       status: HttpStatus.OK,
-      messsage: `Children categories, parentId:${id}`,
+      message: `Children categories, parentId:${id}`,
       data: result,
     };
   }
 
   @Post('create')
   async create(@Body() dto: CreateCategoryDto, @UserRequest() req: any) {
-    const result = await this.categoryServise.create(dto);
+    const result = await this.categoryService.create(dto);
 
     return {
       status: HttpStatus.OK,
-      messsage: 'Created category',
+      message: 'Created category',
       data: result,
     };
   }
@@ -92,18 +96,18 @@ export class CategoryController {
     @Body() dto: CreateCategoryDto,
     @UserRequest() req: any,
   ) {
-    const result = await this.categoryServise.updateById(id, dto);
+    const result = await this.categoryService.updateById(id, dto);
 
     return {
       status: HttpStatus.OK,
-      messsage: 'Updated category',
+      message: 'Updated category',
       data: result,
     };
   }
 
   @Delete(':id')
   async deleteById(@Param('id') id: string, @UserRequest() req: any) {
-    const result = await this.categoryServise.delete(id);
+    const result = await this.categoryService.delete(id);
 
     if (!result) {
       throw new HttpException(
@@ -114,14 +118,14 @@ export class CategoryController {
 
     return {
       status: HttpStatus.OK,
-      messsage: 'Deleted category',
+      message: 'Deleted category',
       data: result,
     };
   }
 
   @Delete('clearById/:id')
   async clearById(@Param('id') id: string, @UserRequest() req: any) {
-    const result = await this.categoryServise.deleteManyByParentId(id);
+    const result = await this.categoryService.deleteManyByParentId(id);
 
     if (!result) {
       throw new HttpException(
@@ -132,7 +136,7 @@ export class CategoryController {
 
     return {
       status: HttpStatus.OK,
-      messsage: 'Deleted categories',
+      message: 'Deleted categories',
       data: result,
     };
   }

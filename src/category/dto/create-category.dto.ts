@@ -3,27 +3,19 @@ import { Types } from 'mongoose';
 
 export class CreateCategoryDto {
   @IsString()
+  label: string;
+
+  @IsOptional()
+  @IsString()
   name: string;
+
+  @IsOptional()
+  @IsString()
+  description: string;
 
   @IsOptional()
   @IsObject()
   owner?: Types.ObjectId;
-
-  @IsOptional()
-  @IsString()
-  ownerName?: string;
-
-  @IsOptional()
-  @IsObject()
-  section?: Types.ObjectId;
-
-  @IsOptional()
-  @IsString()
-  sectionName?: string;
-
-  @IsOptional()
-  @IsBoolean()
-  isSection?: boolean;
 
   @IsOptional()
   @IsBoolean()

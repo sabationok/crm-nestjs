@@ -7,6 +7,7 @@ import {
   Document,
 } from 'mongoose';
 import { User } from 'src/auth/user.model';
+import { Product } from 'src/product/product.model';
 import { Shipment, ShipmentDocument } from 'src/shipments/shipment.model';
 // export type OrderDocument = HydratedDocument<Order>;
 export type OrderDocument = Order & Document;
@@ -52,8 +53,23 @@ export class OrderItemComponent {
 
 @Schema({ _id: false, timestamps: false, versionKey: false })
 export class OrderItem {
-  @Prop({ default: null, ref: 'Products', type: () => [Types.ObjectId] })
-  _id?: Types.ObjectId;
+  @Prop({ default: null, ref: Product.name, type: Types.ObjectId })
+  itemInfo?: Product;
+
+  @Prop({ default: 0 })
+  quantity?: number;
+
+  @Prop({ default: 0 })
+  price?: number;
+
+  @Prop({ default: 0 })
+  total?: number;
+
+  @Prop({ default: null, type: Types.ObjectId, ref: Shipment.name })
+  shipment?: Shipment;
+
+  @Prop({ default: { OrderItemComponent } })
+  components?: OrderItemComponent[];
 
   // @Prop({ default: null })
   // imgUrl?: string;
@@ -64,71 +80,50 @@ export class OrderItem {
   // @Prop({ default: null })
   // sku?: string;
 
-  @Prop({ default: 0 })
-  quantity?: number;
-
-  @Prop({ default: 0 })
-  price?: number;
-
-  @Prop({ default: 0 })
-  sale?: number;
-
-  @Prop({ default: 0 })
-  total?: number;
-
-  @Prop({ default: null, ref: 'Shipments' })
-  shipment?: Types.ObjectId;
+  // @Prop({ default: 0 })
+  // sale?: number;
 
   // @Prop({ default: 0 })
   // ttnCost?: number;
-
-  @Prop({ default: { OrderItemComponent } })
-  components?: OrderItemComponent[];
 }
 
 @Schema({ _id: true, timestamps: true, versionKey: false })
 export class Order {
-  @Prop({ default: null, unique: false })
+  @Prop({ default: '000000000000', unique: false })
   number?: string;
 
-  @Prop({ type: Types.ObjectId, ref: User.name })
-  creator?: User;
+  // @Prop({ type: Types.ObjectId, ref: User.name })
+  // creator?: User;
 
-  // @Prop({ ref: User.name, type: Types.ObjectId })
+  // @Prop({ type: Types.ObjectId, ref: User.name })
   // updator?: User;
 
-  @Prop({ default: 'standart' })
-  type?: 'standart' | 'mix';
+  // @Prop({ default: 'standart' })
+  // type?: 'standart' | 'mix';
 
   @Prop({ default: 'new' })
   status?: 'new' | 'inWork' | 'success' | 'rejected' | 'archived';
 
-  // @Prop({ ref: User.name, type: Types.ObjectId })
-  // managerId?: User;
+  @Prop({ type: Types.ObjectId, ref: User.name })
+  managerId?: User;
 
-  @Prop({ default: { IPaymentinfo } })
-  payment?: IPaymentinfo;
+  // @Prop({ default: { IPaymentinfo } })
+  // payment?: IPaymentinfo;
 
-  @Prop({ default: [], type: () => [Types.ObjectId] })
-  contentIdArr?: Types.ObjectId[];
+  @Prop({ type: [{ type: Types.ObjectId, ref: Product.name }] })
+  contentIdArr?: OrderItem[];
 
-  @Prop({ default: [OrderItem], type: () => [OrderItem] })
+  @Prop({ type: [{ type: Types.ObjectId, ref: Product.name }] })
   content?: OrderItem[];
 
-  @Prop({ default: 0 })
-  totalValue?: number;
+  // @Prop({ default: 0 })
+  // totalValue?: number;
 
-  @Prop({ default: 0 })
-  totalShipmentsCount?: number;
-
-  // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Owner' }] })
-  // owner: Owner[];
+  // @Prop({ default: 0 })
+  // totalShipmentsCount?: number;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: Shipment.name }] })
   shipments?: Shipment[];
 }
-
-export const testOrder =
-  'test =======================================================';
 
 export const OrderModel = SchemaFactory.createForClass(Order);

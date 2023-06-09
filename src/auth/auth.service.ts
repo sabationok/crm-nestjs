@@ -1,6 +1,6 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthDto } from './dto/auth.dto';
-import { genSaltSync, hash, compare } from 'bcryptjs';
+import { compare, genSaltSync, hash } from 'bcryptjs';
 import {
   USER_NOT_FOUND_ERROR,
   WRONG_CREDENTIALS_ERROR,
@@ -8,9 +8,30 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { TUserRoles, User, UserDocument, FindUser } from './user.model';
-// import { FindUser } from './findUser.model';
+import { HydratedDocument, Model, Types } from 'mongoose';
+import { TUserRoles, User, UserDocument } from './user.model';
+import createError from '../helpers/createError';
+
+export interface IBase {
+  _id?: Types.ObjectId;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface IUserBase extends IBase {
+  email?: string;
+  passwordHash?: string;
+  login?: string;
+  name?: string;
+  phone?: string;
+  role?: TUserRoles;
+  status?: string;
+  manager?: { vendors?: Types.ObjectId[] };
+  vendor?: { manager?: Types.ObjectId };
+  access_token?: string;
+}
+
+export interface IUserBaseDoc extends HydratedDocument<IUserBase> {}
 
 @Injectable()
 export class AuthService {
@@ -19,19 +40,19 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async getAllUsers(projection?: string): Promise<FindUser[]> {
-    return this.userModel.find({}, projection).exec();
+  async getAllUsers(projection?: string): Promise<UserDocument[]> {
+    return this.userModel.find({}, projection);
   }
 
-  async getUserById(id: string | Types.ObjectId): Promise<FindUser | null> {
-    return this.userModel.findById(id).exec();
+  async getUserById(id: string | Types.ObjectId): Promise<IUserBaseDoc | null> {
+    return this.userModel.findById(id).populate({ path: 'vendor' }).exec();
   }
 
-  async findUserByEmail(email: string): Promise<FindUser | null> {
+  async findUserByEmail(email: string): Promise<IUserBaseDoc | null> {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async getCurrentUserInfo(id: string): Promise<FindUser | null> {
+  async getCurrentUserInfo(id: string): Promise<IUserBaseDoc | null> {
     return this.userModel.findById(id, '-passwordHash -access_token');
   }
 
@@ -70,14 +91,20 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<object | any> {
     const user = await this.findUserByEmail(email);
 
-    if (!user) {
-      throw new UnauthorizedException(USER_NOT_FOUND_ERROR);
+    if (!user || !user.passwordHash) {
+      throw createError({
+        statusCode: HttpStatus.NOT_FOUND,
+        reason: USER_NOT_FOUND_ERROR,
+      });
     }
 
     const isCorrectPassword = await compare(password, user.passwordHash);
 
     if (!isCorrectPassword) {
-      throw new UnauthorizedException(WRONG_CREDENTIALS_ERROR);
+      throw createError({
+        statusCode: HttpStatus.UNAUTHORIZED,
+        reason: WRONG_CREDENTIALS_ERROR,
+      });
     }
 
     return user;

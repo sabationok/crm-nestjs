@@ -3,14 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { getMongoConfig } from './configs/mongo.config';
 import { getTelegramConfig } from './configs/telegramConfig';
-
-import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
-import { ProductModule } from './product/product.module';
-import { CategoryModule } from './category/category.module';
-import { OrderModule } from './order/order.module';
-import { ShipmentsModule } from './shipments/shipments.module';
-import { RefundsModule } from './refunds/refunds.module';
 import { TelegramModule } from './telegram/telegram.module';
 
 // import { FilesModule } from './files/files.module';
@@ -18,7 +11,8 @@ import { TelegramModule } from './telegram/telegram.module';
 // import { getTelegramConfig } from './configs/telegram.config';
 // import { ScheduleModule } from '@nestjs/schedule';
 // import { SitemapModule } from './sitemap/sitemap.module';
-import { UsersModule } from './users/users.module';
+import { PermissionsModule } from './permissions/permissions.module';
+import { AuthModule } from './auth/auth.module';
 
 @Controller('/')
 export class AppController {
@@ -38,28 +32,25 @@ export class AppController {
       useFactory: getMongoConfig,
     }),
 
-    AuthModule,
-
-    RolesModule,
-
-    ProductModule,
-
-    OrderModule,
-
-    CategoryModule,
-
-    RefundsModule,
-
     TelegramModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: getTelegramConfig,
     }),
 
-    ShipmentsModule,
+    AuthModule,
+    PermissionsModule,
+    RolesModule,
 
-    UsersModule,
+    // UsersModule,
+    // ProductModule,
+    // CategoryModule,
+    // OrderModule,
+    // OrderItemsModule,
+    // ShipmentsModule,
+    // RefundsModule,
   ],
   controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}

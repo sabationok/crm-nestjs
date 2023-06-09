@@ -8,7 +8,7 @@ import { Refund, RefundModel } from './refund.model';
   imports: [
     MongooseModule.forFeature([
       {
-        name: 'RefundModel',
+        name: Refund.name,
         schema: RefundModel,
         collection: 'Refunds',
       },

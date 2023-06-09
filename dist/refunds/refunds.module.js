@@ -19,7 +19,7 @@ RefundsModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 {
-                    name: 'RefundModel',
+                    name: refund_model_1.Refund.name,
                     schema: refund_model_1.RefundModel,
                     collection: 'Refunds',
                 },
